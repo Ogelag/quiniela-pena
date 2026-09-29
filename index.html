@@ -9,8 +9,21 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @media (prefers-color-scheme: dark) {
+      body { background-color: #0f172a; color: #f8fafc; }
+      .bg-white { background-color: #1e293b !important; color: #f8fafc !important; }
+      .bg-slate-100 { background-color: #0f172a !important; }
+      .bg-slate-50 { background-color: #334155 !important; color: #f8fafc !important; }
+      .bg-gray-50 { background-color: #334155 !important; color: #f8fafc !important; }
+      .border { border-color: #475569 !important; }
+      .text-gray-800, .text-gray-700, .text-gray-600 { color: #cbd5e1 !important; }
+      .text-gray-500 { color: #94a3b8 !important; }
+      input, select { background-color: #334155 !important; color: #ffffff !important; border-color: #475569 !important; }
+    }
+  </style>
 </head>
-<body class="bg-slate-100 text-gray-800 font-sans pb-12">
+<body class="bg-slate-100 text-gray-800 font-sans pb-12 transition-colors duration-200">
 
   <!-- Encabezado -->
   <header class="bg-blue-900 text-white p-4 shadow-md text-center">
@@ -41,19 +54,17 @@
             </select>
           </div>
 
-          <!-- Caja de PIN y Botón de Registro Independiente -->
-          <div id="sec-pin-container" class="hidden space-y-2">
+          <!-- Caja de PIN Dinámica -->
+          <div id="sec-pin-container" class="hidden space-y-2 mt-3">
             <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">PIN / Clave (4 dígitos)</label>
-            <div class="flex items-center gap-2">
-              <input type="password" id="input-pin" maxlength="4" placeholder="****" class="p-2 border rounded-lg bg-gray-50 font-semibold text-gray-800 w-28 text-center tracking-widest">
-              
-              <!-- Botón visible de registro -->
+            <div style="display: flex; gap: 8px; align-items: center; width: 100%;">
+              <input type="password" id="input-pin" maxlength="4" placeholder="****" class="p-2 border rounded-lg bg-gray-50 font-semibold text-center tracking-widest" style="width: 100px; min-width: 100px;">
               <button type="button" id="btn-registrar-pin" onclick="registrarPIN()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition shadow">
                 Registrar Mi PIN
               </button>
             </div>
-            <p id="msg-pin-status" class="text-xs font-medium text-amber-600">
-              Si es tu primera vez, escribe 4 dígitos y pulsa "Registrar Mi PIN" para darte de alta.
+            <p id="msg-pin-status" class="text-xs font-medium text-amber-600 mt-1">
+              Comprobando usuario...
             </p>
           </div>
         </div>
@@ -74,7 +85,7 @@
         </div>
       </div>
 
-      <!-- Estado 8/8 -->
+      <!-- Estado 8/8 (Ajustado para evitar solapamientos) -->
       <div class="border-t pt-3">
         <p class="text-xs font-semibold text-gray-500 mb-2">Estado de recepción en <span id="lbl-jornada-check" class="font-bold">Jornada 1</span> (Oculto hasta 8/8):</p>
         <div id="grid-checks" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -85,7 +96,7 @@
 
     <!-- Formulario de Pronósticos -->
     <section class="bg-white p-4 rounded-xl shadow border border-slate-200">
-      <h2 class="text-lg font-bold text-gray-800 mb-3 border-b pb-2">Rellenar Pronóstico (<span id="lbl-jornada-form">Jornada 1</span>)</h2>
+      <h2 class="text-lg font-bold mb-3 border-b pb-2">Rellenar Pronóstico (<span id="lbl-jornada-form">Jornada 1</span>)</h2>
       <form id="form-pronostico" onsubmit="guardarPronostico(event)" class="space-y-3">
         <div id="lista-partidos" class="space-y-2">
           <!-- Renderizado automático de los 14 partidos -->
@@ -96,7 +107,7 @@
           <label class="block text-xs font-bold text-amber-800 mb-1">
             Pleno al 15
           </label>
-          <input type="text" id="pleno-15" placeholder="Ej: 2-1" class="p-2 border rounded w-full text-sm bg-white">
+          <input type="text" id="pleno-15" placeholder="Ej: 2-1" class="p-2 border rounded w-full text-sm">
         </div>
 
         <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition shadow">
@@ -105,22 +116,30 @@
       </form>
     </section>
 
-    <!-- Sección Revelada (Resultados, Clasificación y Evolución) -->
+    <!-- Sección Revelada -->
     <section id="sec-revelada" class="bg-white p-4 rounded-xl shadow border border-slate-200">
       <div id="mensaje-bloqueo" class="text-center py-8">
         <div class="text-4xl mb-2">🔒</div>
         <h3 class="text-base font-bold text-gray-700">Pronósticos Ocultos</h3>
         <p class="text-xs text-gray-500 mt-1 max-w-sm mx-auto">
-          Los pronósticos de los 8 jugadores y las tablas comparativas están bloqueados para la <span id="lbl-jornada-bloqueo" class="font-bold">Jornada 1</span> hasta que todos hayan guardado su jugada.
+          Los pronósticos y las tablas comparativas están bloqueados para la <span id="lbl-jornada-bloqueo" class="font-bold">Jornada 1</span> hasta que los 8 hayan guardado su jugada.
         </p>
       </div>
 
       <!-- Contenido visible solo tras 8/8 -->
       <div id="contenido-revelado" class="hidden space-y-8">
         
+        <!-- Botón para WhatsApp -->
+        <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl flex items-center justify-between gap-3">
+          <span class="text-xs font-semibold text-emerald-800"> Compartir resultados en la peña:</span>
+          <button type="button" onclick="copiarResumenWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition shadow flex items-center gap-1">
+            📋 Copiar para WhatsApp
+          </button>
+        </div>
+
         <!-- Escrutinio / Resultados de la Jornada -->
         <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
-          <h3 class="text-md font-bold text-gray-800 mb-2">Resultado Oficial (<span id="lbl-jornada-esc">Jornada 1</span>)</h3>
+          <h3 class="text-md font-bold mb-2">Resultado Oficial (<span id="lbl-jornada-esc">Jornada 1</span>)</h3>
           <p class="text-xs text-gray-500 mb-3">Introduce la combinación ganadora oficial para calcular los aciertos de esta jornada:</p>
           <div id="grid-escrutinio" class="grid grid-cols-7 gap-2 mb-3 text-center">
             <!-- 14 inputs de resultados -->
@@ -132,7 +151,7 @@
 
         <!-- Clasificación de la Jornada Específica -->
         <div>
-          <h3 class="text-lg font-bold text-gray-800 mb-2">Clasificación Específica (<span id="lbl-jornada-tabla">J1</span>)</h3>
+          <h3 class="text-lg font-bold mb-2">Clasificación Específica (<span id="lbl-jornada-tabla">J1</span>)</h3>
           <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">
               <thead class="bg-slate-100 text-gray-600 uppercase text-xs">
@@ -150,7 +169,7 @@
 
         <!-- Clasificación Acumulada hasta esta Jornada -->
         <div>
-          <h3 class="text-lg font-bold text-gray-800 mb-2">Clasificación General Acumulada (Hasta <span id="lbl-jornada-acum">J1</span>)</h3>
+          <h3 class="text-lg font-bold mb-2">Clasificación General Acumulada (Hasta <span id="lbl-jornada-acum">J1</span>)</h3>
           <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">
               <thead class="bg-blue-900 text-white uppercase text-xs">
@@ -167,7 +186,7 @@
 
         <!-- Gráfico de Evolución -->
         <div>
-          <h3 class="text-lg font-bold text-gray-800 mb-2">Evolución Acumulada (Hasta <span id="lbl-jornada-graf">J1</span>)</h3>
+          <h3 class="text-lg font-bold mb-2">Evolución Acumulada (Hasta <span id="lbl-jornada-graf">J1</span>)</h3>
           <div class="relative w-full h-72">
             <canvas id="chartEvolucion"></canvas>
           </div>
@@ -201,13 +220,15 @@
     let usuarioActual = "";
     let jornadaActual = "J1";
     let chartInstancia = null;
+    let datosUltimoRankingJornada = [];
+    let datosUltimoRankingAcumulado = [];
 
     // Renderizar los 14 partidos
     const partidosCont = document.getElementById("lista-partidos");
     for (let i = 1; i <= 14; i++) {
       partidosCont.innerHTML += `
         <div class="flex items-center justify-between bg-gray-50 p-2 rounded border text-sm">
-          <span class="font-medium text-gray-600">Partido ${i}</span>
+          <span class="font-medium">Partido ${i}</span>
           <div class="flex gap-2">
             <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50">
               <input type="radio" name="p${i}" value="1"> 1
@@ -229,10 +250,19 @@
       escrutinioCont.innerHTML += `
         <div>
           <span class="text-[10px] text-gray-400 block">P${i}</span>
-          <input type="text" id="esc-p${i}" maxlength="1" placeholder="1/X/2" class="w-full p-1 border text-center uppercase font-bold rounded text-xs bg-white">
+          <input type="text" id="esc-p${i}" maxlength="1" placeholder="1/X/2" class="w-full p-1 border text-center uppercase font-bold rounded text-xs">
         </div>
       `;
     }
+
+    // Cargar LocalStorage
+    window.addEventListener("DOMContentLoaded", () => {
+      const usuarioGuardado = localStorage.getItem("quiniela_usuario");
+      if (usuarioGuardado) {
+        document.getElementById("select-jugador").value = usuarioGuardado;
+        comprobarUsuario();
+      }
+    });
 
     function cambiarJornada() {
       jornadaActual = document.getElementById("select-jornada").value;
@@ -248,9 +278,10 @@
       escucharJornada();
     }
 
-    function comprobarUsuario() {
+    async function comprobarUsuario() {
       usuarioActual = document.getElementById("select-jugador").value;
       const pinContainer = document.getElementById("sec-pin-container");
+      const msgStatus = document.getElementById("msg-pin-status");
       const inputPin = document.getElementById("input-pin");
 
       inputPin.value = "";
@@ -260,8 +291,18 @@
         return;
       }
 
-      // Muestra siempre el contenedor con la casilla y el botón verde
+      localStorage.setItem("quiniela_usuario", usuarioActual);
       pinContainer.classList.remove("hidden");
+      msgStatus.textContent = "Verificando en base de datos...";
+
+      const userDoc = await db.collection("usuarios").doc(usuarioActual).get();
+      if (userDoc.exists && userDoc.data().pin) {
+        msgStatus.className = "text-xs font-medium text-emerald-600 mt-1";
+        msgStatus.textContent = "✅ Usuario registrado. Introduce tu PIN de 4 dígitos para guardar tus partidos.";
+      } else {
+        msgStatus.className = "text-xs font-medium text-amber-600 mt-1";
+        msgStatus.textContent = "⚙️ Si es tu primera vez, escribe 4 dígitos y pulsa 'Registrar Mi PIN'.";
+      }
     }
 
     async function registrarPIN() {
@@ -278,9 +319,9 @@
         return;
       }
 
-      // Guardar directamente el PIN en la base de datos
       await db.collection("usuarios").doc(usuarioActual).set({ pin: pinIngresado });
-      alert("✅ ¡PIN registrado/actualizado con éxito para " + usuarioActual + "! No hace falta que rellenes los pronósticos ahora.");
+      alert("✅ ¡PIN registrado/actualizado con éxito para " + usuarioActual + "!");
+      comprobarUsuario();
     }
 
     let unsubscribeJornada = null;
@@ -305,9 +346,9 @@
           if (enviado) totalEnviados++;
 
           grid.innerHTML += `
-            <div class="flex items-center justify-between p-2 rounded text-xs font-semibold ${enviado ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-400'}">
-              <span>${j}</span>
-              <span>${enviado ? '✓ Listo' : '⏳ Pendiente'}</span>
+            <div class="flex items-center justify-between p-1.5 px-2 rounded text-[11px] font-semibold ${enviado ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-500'}">
+              <span class="truncate max-w-[70px]">${j}</span>
+              <span class="shrink-0">${enviado ? '✓ Listo' : '⏳ Pend.'}</span>
             </div>
           `;
         });
@@ -332,10 +373,9 @@
 
       const pinIngresado = document.getElementById("input-pin").value;
 
-      // Verificar si el usuario se registró primero
       const userDoc = await db.collection("usuarios").doc(usuarioActual).get();
       if (!userDoc.exists) {
-        alert("Primero debes registrar tu PIN escribiéndolo y pulsando el botón verde 'Registrar Mi PIN'.");
+        alert("Primero debes registrar tu PIN escribiéndolo y pulsando 'Registrar Mi PIN'.");
         return;
       }
 
@@ -385,7 +425,7 @@
       const tbodyJornada = document.getElementById("tabla-jornada");
       tbodyJornada.innerHTML = "";
 
-      const rankingJornada = jugadores.map(j => {
+      datosUltimoRankingJornada = jugadores.map(j => {
         let aciertos = 0;
         const resp = pronosticos[j]?.respuestas || {};
         for (let i = 1; i <= 14; i++) {
@@ -396,7 +436,7 @@
         return { jugador: j, aciertos: aciertos, pleno: pronosticos[j]?.pleno || "-" };
       }).sort((a, b) => b.aciertos - a.aciertos);
 
-      rankingJornada.forEach((r, idx) => {
+      datosUltimoRankingJornada.forEach((r, idx) => {
         tbodyJornada.innerHTML += `
           <tr class="border-b ${idx === 0 ? 'bg-amber-50 font-bold' : ''}">
             <td class="p-2">${idx + 1}º</td>
@@ -447,10 +487,10 @@
 
       const tbodyAcumulada = document.getElementById("tabla-acumulada");
       tbodyAcumulada.innerHTML = "";
-      const rankingAcumulado = jugadores.map(j => ({ jugador: j, total: puntosAcumulados[j] }))
+      datosUltimoRankingAcumulado = jugadores.map(j => ({ jugador: j, total: puntosAcumulados[j] }))
         .sort((a, b) => b.total - a.total);
 
-      rankingAcumulado.forEach((r, idx) => {
+      datosUltimoRankingAcumulado.forEach((r, idx) => {
         tbodyAcumulada.innerHTML += `
           <tr class="border-b ${idx === 0 ? 'bg-green-50 font-bold' : ''}">
             <td class="p-2">${idx + 1}º</td>
@@ -485,6 +525,25 @@
             legend: { position: 'bottom' }
           }
         }
+      });
+    }
+
+    function copiarResumenWhatsApp() {
+      let texto = `⚽ *QUINIELA PEÑA - ${jornadaActual}*\n\n`;
+      texto += `📊 *Aciertos ${jornadaActual}:*\n`;
+      datosUltimoRankingJornada.forEach((r, idx) => {
+        texto += `${idx + 1}º ${r.jugador}: ${r.aciertos} aciertos (${r.pleno})\n`;
+      });
+
+      texto += `\n🏆 *General Acumulada (${jornadaActual}):*\n`;
+      datosUltimoRankingAcumulado.forEach((r, idx) => {
+        texto += `${idx + 1}º ${r.jugador}: ${r.total} pts\n`;
+      });
+
+      navigator.clipboard.writeText(texto).then(() => {
+        alert("📋 ¡Resumen copiado! Ya puedes pegarlo directamente en el grupo de WhatsApp de la peña.");
+      }).catch(() => {
+        alert("Error al copiar. Inténtalo de nuevo.");
       });
     }
 
