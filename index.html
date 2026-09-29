@@ -20,13 +20,13 @@
 
   <main class="max-w-4xl mx-auto p-4 space-y-6">
 
-    <!-- Selector de Jugador, PIN y Estado -->
+    <!-- Selector de Jugador y Registro/Acceso con PIN -->
     <section class="bg-white p-4 rounded-xl shadow border border-slate-200">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-        <div class="space-y-2 w-full sm:w-auto">
+        <div class="space-y-3 w-full sm:w-auto">
           <div>
             <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tu Identificación</label>
-            <select id="select-jugador" onchange="actualizarUsuario()" class="p-2 border rounded-lg bg-gray-50 font-semibold text-blue-900 w-full sm:w-60">
+            <select id="select-jugador" onchange="comprobarUsuario()" class="p-2 border rounded-lg bg-gray-50 font-semibold text-blue-900 w-full sm:w-60">
               <option value="">-- Selecciona tu Nombre --</option>
               <option value="Borja">Borja</option>
               <option value="Carlos">Carlos</option>
@@ -39,10 +39,18 @@
             </select>
           </div>
 
-          <div>
-            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tu PIN / Clave (4 dígitos)</label>
-            <input type="password" id="input-pin" maxlength="4" placeholder="****" class="p-2 border rounded-lg bg-gray-50 font-semibold text-gray-800 w-full sm:w-60 text-center tracking-widest" required>
-            <p id="msg-pin-info" class="text-[10px] text-gray-400 mt-1">Si es tu primera vez, el PIN que pongas se guardará como tu clave personal.</p>
+          <!-- Caja de PIN y registro -->
+          <div id="sec-pin-container" class="hidden space-y-2">
+            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">PIN / Clave (4 dígitos)</label>
+            <div class="flex gap-2">
+              <input type="password" id="input-pin" maxlength="4" placeholder="****" class="p-2 border rounded-lg bg-gray-50 font-semibold text-gray-800 w-32 text-center tracking-widest">
+              
+              <!-- Botón que solo se muestra si NO tiene PIN registrado -->
+              <button id="btn-registrar-pin" onclick="registrarPIN()" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition shadow">
+                Registrar Mi PIN
+              </button>
+            </div>
+            <p id="msg-pin-status" class="text-xs font-medium"></p>
           </div>
         </div>
 
@@ -141,6 +149,7 @@
     const jugadores = ["Borja", "Carlos", "Itziar", "Jose", "Quique", "Currás", "García", "Rodríguez"];
     let usuarioActual = "";
     let jornadaActual = "J1";
+    let tienePinRegistrado = false;
 
     // Inicializar lista de 14 partidos
     const partidosCont = document.getElementById("lista-partidos");
@@ -163,9 +172,51 @@
       `;
     }
 
-    function actualizarUsuario() {
+    async function comprobarUsuario() {
       usuarioActual = document.getElementById("select-jugador").value;
-      document.getElementById("input-pin").value = "";
+      const pinContainer = document.getElementById("sec-pin-container");
+      const btnRegistrar = document.getElementById("btn-registrar-pin");
+      const msgStatus = document.getElementById("msg-pin-status");
+      const inputPin = document.getElementById("input-pin");
+
+      inputPin.value = "";
+
+      if (!usuarioActual) {
+        pinContainer.classList.add("hidden");
+        return;
+      }
+
+      pinContainer.classList.remove("hidden");
+
+      // Comprobar si existe en la colección de usuarios
+      const userRef = db.collection("usuarios").doc(usuarioActual);
+      const userDoc = await userRef.get();
+
+      if (!userDoc.exists) {
+        tienePinRegistrado = false;
+        btnRegistrar.classList.remove("hidden");
+        msgStatus.textContent = "Es tu primera vez. Elige un PIN de 4 dígitos y pulsa 'Registrar Mi PIN'.";
+        msgStatus.className = "text-xs font-medium text-amber-600";
+      } else {
+        tienePinRegistrado = true;
+        btnRegistrar.classList.add("hidden");
+        msgStatus.textContent = "Introduce tu PIN registrado para autorizar el envío.";
+        msgStatus.className = "text-xs font-medium text-blue-600";
+      }
+    }
+
+    async function registrarPIN() {
+      const pinIngresado = document.getElementById("input-pin").value;
+      if (!pinIngresado || pinIngresado.length !== 4 || isNaN(pinIngresado)) {
+        alert("Por favor, introduce un PIN numérico de exactamente 4 dígitos.");
+        return;
+      }
+
+      const userRef = db.collection("usuarios").doc(usuarioActual);
+      await userRef.set({ pin: pinIngresado });
+
+      alert("¡PIN registrado con éxito para " + usuarioActual + "! Ahora ya puedes rellenar y guardar tu quiniela.");
+      comprobarUsuario();
     }
 
     // Escuchar estado en tiempo real desde Firebase
@@ -207,25 +258,19 @@
       }
 
       const pinIngresado = document.getElementById("input-pin").value;
-      if (!pinIngresado || pinIngresado.length !== 4) {
-        alert("Introduce un PIN de 4 dígitos.");
+
+      if (!tienePinRegistrado) {
+        alert("Primero debes registrar tu PIN pulsando el botón verde 'Registrar Mi PIN'.");
         return;
       }
 
-      // Comprobar si el usuario ya tiene un PIN registrado en la base de datos
+      // Verificar PIN antes de guardar
       const userRef = db.collection("usuarios").doc(usuarioActual);
       const userDoc = await userRef.get();
-
-      if (!userDoc.exists) {
-        // Primera vez: Crear el PIN del usuario
-        await userRef.set({ pin: pinIngresado });
-      } else {
-        // Veces posteriores: Verificar PIN
-        const pinGuardado = userDoc.data().pin;
-        if (pinGuardado !== pinIngresado) {
-          alert("🔒 El PIN introducido es incorrecto para " + usuarioActual + ".");
-          return;
-        }
+      
+      if (userDoc.exists && userDoc.data().pin !== pinIngresado) {
+        alert("🔒 PIN incorrecto para " + usuarioActual + ".");
+        return;
       }
 
       const opciones = {};
