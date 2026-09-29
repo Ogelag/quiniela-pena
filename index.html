@@ -110,7 +110,7 @@
           <input type="text" id="pleno-15" placeholder="Ej: 2-1" class="p-2 border rounded w-full text-sm">
         </div>
         <div id="msg-no-pleno-15" class="bg-gray-100 p-3 rounded-lg border border-gray-200 text-xs text-gray-500 italic mt-4">
-          ℹ️️ En esta jornada el Pleno al 15 le corresponde rellenarlo a: <span id="encargado-pleno-nombre" class="font-bold text-blue-900">...</span>
+          ℹ En esta jornada el Pleno al 15 le corresponde rellenarlo a: <span id="encargado-pleno-nombre" class="font-bold text-blue-900">...</span>
         </div>
 
         <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition shadow mt-4">
@@ -119,51 +119,53 @@
       </form>
     </section>
 
-    <!-- Sección Revelada -->
-    <section id="sec-revelada" class="bg-white p-4 rounded-xl shadow border border-slate-200">
+    <!-- BARRA DE PESTAÑAS NAVEGACIÓN (SIEMPRE VISIBLE) -->
+    <section class="bg-slate-100 p-1.5 rounded-xl border border-slate-200 flex flex-col sm:flex-row gap-2">
+      <button type="button" id="tab-btn-jornada" onclick="cambiarVistaClasificacion('jornada')" class="flex-1 py-2.5 px-3 text-xs font-bold rounded-lg border text-center transition bg-blue-600 text-white border-blue-600 shadow">
+        🥇 Clasificación Jornada
+      </button>
+      <button type="button" id="tab-btn-acumulada" onclick="cambiarVistaClasificacion('acumulada')" class="flex-1 py-2.5 px-3 text-xs font-bold rounded-lg border text-center transition bg-white text-gray-700 border-gray-200 hover:bg-gray-50">
+        🏆 Clasificación General
+      </button>
+      <button type="button" id="tab-btn-grafico" onclick="cambiarVistaClasificacion('grafico')" class="flex-1 py-2.5 px-3 text-xs font-bold rounded-lg border text-center transition bg-white text-gray-700 border-gray-200 hover:bg-gray-50">
+        📈 Gráfico Evolución
+      </button>
+    </section>
+
+    <!-- Sección principal de contenido / vistas -->
+    <section class="bg-white p-4 rounded-xl shadow border border-slate-200">
+      
+      <!-- Cartel de Bloqueo cuando falten pronósticos en la jornada actual -->
       <div id="mensaje-bloqueo" class="text-center py-8">
         <div class="text-4xl mb-2">🔒</div>
         <h3 class="text-base font-bold text-gray-700">Pronósticos Ocultos</h3>
         <p class="text-xs text-gray-500 mt-1 max-w-sm mx-auto">
-          Los pronósticos y las tablas comparativas están bloqueados para la <span id="lbl-jornada-bloqueo" class="font-bold">Jornada 1</span> hasta que los 8 hayan guardado su jugada.
+          Los datos y clasificaciones de la <span id="lbl-jornada-bloqueo" class="font-bold">Jornada 1</span> están bloqueados hasta que los 8 hayan guardado su jugada.
         </p>
       </div>
 
-      <!-- Contenido visible solo tras 8/8 -->
+      <!-- Contenido visible tras completarse 8/8 -->
       <div id="contenido-revelado" class="hidden space-y-6">
         
         <!-- Botón para WhatsApp -->
-        <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl flex items-center justify-between gap-3">
+        <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl flex items-center justify-between gap-3 mb-4">
           <span class="text-xs font-semibold text-emerald-800"> Compartir resultados en la peña:</span>
           <button type="button" onclick="copiarResumenWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition shadow flex items-center gap-1 shrink-0">
             📋 Copiar para WhatsApp
           </button>
         </div>
 
-        <!-- Botones de Navegación / Pestañas de Clasificación -->
-        <div class="flex flex-wrap gap-2 border-b pb-3">
-          <button type="button" id="tab-btn-jornada" onclick="cambiarVistaClasificacion('jornada')" class="flex-1 min-w-[120px] py-2 px-3 text-xs font-bold rounded-lg border text-center transition bg-blue-600 text-white border-blue-600 shadow">
-            🥇 Clasificación Jornada
-          </button>
-          <button type="button" id="tab-btn-acumulada" onclick="cambiarVistaClasificacion('acumulada')" class="flex-1 min-w-[120px] py-2 px-3 text-xs font-bold rounded-lg border text-center transition bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200">
-            🏆 Clasificación General
-          </button>
-          <button type="button" id="tab-btn-grafico" onclick="cambiarVistaClasificacion('grafico')" class="flex-1 min-w-[120px] py-2 px-3 text-xs font-bold rounded-lg border text-center transition bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200">
-            📈 Gráfico Evolución
-          </button>
-        </div>
-
         <!-- Vista 1: Clasificación de la Jornada Específica -->
         <div id="vista-clasif-jornada" class="space-y-4">
-          <h3 class="text-lg font-bold border-b pb-1">Clasificación Específica (<span id="lbl-jornada-tabla">J1</span>)</h3>
-          <div class="overflow-x-auto">
+          <h3 class="text-base font-bold border-b pb-2 text-slate-800">Clasificación Específica (<span id="lbl-jornada-tabla">J1</span>)</h3>
+          <div class="overflow-x-auto rounded-lg border border-slate-200">
             <table class="w-full text-sm text-left">
               <thead class="bg-slate-100 text-gray-600 uppercase text-xs">
                 <tr>
-                  <th class="p-2">Pos</th>
-                  <th class="p-2">Jugador</th>
-                  <th class="p-2 text-center">Aciertos (14)</th>
-                  <th class="p-2 text-center">Pleno 15</th>
+                  <th class="p-3">Pos</th>
+                  <th class="p-3">Jugador</th>
+                  <th class="p-3 text-center">Aciertos (14)</th>
+                  <th class="p-3 text-center">Pleno 15</th>
                 </tr>
               </thead>
               <tbody id="tabla-jornada"></tbody>
@@ -173,14 +175,14 @@
 
         <!-- Vista 2: Clasificación Acumulada hasta esta Jornada -->
         <div id="vista-clasif-acumulada" class="hidden space-y-4">
-          <h3 class="text-lg font-bold border-b pb-1">Clasificación General Acumulada (Hasta <span id="lbl-jornada-acum">J1</span>)</h3>
-          <div class="overflow-x-auto">
+          <h3 class="text-base font-bold border-b pb-2 text-slate-800">Clasificación General Acumulada (Hasta <span id="lbl-jornada-acum">J1</span>)</h3>
+          <div class="overflow-x-auto rounded-lg border border-slate-200">
             <table class="w-full text-sm text-left">
               <thead class="bg-blue-900 text-white uppercase text-xs">
                 <tr>
-                  <th class="p-2">Pos</th>
-                  <th class="p-2">Jugador</th>
-                  <th class="p-2 text-center">Puntos Totales</th>
+                  <th class="p-3">Pos</th>
+                  <th class="p-3">Jugador</th>
+                  <th class="p-3 text-center">Puntos Totales</th>
                 </tr>
               </thead>
               <tbody id="tabla-acumulada"></tbody>
@@ -190,8 +192,8 @@
 
         <!-- Vista 3: Gráfico de Evolución -->
         <div id="vista-clasif-grafico" class="hidden space-y-4">
-          <h3 class="text-lg font-bold border-b pb-1">Evolución Acumulada (Hasta <span id="lbl-jornada-graf">J1</span>)</h3>
-          <div class="relative w-full h-72">
+          <h3 class="text-base font-bold border-b pb-2 text-slate-800">Evolución Acumulada (Hasta <span id="lbl-jornada-graf">J1</span>)</h3>
+          <div class="relative w-full h-72 p-2 bg-white rounded-lg border border-slate-200">
             <canvas id="chartEvolucion"></canvas>
           </div>
         </div>
@@ -293,25 +295,25 @@
       const btnGrafico = document.getElementById("tab-btn-grafico");
 
       const activeClass = "bg-blue-600 text-white border-blue-600 shadow";
-      const inactiveClass = "bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200";
+      const inactiveClass = "bg-white text-gray-700 border-gray-200 hover:bg-gray-50";
 
       vJornada.classList.add("hidden");
       vAcumulada.classList.add("hidden");
       vGrafico.classList.add("hidden");
 
-      btnJornada.className = `flex-1 min-w-[120px] py-2 px-3 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
-      btnAcumulada.className = `flex-1 min-w-[120px] py-2 px-3 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
-      btnGrafico.className = `flex-1 min-w-[120px] py-2 px-3 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
+      btnJornada.className = `flex-1 py-2.5 px-3 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
+      btnAcumulada.className = `flex-1 py-2.5 px-3 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
+      btnGrafico.className = `flex-1 py-2.5 px-3 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
 
       if (vista === 'jornada') {
         vJornada.classList.remove("hidden");
-        btnJornada.className = `flex-1 min-w-[120px] py-2 px-3 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
+        btnJornada.className = `flex-1 py-2.5 px-3 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
       } else if (vista === 'acumulada') {
         vAcumulada.classList.remove("hidden");
-        btnAcumulada.className = `flex-1 min-w-[120px] py-2 px-3 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
+        btnAcumulada.className = `flex-1 py-2.5 px-3 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
       } else if (vista === 'grafico') {
         vGrafico.classList.remove("hidden");
-        btnGrafico.className = `flex-1 min-w-[120px] py-2 px-3 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
+        btnGrafico.className = `flex-1 py-2.5 px-3 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
       }
     }
 
@@ -551,10 +553,10 @@
       datosUltimoRankingJornada.forEach((r, idx) => {
         tbodyJornada.innerHTML += `
           <tr class="border-b ${idx === 0 ? 'bg-amber-50 font-bold' : ''}">
-            <td class="p-2">${idx + 1}º</td>
-            <td class="p-2">${r.jugador}</td>
-            <td class="p-2 text-center">${r.aciertos}</td>
-            <td class="p-2 text-center">${r.pleno}</td>
+            <td class="p-3">${idx + 1}º</td>
+            <td class="p-3">${r.jugador}</td>
+            <td class="p-3 text-center font-semibold">${r.aciertos}</td>
+            <td class="p-3 text-center">${r.pleno}</td>
           </tr>
         `;
       });
@@ -605,9 +607,9 @@
       datosUltimoRankingAcumulado.forEach((r, idx) => {
         tbodyAcumulada.innerHTML += `
           <tr class="border-b ${idx === 0 ? 'bg-green-50 font-bold' : ''}">
-            <td class="p-2">${idx + 1}º</td>
-            <td class="p-2">${r.jugador}</td>
-            <td class="p-2 text-center font-bold text-blue-900">${r.total}</td>
+            <td class="p-3">${idx + 1}º</td>
+            <td class="p-3">${r.jugador}</td>
+            <td class="p-3 text-center font-bold text-blue-900">${r.total}</td>
           </tr>
         `;
       });
