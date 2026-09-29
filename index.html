@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiniela de la Peña</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Firebase SDK Compat -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <!-- Chart.js para gráficos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-slate-100 text-gray-800 font-sans pb-12">
+
+  <!-- Encabezado -->
+  <header class="bg-blue-900 text-white p-4 shadow-md text-center">
+    <h1 class="text-2xl font-bold tracking-wide">⚽ Quiniela Peña 8 Columnas</h1>
+    <p class="text-xs text-blue-200 mt-1">Borja · Carlos · Itziar · Jose · Quique · Currás · García · Rodríguez</p>
+  </header>
+
+  <main class="max-w-4xl mx-auto p-4 space-y-6">
+
+    <!-- Selector de Jugador y Estado -->
+    <section class="bg-white p-4 rounded-xl shadow border border-slate-200">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+        <div>
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tu Identificación</label>
+          <select id="select-jugador" onchange="actualizarUsuario()" class="p-2 border rounded-lg bg-gray-50 font-semibold text-blue-900 w-60">
+            <option value="">-- Selecciona tu Nombre --</option>
+            <option value="Borja">Borja</option>
+            <option value="Carlos">Carlos</option>
+            <option value="Itziar">Itziar</option>
+            <option value="Jose">Jose</option>
+            <option value="Quique">Quique</option>
+            <option value="Currás">Currás</option>
+            <option value="García">García</option>
+            <option value="Rodríguez">Rodríguez</option>
+          </select>
+        </div>
+        <div class="text-right">
+          <span class="text-xs text-gray-400 block">Jornada Activa</span>
+          <span id="lbl-jornada" class="text-lg font-bold text-gray-700">Jornada 1</span>
+        </div>
+      </div>
+
+      <!-- Estado 8/8 -->
+      <div class="border-t pt-3">
+        <p class="text-xs font-semibold text-gray-500 mb-2">Estado de recepción (Oculto hasta 8/8):</p>
+        <div id="grid-checks" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <!-- Renderizado con JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Formulario de Pronósticos -->
+    <section class="bg-white p-4 rounded-xl shadow border border-slate-200">
+      <h2 class="text-lg font-bold text-gray-800 mb-3 border-b pb-2">Rellenar Pronóstico</h2>
+      <form id="form-pronostico" onsubmit="guardarPronostico(event)" class="space-y-3">
+        <div id="lista-partidos" class="space-y-2">
+          <!-- Renderizado automático de los 14 partidos -->
+        </div>
+
+        <!-- Pleno al 15 -->
+        <div class="bg-amber-50 p-3 rounded-lg border border-amber-200 mt-4">
+          <label class="block text-xs font-bold text-amber-800 mb-1">
+            Pleno al 15 (Asignado a: <span id="asignado-pleno" class="underline">Jose</span>)
+          </label>
+          <input type="text" id="pleno-15" placeholder="Ej: 2-1" class="p-2 border rounded w-full text-sm bg-white" required>
+        </div>
+
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition shadow">
+          Guardar Mi Pronóstico
+        </button>
+      </form>
+    </section>
+
+    <!-- Sección Bloqueada / Revelada -->
+    <section id="sec-revelada" class="bg-white p-4 rounded-xl shadow border border-slate-200">
+      <div id="mensaje-bloqueo" class="text-center py-8">
+        <div class="text-4xl mb-2">🔒</div>
+        <h3 class="text-base font-bold text-gray-700">Pronósticos Ocultos</h3>
+        <p class="text-xs text-gray-500 mt-1 max-w-sm mx-auto">
+          Los pronósticos de los 8 jugadores y las tablas comparativas están bloqueados (incluido para el administrador) hasta que todos hayan guardado su jugada.
+        </p>
+      </div>
+
+      <!-- Contenido visible solo tras 8/8 -->
+      <div id="contenido-revelado" class="hidden space-y-6">
+        <div>
+          <h3 class="text-lg font-bold text-gray-800 mb-2">Clasificación General Acumulada</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left">
+              <thead class="bg-slate-100 text-gray-600 uppercase text-xs">
+                <tr>
+                  <th class="p-2">Pos</th>
+                  <th class="p-2">Jugador</th>
+                  <th class="p-2 text-center">Puntos</th>
+                  <th class="p-2 text-center">Variantes (X/2)</th>
+                  <th class="p-2 text-center">Doses (2)</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-clasificacion"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-gray-800 mb-2">Evolución Acumulada</h3>
+          <div class="relative w-full h-64">
+            <canvas id="chartEvolucion"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // Tus claves exactas de Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDgzNw3E2-YKPNmworM2lKJ_N1LM66Stos",
+      authDomain: "quiniela-f245b.firebaseapp.com",
+      projectId: "quiniela-f245b",
+      storageBucket: "quiniela-f245b.firebasestorage.app",
+      messagingSenderId: "361132198755",
+      appId: "1:361132198755:web:5e1de81f74fb92d1de2156",
+      measurementId: "G-J3F63GNQXG"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const jugadores = ["Borja", "Carlos", "Itziar", "Jose", "Quique", "Currás", "García", "Rodríguez"];
+    let usuarioActual = "";
+    let jornadaActual = "J1";
+
+    // Inicializar lista de 14 partidos
+    const partidosCont = document.getElementById("lista-partidos");
+    for (let i = 1; i <= 14; i++) {
+      partidosCont.innerHTML += `
+        <div class="flex items-center justify-between bg-gray-50 p-2 rounded border text-sm">
+          <span class="font-medium text-gray-600">Partido ${i}</span>
+          <div class="flex gap-2">
+            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50">
+              <input type="radio" name="p${i}" value="1" required> 1
+            </label>
+            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50">
+              <input type="radio" name="p${i}" value="X" required> X
+            </label>
+            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50">
+              <input type="radio" name="p${i}" value="2" required> 2
+            </label>
+          </div>
+        </div>
+      `;
+    }
+
+    function actualizarUsuario() {
+      usuarioActual = document.getElementById("select-jugador").value;
+    }
+
+    // Escuchar estado en tiempo real desde Firebase
+    db.collection("jornadas").doc(jornadaActual).onSnapshot(doc => {
+      const data = doc.exists ? doc.data() : {};
+      const pronosticos = data.pronosticos || {};
+      
+      // Renderizar estado de envío (Checks)
+      const grid = document.getElementById("grid-checks");
+      grid.innerHTML = "";
+      let totalEnviados = 0;
+
+      jugadores.forEach(j => {
+        const enviado = !!pronosticos[j];
+        if (enviado) totalEnviados++;
+
+        grid.innerHTML += `
+          <div class="flex items-center justify-between p-2 rounded text-xs font-semibold ${enviado ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-400'}">
+            <span>${j}</span>
+            <span>${enviado ? '✓ Listo' : '⏳ Pendiente'}</span>
+          </div>
+        `;
+      });
+
+      // LÓGICA DE PRIVACIDAD: Revelar solo cuando los 8 hayan completado
+      if (totalEnviados === 8) {
+        document.getElementById("mensaje-bloqueo").classList.add("hidden");
+        document.getElementById("contenido-revelado").classList.remove("hidden");
+        cargarClasificacion(pronosticos);
+      } else {
+        document.getElementById("mensaje-bloqueo").classList.remove("hidden");
+        document.getElementById("contenido-revelado").classList.add("hidden");
+      }
+    });
+
+    async function guardarPronostico(e) {
+      e.preventDefault();
+      if (!usuarioActual) {
+        alert("Por favor, selecciona tu nombre antes de guardar.");
+        return;
+      }
+
+      const opciones = {};
+      for (let i = 1; i <= 14; i++) {
+        opciones[`p${i}`] = document.querySelector(`input[name="p${i}"]:checked`).value;
+      }
+      const pleno = document.getElementById("pleno-15").value;
+
+      await db.collection("jornadas").doc(jornadaActual).set({
+        pronosticos: {
+          [usuarioActual]: { respuestas: opciones, pleno: pleno, fecha: new Date() }
+        }
+      }, { merge: true });
+
+      alert("¡Pronóstico guardado correctamente!");
+    }
+
+    function cargarClasificacion(pronosticos) {
+      // Renderizado dinámico de la tabla cuando están los 8/8
+      const tbody = document.getElementById("tabla-clasificacion");
+      tbody.innerHTML = "";
+      
+      jugadores.forEach((j, idx) => {
+        tbody.innerHTML += `
+          <tr class="border-b ${idx === 0 ? 'bg-green-50 font-bold' : (idx >= 5 ? 'bg-red-50' : '')}">
+            <td class="p-2">${idx + 1}º</td>
+            <td class="p-2">${j}</td>
+            <td class="p-2 text-center">0</td>
+            <td class="p-2 text-center">0</td>
+            <td class="p-2 text-center">0</td>
+          </tr>
+        `;
+      });
+    }
+  </script>
+</body>
+</html>
