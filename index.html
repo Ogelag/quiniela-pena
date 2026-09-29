@@ -102,15 +102,18 @@
           <!-- Renderizado automático de los 14 partidos -->
         </div>
 
-        <!-- Pleno al 15 -->
-        <div class="bg-amber-50 p-3 rounded-lg border border-amber-200 mt-4">
+        <!-- Pleno al 15 Condicional -->
+        <div id="container-pleno-15" class="bg-amber-50 p-3 rounded-lg border border-amber-200 mt-4 hidden">
           <label class="block text-xs font-bold text-amber-800 mb-1">
-            Pleno al 15
+            🌟 Pleno al 15 (¡Te toca asignarlo esta jornada!)
           </label>
           <input type="text" id="pleno-15" placeholder="Ej: 2-1" class="p-2 border rounded w-full text-sm">
         </div>
+        <div id="msg-no-pleno-15" class="bg-gray-100 p-3 rounded-lg border border-gray-200 text-xs text-gray-500 italic mt-4">
+          ℹ️️ En esta jornada el Pleno al 15 le corresponde rellenarlo a: <span id="encargado-pleno-nombre" class="font-bold text-blue-900">...</span>
+        </div>
 
-        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition shadow">
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition shadow mt-4">
           Guardar Mi Pronóstico
         </button>
       </form>
@@ -235,6 +238,7 @@
     let chartInstancia = null;
     let datosUltimoRankingJornada = [];
     let datosUltimoRankingAcumulado = [];
+    let encargadoPlenoActual = "Jose";
 
     // Renderizar los 14 partidos
     const partidosCont = document.getElementById("lista-partidos");
@@ -274,6 +278,8 @@
       if (usuarioGuardado) {
         document.getElementById("select-jugador").value = usuarioGuardado;
         comprobarUsuario();
+      } else {
+        actualizarVisibilidadPleno15();
       }
     });
 
@@ -309,7 +315,7 @@
       }
     }
 
-    function cambiarJornada() {
+    async function cambiarJornada() {
       jornadaActual = document.getElementById("select-jornada").value;
       
       document.getElementById("lbl-jornada-check").textContent = jornadaActual;
@@ -320,7 +326,64 @@
       document.getElementById("lbl-jornada-acum").textContent = jornadaActual;
       document.getElementById("lbl-jornada-graf").textContent = jornadaActual;
 
+      await determinarEncargadoPleno15();
+      actualizarVisibilidadPleno15();
       escucharJornada();
+    }
+
+    async function determinarEncargadoPleno15() {
+      const numJornada = parseInt(jornadaActual.replace("J", ""));
+      
+      if (numJornada === 1) {
+        encargadoPlenoActual = "Jose";
+        return;
+      }
+
+      // Buscar ganador de la jornada anterior (J - 1)
+      const jAnteriorKey = "J" + (numJornada - 1);
+      const jAntDoc = await db.collection("jornadas").doc(jAnteriorKey).get();
+
+      if (jAntDoc.exists) {
+        const data = jAntDoc.data();
+        const pronosticos = data.pronosticos || {};
+        const escrutinio = data.escrutinio || {};
+
+        let maxAciertos = -1;
+        let ganador = "Jose";
+
+        jugadores.forEach(j => {
+          let aciertos = 0;
+          const resp = pronosticos[j]?.respuestas || {};
+          for (let i = 1; i <= 14; i++) {
+            if (escrutinio[`p${i}`] && resp[`p${i}`] === escrutinio[`p${i}`]) {
+              aciertos++;
+            }
+          }
+          if (aciertos > maxAciertos) {
+            maxAciertos = aciertos;
+            ganador = j;
+          }
+        });
+        encargadoPlenoActual = ganador;
+      } else {
+        encargadoPlenoActual = "Jose";
+      }
+    }
+
+    function actualizarVisibilidadPleno15() {
+      const boxPleno = document.getElementById("container-pleno-15");
+      const msgNoPleno = document.getElementById("msg-no-pleno-15");
+      const lblEncargado = document.getElementById("encargado-pleno-nombre");
+
+      lblEncargado.textContent = encargadoPlenoActual;
+
+      if (usuarioActual && usuarioActual === encargadoPlenoActual) {
+        boxPleno.classList.remove("hidden");
+        msgNoPleno.classList.add("hidden");
+      } else {
+        boxPleno.classList.add("hidden");
+        msgNoPleno.classList.remove("hidden");
+      }
     }
 
     async function comprobarUsuario() {
@@ -330,6 +393,7 @@
       const inputPin = document.getElementById("input-pin");
 
       inputPin.value = "";
+      actualizarVisibilidadPleno15();
 
       if (!usuarioActual) {
         pinContainer.classList.add("hidden");
@@ -439,10 +503,13 @@
         opciones[`p${i}`] = marcado.value;
       }
 
-      const pleno = document.getElementById("pleno-15").value;
-      if (!pleno) {
-        alert("Por favor, introduce el resultado del Pleno al 15.");
-        return;
+      let pleno = "-";
+      if (usuarioActual === encargadoPlenoActual) {
+        pleno = document.getElementById("pleno-15").value;
+        if (!pleno) {
+          alert("Te toca rellenar el Pleno al 15 esta jornada. Por favor, especifícalo.");
+          return;
+        }
       }
 
       await db.collection("jornadas").doc(jornadaActual).set({
@@ -592,7 +659,11 @@
       });
     }
 
-    escucharJornada();
+    // Inicialización
+    determinarEncargadoPleno15().then(() => {
+      actualizarVisibilidadPleno15();
+      escucharJornada();
+    });
   </script>
 </body>
 </html>
