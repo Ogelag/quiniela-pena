@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quiniela de la Peña</title>
+  <title>Quiniela</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Firebase SDK Compat -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -27,7 +27,7 @@
 
   <!-- Encabezado -->
   <header class="bg-blue-900 text-white p-4 shadow-md text-center">
-    <h1 class="text-2xl font-bold tracking-wide">⚽ Quiniela Peña 8 Columnas</h1>
+    <h1 class="text-2xl font-bold tracking-wide">⚽ Quiniela</h1>
     <p class="text-xs text-blue-200 mt-1">Borja · Carlos · Itziar · Jose · Quique · Currás · García · Rodríguez</p>
   </header>
 
@@ -36,7 +36,7 @@
     <div>
       <div class="text-4xl mb-2">🔐</div>
       <h2 class="text-xl font-bold text-blue-900">Acceso de Jugadores</h2>
-      <p class="text-xs text-gray-500 mt-1">Identifícate para entrar en la Quiniela de la Peña</p>
+      <p class="text-xs text-gray-500 mt-1">Identifícate para entrar en la Quiniela</p>
     </div>
 
     <div class="space-y-4 text-left">
@@ -388,7 +388,6 @@
         mostrarAplicacion();
 
       } catch (e) {
-        // Fallback rápido si el navegador bloquea la lectura
         usuarioActual = selNombre;
         localStorage.setItem("quiniela_usuario_activo", usuarioActual);
         mostrarAplicacion();
@@ -733,7 +732,7 @@
     }
 
     function copiarResumenWhatsApp() {
-      let texto = `⚽ *QUINIELA PEÑA - ${jornadaActual}*\n\n`;
+      let texto = `⚽ *QUINIELA - ${jornadaActual}*\n\n`;
       texto += `📊 *Aciertos ${jornadaActual}:*\n`;
       datosUltimoRankingJornada.forEach((r, idx) => {
         texto += `${idx + 1}º ${r.jugador}: ${r.aciertos} aciertos (${r.pleno})\n`;
