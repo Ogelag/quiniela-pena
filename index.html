@@ -31,187 +31,222 @@
     <p class="text-xs text-blue-200 mt-1">Borja · Carlos · Itziar · Jose · Quique · Currás · García · Rodríguez</p>
   </header>
 
-  <main class="max-w-4xl mx-auto p-4 space-y-6">
+  <!-- PANTALLA 1: REGISTRO / ACCESO INDEPENDIENTE (Aparece al entrar) -->
+  <section id="pantalla-login" class="max-w-md mx-auto my-12 p-6 bg-white rounded-xl shadow-lg border border-slate-200 text-center space-y-6">
+    <div>
+      <div class="text-4xl mb-2">🔐</div>
+      <h2 class="text-xl font-bold text-blue-900">Acceso de Jugadores</h2>
+      <p class="text-xs text-gray-500 mt-1">Identifícate para entrar en la Quiniela de la Peña</p>
+    </div>
 
-    <!-- Selector de Jugador, PIN y Selección de Jornada -->
-    <section class="bg-white p-4 rounded-xl shadow border border-slate-200 space-y-4">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        
-        <!-- Identificación -->
-        <div class="space-y-3 w-full sm:w-auto">
-          <div>
-            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tu Identificación</label>
-            <select id="select-jugador" onchange="comprobarUsuario()" class="p-2 border rounded-lg bg-gray-50 font-semibold text-blue-900 w-full sm:w-60">
-              <option value="">-- Selecciona tu Nombre --</option>
-              <option value="Borja">Borja</option>
-              <option value="Carlos">Carlos</option>
-              <option value="Itziar">Itziar</option>
-              <option value="Jose">Jose</option>
-              <option value="Quique">Quique</option>
-              <option value="Currás">Currás</option>
-              <option value="García">García</option>
-              <option value="Rodríguez">Rodríguez</option>
-            </select>
-          </div>
-
-          <!-- Caja de PIN Dinámica -->
-          <div id="sec-pin-container" class="hidden space-y-2 mt-3">
-            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">PIN / Clave (4 dígitos)</label>
-            <div style="display: flex; gap: 8px; align-items: center; width: 100%;">
-              <input type="password" id="input-pin" maxlength="4" placeholder="****" class="p-2 border rounded-lg bg-gray-50 font-semibold text-center tracking-widest" style="width: 100px; min-width: 100px;">
-              <button type="button" id="btn-registrar-pin" onclick="registrarPIN()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition shadow">
-                Registrar Mi PIN
-              </button>
-            </div>
-            <p id="msg-pin-status" class="text-xs font-medium text-amber-600 mt-1">
-              Comprobando usuario...
-            </p>
-          </div>
-        </div>
-
-        <!-- Selector de Jornada Consultada -->
-        <div class="w-full sm:w-auto text-left sm:text-right">
-          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Jornada Consultada</label>
-          <select id="select-jornada" onchange="cambiarJornada()" class="p-2 border rounded-lg bg-blue-50 font-bold text-blue-900">
-            <option value="J1">Jornada 1</option>
-            <option value="J2">Jornada 2</option>
-            <option value="J3">Jornada 3</option>
-            <option value="J4">Jornada 4</option>
-            <option value="J5">Jornada 5</option>
-            <option value="J6">Jornada 6</option>
-            <option value="J7">Jornada 7</option>
-            <option value="J8">Jornada 8</option>
-          </select>
-        </div>
+    <div class="space-y-4 text-left">
+      <div>
+        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tu Nombre</label>
+        <select id="login-select-jugador" onchange="comprobarUsuarioLogin()" class="p-2.5 border rounded-lg bg-gray-50 font-semibold text-blue-900 w-full">
+          <option value="">-- Selecciona tu Nombre --</option>
+          <option value="Borja">Borja</option>
+          <option value="Carlos">Carlos</option>
+          <option value="Itziar">Itziar</option>
+          <option value="Jose">Jose</option>
+          <option value="Quique">Quique</option>
+          <option value="Currás">Currás</option>
+          <option value="García">García</option>
+          <option value="Rodríguez">Rodríguez</option>
+        </select>
       </div>
 
-      <!-- Estado 8/8 -->
-      <div class="border-t pt-3">
-        <p class="text-xs font-semibold text-gray-500 mb-2">Estado de recepción en <span id="lbl-jornada-check" class="font-bold">Jornada 1</span> (Oculto hasta 8/8):</p>
-        <div id="grid-checks" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-          <!-- Renderizado dinámico -->
+      <div id="login-sec-pin" class="hidden space-y-3">
+        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">PIN / Clave (4 dígitos)</label>
+        <input type="password" id="login-input-pin" maxlength="4" placeholder="****" class="p-2.5 border rounded-lg bg-gray-50 font-semibold text-center tracking-widest w-full">
+        <p id="login-msg-status" class="text-xs font-medium text-amber-600">
+          Comprobando usuario...
+        </p>
+
+        <div class="flex gap-2 pt-2">
+          <button type="button" id="btn-entrar" onclick="iniciarSesion()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg transition shadow text-xs">
+            Entrar a la Quiniela
+          </button>
+          <button type="button" id="btn-registrar-pin" onclick="registrarPINLogin()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg transition shadow text-xs">
+            Registrar Mi PIN
+          </button>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Formulario de Pronósticos -->
-    <section class="bg-white p-4 rounded-xl shadow border border-slate-200">
-      <h2 class="text-lg font-bold mb-3 border-b pb-2">Rellenar Pronóstico (<span id="lbl-jornada-form">Jornada 1</span>)</h2>
-      <form id="form-pronostico" onsubmit="guardarPronostico(event)" class="space-y-3">
-        <div id="lista-partidos" class="space-y-2">
-          <!-- Renderizado automático de los 14 partidos -->
-        </div>
+  <!-- PANTALLA 2: CONTENIDO PRINCIPAL (Oculto hasta completar inicio de sesión) -->
+  <main id="pantalla-app" class="hidden max-w-4xl mx-auto p-4 space-y-6">
 
-        <!-- Pleno al 15 Condicional -->
-        <div id="container-pleno-15" class="bg-amber-50 p-3 rounded-lg border border-amber-200 mt-4 hidden">
-          <label class="block text-xs font-bold text-amber-800 mb-1">
-            🌟 Pleno al 15 (¡Te toca asignarlo esta jornada!)
-          </label>
-          <input type="text" id="pleno-15" placeholder="Ej: 2-1" class="p-2 border rounded w-full text-sm">
-        </div>
-        <div id="msg-no-pleno-15" class="bg-gray-100 p-3 rounded-lg border border-gray-200 text-xs text-gray-500 italic mt-4">
-          ℹ En esta jornada el Pleno al 15 le corresponde rellenarlo a: <span id="encargado-pleno-nombre" class="font-bold text-blue-900">...</span>
-        </div>
+    <!-- Indicador de Usuario Activo y Cierre de Sesión -->
+    <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl flex items-center justify-between">
+      <span class="text-xs font-semibold text-blue-900">
+        👤 Sesión iniciada como: <span id="lbl-usuario-activo" class="font-bold text-blue-700">...</span>
+      </span>
+      <button type="button" onclick="cerrarSesion()" class="text-xs text-red-600 hover:underline font-bold">
+        Cerrar Sesión ✖
+      </button>
+    </div>
 
-        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition shadow mt-4">
-          Guardar Mi Pronóstico
-        </button>
-      </form>
-    </section>
-
-    <!-- BARRA DE PESTAÑAS NAVEGACIÓN (SIEMPRE VISIBLE) -->
-    <section class="bg-slate-100 p-1.5 rounded-xl border border-slate-200 flex flex-col sm:flex-row gap-2">
-      <button type="button" id="tab-btn-jornada" onclick="cambiarVistaClasificacion('jornada')" class="flex-1 py-2.5 px-3 text-xs font-bold rounded-lg border text-center transition bg-blue-600 text-white border-blue-600 shadow">
+    <!-- BARRA DE NAVEGACIÓN SUPERIOR CON LAS 4 PESTAÑAS -->
+    <nav class="bg-slate-200 p-1.5 rounded-xl border border-slate-300 grid grid-cols-2 sm:grid-cols-4 gap-2">
+      <button type="button" id="tab-btn-pronostico" onclick="cambiarPestanaPrincipal('pronostico')" class="py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition bg-blue-600 text-white border-blue-600 shadow">
+        📝 Pronóstico Jornada
+      </button>
+      <button type="button" id="tab-btn-jornada" onclick="cambiarPestanaPrincipal('jornada')" class="py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition bg-white text-gray-700 border-gray-200 hover:bg-gray-50">
         🥇 Clasificación Jornada
       </button>
-      <button type="button" id="tab-btn-acumulada" onclick="cambiarVistaClasificacion('acumulada')" class="flex-1 py-2.5 px-3 text-xs font-bold rounded-lg border text-center transition bg-white text-gray-700 border-gray-200 hover:bg-gray-50">
+      <button type="button" id="tab-btn-acumulada" onclick="cambiarPestanaPrincipal('acumulada')" class="py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition bg-white text-gray-700 border-gray-200 hover:bg-gray-50">
         🏆 Clasificación General
       </button>
-      <button type="button" id="tab-btn-grafico" onclick="cambiarVistaClasificacion('grafico')" class="flex-1 py-2.5 px-3 text-xs font-bold rounded-lg border text-center transition bg-white text-gray-700 border-gray-200 hover:bg-gray-50">
+      <button type="button" id="tab-btn-grafico" onclick="cambiarPestanaPrincipal('grafico')" class="py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition bg-white text-gray-700 border-gray-200 hover:bg-gray-50">
         📈 Gráfico Evolución
       </button>
-    </section>
+    </nav>
 
-    <!-- Sección principal de contenido / vistas -->
-    <section class="bg-white p-4 rounded-xl shadow border border-slate-200">
+    <!-- PESTAÑA 1: PRONÓSTICO Y REGISTRO DE LA JORNADA -->
+    <div id="seccion-pronostico" class="space-y-6">
       
-      <!-- Cartel de Bloqueo cuando falten pronósticos en la jornada actual -->
-      <div id="mensaje-bloqueo" class="text-center py-8">
-        <div class="text-4xl mb-2">🔒</div>
-        <h3 class="text-base font-bold text-gray-700">Pronósticos Ocultos</h3>
-        <p class="text-xs text-gray-500 mt-1 max-w-sm mx-auto">
-          Los datos y clasificaciones de la <span id="lbl-jornada-bloqueo" class="font-bold">Jornada 1</span> están bloqueados hasta que los 8 hayan guardado su jugada.
-        </p>
-      </div>
+      <!-- Selector de Jornada y Estado 8/8 -->
+      <section class="bg-white p-4 rounded-xl shadow border border-slate-200 space-y-4">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h2 class="text-base font-bold text-gray-800">Panel de Pronósticos</h2>
+            <p class="text-xs text-gray-500">Introduce o consulta los datos de la jornada seleccionada.</p>
+          </div>
 
-      <!-- Contenido visible tras completarse 8/8 -->
-      <div id="contenido-revelado" class="hidden space-y-6">
+          <!-- Selector de Jornada Consultada -->
+          <div class="w-full sm:w-auto text-left sm:text-right">
+            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Jornada Consultada</label>
+            <select id="select-jornada" onchange="cambiarJornada()" class="p-2 border rounded-lg bg-blue-50 font-bold text-blue-900 w-full sm:w-auto">
+              <option value="J1">Jornada 1</option>
+              <option value="J2">Jornada 2</option>
+              <option value="J3">Jornada 3</option>
+              <option value="J4">Jornada 4</option>
+              <option value="J5">Jornada 5</option>
+              <option value="J6">Jornada 6</option>
+              <option value="J7">Jornada 7</option>
+              <option value="J8">Jornada 8</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Estado 8/8 -->
+        <div class="border-t pt-3">
+          <p class="text-xs font-semibold text-gray-500 mb-2">Estado de recepción en <span id="lbl-jornada-check" class="font-bold">Jornada 1</span> (Oculto hasta 8/8):</p>
+          <div id="grid-checks" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <!-- Renderizado dinámico -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Formulario de Pronósticos -->
+      <section class="bg-white p-4 rounded-xl shadow border border-slate-200">
+        <h2 class="text-lg font-bold mb-3 border-b pb-2">Rellenar Pronóstico (<span id="lbl-jornada-form">Jornada 1</span>)</h2>
+        <form id="form-pronostico" onsubmit="guardarPronostico(event)" class="space-y-3">
+          <div id="lista-partidos" class="space-y-2">
+            <!-- Renderizado automático de los 14 partidos -->
+          </div>
+
+          <!-- Pleno al 15 Condicional -->
+          <div id="container-pleno-15" class="bg-amber-50 p-3 rounded-lg border border-amber-200 mt-4 hidden">
+            <label class="block text-xs font-bold text-amber-800 mb-1">
+              🌟 Pleno al 15 (¡Te toca asignarlo esta jornada!)
+            </label>
+            <input type="text" id="pleno-15" placeholder="Ej: 2-1" class="p-2 border rounded w-full text-sm">
+          </div>
+          <div id="msg-no-pleno-15" class="bg-gray-100 p-3 rounded-lg border border-gray-200 text-xs text-gray-500 italic mt-4">
+            ℹ En esta jornada el Pleno al 15 le corresponde rellenarlo a: <span id="encargado-pleno-nombre" class="font-bold text-blue-900">...</span>
+          </div>
+
+          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition shadow mt-4">
+            Guardar Mi Pronóstico
+          </button>
+        </form>
+      </section>
+    </div>
+
+    <!-- PESTAÑAS 2, 3 Y 4: CONTENIDO REVELADO / BLOQUEADO -->
+    <div id="seccion-resultados" class="hidden">
+      <section class="bg-white p-4 rounded-xl shadow border border-slate-200">
         
-        <!-- Botón para WhatsApp -->
-        <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl flex items-center justify-between gap-3 mb-4">
-          <span class="text-xs font-semibold text-emerald-800"> Compartir resultados en la peña:</span>
-          <button type="button" onclick="copiarResumenWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition shadow flex items-center gap-1 shrink-0">
-            📋 Copiar para WhatsApp
-          </button>
+        <!-- Cartel de Bloqueo cuando falten pronósticos -->
+        <div id="mensaje-bloqueo" class="text-center py-8">
+          <div class="text-4xl mb-2">🔒</div>
+          <h3 class="text-base font-bold text-gray-700">Pronósticos Ocultos</h3>
+          <p class="text-xs text-gray-500 mt-1 max-w-sm mx-auto">
+            La información y clasificaciones de la <span id="lbl-jornada-bloqueo" class="font-bold">Jornada 1</span> están bloqueadas hasta que los 8 hayan guardado su jugada.
+          </p>
         </div>
 
-        <!-- Vista 1: Clasificación de la Jornada Específica -->
-        <div id="vista-clasif-jornada" class="space-y-4">
-          <h3 class="text-base font-bold border-b pb-2 text-slate-800">Clasificación Específica (<span id="lbl-jornada-tabla">J1</span>)</h3>
-          <div class="overflow-x-auto rounded-lg border border-slate-200">
-            <table class="w-full text-sm text-left">
-              <thead class="bg-slate-100 text-gray-600 uppercase text-xs">
-                <tr>
-                  <th class="p-3">Pos</th>
-                  <th class="p-3">Jugador</th>
-                  <th class="p-3 text-center">Aciertos (14)</th>
-                  <th class="p-3 text-center">Pleno 15</th>
-                </tr>
-              </thead>
-              <tbody id="tabla-jornada"></tbody>
-            </table>
+        <!-- Contenido visible tras completarse 8/8 -->
+        <div id="contenido-revelado" class="hidden space-y-6">
+          
+          <!-- Botón para WhatsApp -->
+          <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl flex items-center justify-between gap-3">
+            <span class="text-xs font-semibold text-emerald-800"> Compartir resultados en la peña:</span>
+            <button type="button" onclick="copiarResumenWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition shadow flex items-center gap-1 shrink-0">
+              📋 Copiar para WhatsApp
+            </button>
           </div>
-        </div>
 
-        <!-- Vista 2: Clasificación Acumulada hasta esta Jornada -->
-        <div id="vista-clasif-acumulada" class="hidden space-y-4">
-          <h3 class="text-base font-bold border-b pb-2 text-slate-800">Clasificación General Acumulada (Hasta <span id="lbl-jornada-acum">J1</span>)</h3>
-          <div class="overflow-x-auto rounded-lg border border-slate-200">
-            <table class="w-full text-sm text-left">
-              <thead class="bg-blue-900 text-white uppercase text-xs">
-                <tr>
-                  <th class="p-3">Pos</th>
-                  <th class="p-3">Jugador</th>
-                  <th class="p-3 text-center">Puntos Totales</th>
-                </tr>
-              </thead>
-              <tbody id="tabla-acumulada"></tbody>
-            </table>
+          <!-- PESTAÑA 2: Clasificación Jornada -->
+          <div id="vista-clasif-jornada" class="space-y-4">
+            <h3 class="text-base font-bold border-b pb-2 text-slate-800">Clasificación Específica (<span id="lbl-jornada-tabla">J1</span>)</h3>
+            <div class="overflow-x-auto rounded-lg border border-slate-200">
+              <table class="w-full text-sm text-left">
+                <thead class="bg-slate-100 text-gray-600 uppercase text-xs">
+                  <tr>
+                    <th class="p-3">Pos</th>
+                    <th class="p-3">Jugador</th>
+                    <th class="p-3 text-center">Aciertos (14)</th>
+                    <th class="p-3 text-center">Pleno 15</th>
+                  </tr>
+                </thead>
+                <tbody id="tabla-jornada"></tbody>
+              </table>
+            </div>
           </div>
-        </div>
 
-        <!-- Vista 3: Gráfico de Evolución -->
-        <div id="vista-clasif-grafico" class="hidden space-y-4">
-          <h3 class="text-base font-bold border-b pb-2 text-slate-800">Evolución Acumulada (Hasta <span id="lbl-jornada-graf">J1</span>)</h3>
-          <div class="relative w-full h-72 p-2 bg-white rounded-lg border border-slate-200">
-            <canvas id="chartEvolucion"></canvas>
+          <!-- PESTAÑA 3: Clasificación Acumulada -->
+          <div id="vista-clasif-acumulada" class="hidden space-y-4">
+            <h3 class="text-base font-bold border-b pb-2 text-slate-800">Clasificación General Acumulada (Hasta <span id="lbl-jornada-acum">J1</span>)</h3>
+            <div class="overflow-x-auto rounded-lg border border-slate-200">
+              <table class="w-full text-sm text-left">
+                <thead class="bg-blue-900 text-white uppercase text-xs">
+                  <tr>
+                    <th class="p-3">Pos</th>
+                    <th class="p-3">Jugador</th>
+                    <th class="p-3 text-center">Puntos Totales</th>
+                  </tr>
+                </thead>
+                <tbody id="tabla-acumulada"></tbody>
+              </table>
+            </div>
           </div>
-        </div>
 
-        <!-- Escrutinio / Resultados de la Jornada -->
-        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 mt-6">
-          <h3 class="text-md font-bold mb-2">Resultado Oficial (<span id="lbl-jornada-esc">Jornada 1</span>)</h3>
-          <p class="text-xs text-gray-500 mb-3">Introduce la combinación ganadora oficial para calcular los aciertos de esta jornada:</p>
-          <div id="grid-escrutinio" class="grid grid-cols-7 gap-2 mb-3 text-center">
-            <!-- 14 inputs de resultados -->
+          <!-- PESTAÑA 4: Gráfico Evolución -->
+          <div id="vista-clasif-grafico" class="hidden space-y-4">
+            <h3 class="text-base font-bold border-b pb-2 text-slate-800">Evolución Acumulada (Hasta <span id="lbl-jornada-graf">J1</span>)</h3>
+            <div class="relative w-full h-72 p-2 bg-white rounded-lg border border-slate-200">
+              <canvas id="chartEvolucion"></canvas>
+            </div>
           </div>
-          <button type="button" onclick="guardarEscrutinio()" class="bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded hover:bg-slate-900 transition">
-            Guardar Escrutinio de esta Jornada
-          </button>
-        </div>
 
-      </div>
-    </section>
+          <!-- Escrutinio / Resultados de la Jornada -->
+          <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 mt-6">
+            <h3 class="text-md font-bold mb-2">Resultado Oficial (<span id="lbl-jornada-esc">Jornada 1</span>)</h3>
+            <p class="text-xs text-gray-500 mb-3">Introduce la combinación ganadora oficial para calcular los aciertos de esta jornada:</p>
+            <div id="grid-escrutinio" class="grid grid-cols-7 gap-2 mb-3 text-center">
+              <!-- 14 inputs de resultados -->
+            </div>
+            <button type="button" onclick="guardarEscrutinio()" class="bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded hover:bg-slate-900 transition">
+              Guardar Escrutinio de esta Jornada
+            </button>
+          </div>
+
+        </div>
+      </section>
+    </div>
 
   </main>
 
@@ -242,7 +277,7 @@
     let datosUltimoRankingAcumulado = [];
     let encargadoPlenoActual = "Jose";
 
-    // Renderizar los 14 partidos
+    // Renderizar partidos
     const partidosCont = document.getElementById("lista-partidos");
     for (let i = 1; i <= 14; i++) {
       partidosCont.innerHTML += `
@@ -263,7 +298,7 @@
       `;
     }
 
-    // Inputs de escrutinio
+    // Inputs escrutinio
     const escrutinioCont = document.getElementById("grid-escrutinio");
     for (let i = 1; i <= 14; i++) {
       escrutinioCont.innerHTML += `
@@ -274,22 +309,115 @@
       `;
     }
 
-    // Cargar LocalStorage
+    // Autologin si existe usuario guardado
     window.addEventListener("DOMContentLoaded", () => {
-      const usuarioGuardado = localStorage.getItem("quiniela_usuario");
+      const usuarioGuardado = localStorage.getItem("quiniela_usuario_activo");
       if (usuarioGuardado) {
-        document.getElementById("select-jugador").value = usuarioGuardado;
-        comprobarUsuario();
-      } else {
-        actualizarVisibilidadPleno15();
+        usuarioActual = usuarioGuardado;
+        mostrarAplicacion();
       }
     });
 
-    function cambiarVistaClasificacion(vista) {
+    // LÓGICA DE LOGIN
+    async function comprobarUsuarioLogin() {
+      const selNombre = document.getElementById("login-select-jugador").value;
+      const secPin = document.getElementById("login-sec-pin");
+      const msgStatus = document.getElementById("login-msg-status");
+
+      document.getElementById("login-input-pin").value = "";
+
+      if (!selNombre) {
+        secPin.classList.add("hidden");
+        return;
+      }
+
+      secPin.classList.remove("hidden");
+      msgStatus.textContent = "Verificando en la base de datos...";
+
+      const userDoc = await db.collection("usuarios").doc(selNombre).get();
+      if (userDoc.exists && userDoc.data().pin) {
+        msgStatus.className = "text-xs font-medium text-emerald-600";
+        msgStatus.textContent = "✅ Usuario registrado. Introduce tu PIN y pulsa 'Entrar'.";
+      } else {
+        msgStatus.className = "text-xs font-medium text-amber-600";
+        msgStatus.textContent = "⚙️ Si es tu primera vez, escribe 4 dígitos y pulsa 'Registrar Mi PIN'.";
+      }
+    }
+
+    async function registrarPINLogin() {
+      const selNombre = document.getElementById("login-select-jugador").value;
+      const pinIngresado = document.getElementById("login-input-pin").value;
+
+      if (!selNombre) {
+        alert("Selecciona tu nombre primero.");
+        return;
+      }
+
+      if (!pinIngresado || pinIngresado.length !== 4 || isNaN(pinIngresado)) {
+        alert("Escribe un PIN numérico de exactamente 4 dígitos.");
+        return;
+      }
+
+      await db.collection("usuarios").doc(selNombre).set({ pin: pinIngresado });
+      alert("✅ ¡PIN registrado/actualizado para " + selNombre + "! Ya puedes entrar.");
+      comprobarUsuarioLogin();
+    }
+
+    async function iniciarSesion() {
+      const selNombre = document.getElementById("login-select-jugador").value;
+      const pinIngresado = document.getElementById("login-input-pin").value;
+
+      if (!selNombre) {
+        alert("Selecciona tu nombre.");
+        return;
+      }
+
+      const userDoc = await db.collection("usuarios").doc(selNombre).get();
+      if (!userDoc.exists || !userDoc.data().pin) {
+        alert("Debes registrar un PIN primero.");
+        return;
+      }
+
+      if (userDoc.data().pin !== pinIngresado) {
+        alert("🔒 PIN incorrecto para " + selNombre + ".");
+        return;
+      }
+
+      usuarioActual = selNombre;
+      localStorage.setItem("quiniela_usuario_activo", usuarioActual);
+      mostrarAplicacion();
+    }
+
+    function mostrarAplicacion() {
+      document.getElementById("pantalla-login").classList.add("hidden");
+      document.getElementById("pantalla-app").classList.remove("hidden");
+      document.getElementById("lbl-usuario-activo").textContent = usuarioActual;
+
+      determinarEncargadoPleno15().then(() => {
+        actualizarVisibilidadPleno15();
+        escucharJornada();
+      });
+    }
+
+    function cerrarSesion() {
+      localStorage.removeItem("quiniela_usuario_activo");
+      usuarioActual = "";
+      document.getElementById("pantalla-app").classList.add("hidden");
+      document.getElementById("pantalla-login").classList.remove("hidden");
+      document.getElementById("login-select-jugador").value = "";
+      document.getElementById("login-sec-pin").classList.add("hidden");
+    }
+
+    // NAVEGACIÓN Y PESTAÑAS
+    function cambiarPestanaPrincipal(pestana) {
+      const secPronostico = document.getElementById("seccion-pronostico");
+      const secResultados = document.getElementById("seccion-resultados");
+
       const vJornada = document.getElementById("vista-clasif-jornada");
       const vAcumulada = document.getElementById("vista-clasif-acumulada");
       const vGrafico = document.getElementById("vista-clasif-grafico");
 
+      const btnPronostico = document.getElementById("tab-btn-pronostico");
       const btnJornada = document.getElementById("tab-btn-jornada");
       const btnAcumulada = document.getElementById("tab-btn-acumulada");
       const btnGrafico = document.getElementById("tab-btn-grafico");
@@ -297,23 +425,33 @@
       const activeClass = "bg-blue-600 text-white border-blue-600 shadow";
       const inactiveClass = "bg-white text-gray-700 border-gray-200 hover:bg-gray-50";
 
-      vJornada.classList.add("hidden");
-      vAcumulada.classList.add("hidden");
-      vGrafico.classList.add("hidden");
+      btnPronostico.className = `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
+      btnJornada.className = `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
+      btnAcumulada.className = `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
+      btnGrafico.className = `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
 
-      btnJornada.className = `flex-1 py-2.5 px-3 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
-      btnAcumulada.className = `flex-1 py-2.5 px-3 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
-      btnGrafico.className = `flex-1 py-2.5 px-3 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
+      if (pestana === 'pronostico') {
+        secPronostico.classList.remove("hidden");
+        secResultados.classList.add("hidden");
+        btnPronostico.className = `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
+      } else {
+        secPronostico.classList.add("hidden");
+        secResultados.classList.remove("hidden");
 
-      if (vista === 'jornada') {
-        vJornada.classList.remove("hidden");
-        btnJornada.className = `flex-1 py-2.5 px-3 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
-      } else if (vista === 'acumulada') {
-        vAcumulada.classList.remove("hidden");
-        btnAcumulada.className = `flex-1 py-2.5 px-3 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
-      } else if (vista === 'grafico') {
-        vGrafico.classList.remove("hidden");
-        btnGrafico.className = `flex-1 py-2.5 px-3 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
+        vJornada.classList.add("hidden");
+        vAcumulada.classList.add("hidden");
+        vGrafico.classList.add("hidden");
+
+        if (pestana === 'jornada') {
+          vJornada.classList.remove("hidden");
+          btnJornada.className = `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
+        } else if (pestana === 'acumulada') {
+          vAcumulada.classList.remove("hidden");
+          btnAcumulada.className = `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
+        } else if (pestana === 'grafico') {
+          vGrafico.classList.remove("hidden");
+          btnGrafico.className = `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
+        }
       }
     }
 
@@ -341,7 +479,6 @@
         return;
       }
 
-      // Buscar ganador de la jornada anterior (J - 1)
       const jAnteriorKey = "J" + (numJornada - 1);
       const jAntDoc = await db.collection("jornadas").doc(jAnteriorKey).get();
 
@@ -388,53 +525,6 @@
       }
     }
 
-    async function comprobarUsuario() {
-      usuarioActual = document.getElementById("select-jugador").value;
-      const pinContainer = document.getElementById("sec-pin-container");
-      const msgStatus = document.getElementById("msg-pin-status");
-      const inputPin = document.getElementById("input-pin");
-
-      inputPin.value = "";
-      actualizarVisibilidadPleno15();
-
-      if (!usuarioActual) {
-        pinContainer.classList.add("hidden");
-        return;
-      }
-
-      localStorage.setItem("quiniela_usuario", usuarioActual);
-      pinContainer.classList.remove("hidden");
-      msgStatus.textContent = "Verificando en base de datos...";
-
-      const userDoc = await db.collection("usuarios").doc(usuarioActual).get();
-      if (userDoc.exists && userDoc.data().pin) {
-        msgStatus.className = "text-xs font-medium text-emerald-600 mt-1";
-        msgStatus.textContent = "✅ Usuario registrado. Introduce tu PIN de 4 dígitos para guardar tus partidos.";
-      } else {
-        msgStatus.className = "text-xs font-medium text-amber-600 mt-1";
-        msgStatus.textContent = "⚙️ Si es tu primera vez, escribe 4 dígitos y pulsa 'Registrar Mi PIN'.";
-      }
-    }
-
-    async function registrarPIN() {
-      usuarioActual = document.getElementById("select-jugador").value;
-      const pinIngresado = document.getElementById("input-pin").value;
-
-      if (!usuarioActual) {
-        alert("Primero selecciona tu nombre de la lista.");
-        return;
-      }
-
-      if (!pinIngresado || pinIngresado.length !== 4 || isNaN(pinIngresado)) {
-        alert("Escribe un PIN numérico de exactamente 4 dígitos.");
-        return;
-      }
-
-      await db.collection("usuarios").doc(usuarioActual).set({ pin: pinIngresado });
-      alert("✅ ¡PIN registrado/actualizado con éxito para " + usuarioActual + "!");
-      comprobarUsuario();
-    }
-
     let unsubscribeJornada = null;
     function escucharJornada() {
       if (unsubscribeJornada) unsubscribeJornada();
@@ -478,20 +568,7 @@
     async function guardarPronostico(e) {
       e.preventDefault();
       if (!usuarioActual) {
-        alert("Selecciona tu nombre primero.");
-        return;
-      }
-
-      const pinIngresado = document.getElementById("input-pin").value;
-
-      const userDoc = await db.collection("usuarios").doc(usuarioActual).get();
-      if (!userDoc.exists) {
-        alert("Primero debes registrar tu PIN escribiéndolo y pulsando 'Registrar Mi PIN'.");
-        return;
-      }
-
-      if (userDoc.data().pin !== pinIngresado) {
-        alert("🔒 PIN incorrecto para " + usuarioActual + ".");
+        alert("Identificación no válida.");
         return;
       }
 
@@ -660,12 +737,6 @@
         alert("Error al copiar. Inténtalo de nuevo.");
       });
     }
-
-    // Inicialización
-    determinarEncargadoPleno15().then(() => {
-      actualizarVisibilidadPleno15();
-      escucharJornada();
-    });
   </script>
 </body>
 </html>
