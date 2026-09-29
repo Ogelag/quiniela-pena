@@ -8,7 +8,6 @@
   <!-- Firebase SDK Compat -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-  <!-- Chart.js para gráficos -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-slate-100 text-gray-800 font-sans pb-12">
@@ -21,24 +20,33 @@
 
   <main class="max-w-4xl mx-auto p-4 space-y-6">
 
-    <!-- Selector de Jugador y Estado -->
+    <!-- Selector de Jugador, PIN y Estado -->
     <section class="bg-white p-4 rounded-xl shadow border border-slate-200">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-        <div>
-          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tu Identificación</label>
-          <select id="select-jugador" onchange="actualizarUsuario()" class="p-2 border rounded-lg bg-gray-50 font-semibold text-blue-900 w-60">
-            <option value="">-- Selecciona tu Nombre --</option>
-            <option value="Borja">Borja</option>
-            <option value="Carlos">Carlos</option>
-            <option value="Itziar">Itziar</option>
-            <option value="Jose">Jose</option>
-            <option value="Quique">Quique</option>
-            <option value="Currás">Currás</option>
-            <option value="García">García</option>
-            <option value="Rodríguez">Rodríguez</option>
-          </select>
+        <div class="space-y-2 w-full sm:w-auto">
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tu Identificación</label>
+            <select id="select-jugador" onchange="actualizarUsuario()" class="p-2 border rounded-lg bg-gray-50 font-semibold text-blue-900 w-full sm:w-60">
+              <option value="">-- Selecciona tu Nombre --</option>
+              <option value="Borja">Borja</option>
+              <option value="Carlos">Carlos</option>
+              <option value="Itziar">Itziar</option>
+              <option value="Jose">Jose</option>
+              <option value="Quique">Quique</option>
+              <option value="Currás">Currás</option>
+              <option value="García">García</option>
+              <option value="Rodríguez">Rodríguez</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tu PIN / Clave (4 dígitos)</label>
+            <input type="password" id="input-pin" maxlength="4" placeholder="****" class="p-2 border rounded-lg bg-gray-50 font-semibold text-gray-800 w-full sm:w-60 text-center tracking-widest" required>
+            <p id="msg-pin-info" class="text-[10px] text-gray-400 mt-1">Si es tu primera vez, el PIN que pongas se guardará como tu clave personal.</p>
+          </div>
         </div>
-        <div class="text-right">
+
+        <div class="text-right w-full sm:w-auto">
           <span class="text-xs text-gray-400 block">Jornada Activa</span>
           <span id="lbl-jornada" class="text-lg font-bold text-gray-700">Jornada 1</span>
         </div>
@@ -117,7 +125,6 @@
   </main>
 
   <script>
-    // Tus claves exactas de Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDgzNw3E2-YKPNmworM2lKJ_N1LM66Stos",
       authDomain: "quiniela-f245b.firebaseapp.com",
@@ -158,6 +165,7 @@
 
     function actualizarUsuario() {
       usuarioActual = document.getElementById("select-jugador").value;
+      document.getElementById("input-pin").value = "";
     }
 
     // Escuchar estado en tiempo real desde Firebase
@@ -165,7 +173,6 @@
       const data = doc.exists ? doc.data() : {};
       const pronosticos = data.pronosticos || {};
       
-      // Renderizar estado de envío (Checks)
       const grid = document.getElementById("grid-checks");
       grid.innerHTML = "";
       let totalEnviados = 0;
@@ -182,7 +189,6 @@
         `;
       });
 
-      // LÓGICA DE PRIVACIDAD: Revelar solo cuando los 8 hayan completado
       if (totalEnviados === 8) {
         document.getElementById("mensaje-bloqueo").classList.add("hidden");
         document.getElementById("contenido-revelado").classList.remove("hidden");
@@ -200,6 +206,28 @@
         return;
       }
 
+      const pinIngresado = document.getElementById("input-pin").value;
+      if (!pinIngresado || pinIngresado.length !== 4) {
+        alert("Introduce un PIN de 4 dígitos.");
+        return;
+      }
+
+      // Comprobar si el usuario ya tiene un PIN registrado en la base de datos
+      const userRef = db.collection("usuarios").doc(usuarioActual);
+      const userDoc = await userRef.get();
+
+      if (!userDoc.exists) {
+        // Primera vez: Crear el PIN del usuario
+        await userRef.set({ pin: pinIngresado });
+      } else {
+        // Veces posteriores: Verificar PIN
+        const pinGuardado = userDoc.data().pin;
+        if (pinGuardado !== pinIngresado) {
+          alert("🔒 El PIN introducido es incorrecto para " + usuarioActual + ".");
+          return;
+        }
+      }
+
       const opciones = {};
       for (let i = 1; i <= 14; i++) {
         opciones[`p${i}`] = document.querySelector(`input[name="p${i}"]:checked`).value;
@@ -212,11 +240,10 @@
         }
       }, { merge: true });
 
-      alert("¡Pronóstico guardado correctamente!");
+      alert("¡Pronóstico guardado correctamente para " + usuarioActual + "!");
     }
 
     function cargarClasificacion(pronosticos) {
-      // Renderizado dinámico de la tabla cuando están los 8/8
       const tbody = document.getElementById("tabla-clasificacion");
       tbody.innerHTML = "";
       
