@@ -85,7 +85,7 @@
         </div>
       </div>
 
-      <!-- Estado 8/8 (Ajustado para evitar solapamientos) -->
+      <!-- Estado 8/8 -->
       <div class="border-t pt-3">
         <p class="text-xs font-semibold text-gray-500 mb-2">Estado de recepción en <span id="lbl-jornada-check" class="font-bold">Jornada 1</span> (Oculto hasta 8/8):</p>
         <div id="grid-checks" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -127,31 +127,32 @@
       </div>
 
       <!-- Contenido visible solo tras 8/8 -->
-      <div id="contenido-revelado" class="hidden space-y-8">
+      <div id="contenido-revelado" class="hidden space-y-6">
         
         <!-- Botón para WhatsApp -->
         <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl flex items-center justify-between gap-3">
           <span class="text-xs font-semibold text-emerald-800"> Compartir resultados en la peña:</span>
-          <button type="button" onclick="copiarResumenWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition shadow flex items-center gap-1">
+          <button type="button" onclick="copiarResumenWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition shadow flex items-center gap-1 shrink-0">
             📋 Copiar para WhatsApp
           </button>
         </div>
 
-        <!-- Escrutinio / Resultados de la Jornada -->
-        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
-          <h3 class="text-md font-bold mb-2">Resultado Oficial (<span id="lbl-jornada-esc">Jornada 1</span>)</h3>
-          <p class="text-xs text-gray-500 mb-3">Introduce la combinación ganadora oficial para calcular los aciertos de esta jornada:</p>
-          <div id="grid-escrutinio" class="grid grid-cols-7 gap-2 mb-3 text-center">
-            <!-- 14 inputs de resultados -->
-          </div>
-          <button type="button" onclick="guardarEscrutinio()" class="bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded hover:bg-slate-900 transition">
-            Guardar Escrutinio de esta Jornada
+        <!-- Botones de Navegación / Pestañas de Clasificación -->
+        <div class="flex flex-wrap gap-2 border-b pb-3">
+          <button type="button" id="tab-btn-jornada" onclick="cambiarVistaClasificacion('jornada')" class="flex-1 min-w-[120px] py-2 px-3 text-xs font-bold rounded-lg border text-center transition bg-blue-600 text-white border-blue-600 shadow">
+            🥇 Clasificación Jornada
+          </button>
+          <button type="button" id="tab-btn-acumulada" onclick="cambiarVistaClasificacion('acumulada')" class="flex-1 min-w-[120px] py-2 px-3 text-xs font-bold rounded-lg border text-center transition bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200">
+            🏆 Clasificación General
+          </button>
+          <button type="button" id="tab-btn-grafico" onclick="cambiarVistaClasificacion('grafico')" class="flex-1 min-w-[120px] py-2 px-3 text-xs font-bold rounded-lg border text-center transition bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200">
+            📈 Gráfico Evolución
           </button>
         </div>
 
-        <!-- Clasificación de la Jornada Específica -->
-        <div>
-          <h3 class="text-lg font-bold mb-2">Clasificación Específica (<span id="lbl-jornada-tabla">J1</span>)</h3>
+        <!-- Vista 1: Clasificación de la Jornada Específica -->
+        <div id="vista-clasif-jornada" class="space-y-4">
+          <h3 class="text-lg font-bold border-b pb-1">Clasificación Específica (<span id="lbl-jornada-tabla">J1</span>)</h3>
           <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">
               <thead class="bg-slate-100 text-gray-600 uppercase text-xs">
@@ -167,9 +168,9 @@
           </div>
         </div>
 
-        <!-- Clasificación Acumulada hasta esta Jornada -->
-        <div>
-          <h3 class="text-lg font-bold mb-2">Clasificación General Acumulada (Hasta <span id="lbl-jornada-acum">J1</span>)</h3>
+        <!-- Vista 2: Clasificación Acumulada hasta esta Jornada -->
+        <div id="vista-clasif-acumulada" class="hidden space-y-4">
+          <h3 class="text-lg font-bold border-b pb-1">Clasificación General Acumulada (Hasta <span id="lbl-jornada-acum">J1</span>)</h3>
           <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">
               <thead class="bg-blue-900 text-white uppercase text-xs">
@@ -184,12 +185,24 @@
           </div>
         </div>
 
-        <!-- Gráfico de Evolución -->
-        <div>
-          <h3 class="text-lg font-bold mb-2">Evolución Acumulada (Hasta <span id="lbl-jornada-graf">J1</span>)</h3>
+        <!-- Vista 3: Gráfico de Evolución -->
+        <div id="vista-clasif-grafico" class="hidden space-y-4">
+          <h3 class="text-lg font-bold border-b pb-1">Evolución Acumulada (Hasta <span id="lbl-jornada-graf">J1</span>)</h3>
           <div class="relative w-full h-72">
             <canvas id="chartEvolucion"></canvas>
           </div>
+        </div>
+
+        <!-- Escrutinio / Resultados de la Jornada -->
+        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 mt-6">
+          <h3 class="text-md font-bold mb-2">Resultado Oficial (<span id="lbl-jornada-esc">Jornada 1</span>)</h3>
+          <p class="text-xs text-gray-500 mb-3">Introduce la combinación ganadora oficial para calcular los aciertos de esta jornada:</p>
+          <div id="grid-escrutinio" class="grid grid-cols-7 gap-2 mb-3 text-center">
+            <!-- 14 inputs de resultados -->
+          </div>
+          <button type="button" onclick="guardarEscrutinio()" class="bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded hover:bg-slate-900 transition">
+            Guardar Escrutinio de esta Jornada
+          </button>
         </div>
 
       </div>
@@ -263,6 +276,38 @@
         comprobarUsuario();
       }
     });
+
+    function cambiarVistaClasificacion(vista) {
+      const vJornada = document.getElementById("vista-clasif-jornada");
+      const vAcumulada = document.getElementById("vista-clasif-acumulada");
+      const vGrafico = document.getElementById("vista-clasif-grafico");
+
+      const btnJornada = document.getElementById("tab-btn-jornada");
+      const btnAcumulada = document.getElementById("tab-btn-acumulada");
+      const btnGrafico = document.getElementById("tab-btn-grafico");
+
+      const activeClass = "bg-blue-600 text-white border-blue-600 shadow";
+      const inactiveClass = "bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200";
+
+      vJornada.classList.add("hidden");
+      vAcumulada.classList.add("hidden");
+      vGrafico.classList.add("hidden");
+
+      btnJornada.className = `flex-1 min-w-[120px] py-2 px-3 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
+      btnAcumulada.className = `flex-1 min-w-[120px] py-2 px-3 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
+      btnGrafico.className = `flex-1 min-w-[120px] py-2 px-3 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
+
+      if (vista === 'jornada') {
+        vJornada.classList.remove("hidden");
+        btnJornada.className = `flex-1 min-w-[120px] py-2 px-3 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
+      } else if (vista === 'acumulada') {
+        vAcumulada.classList.remove("hidden");
+        btnAcumulada.className = `flex-1 min-w-[120px] py-2 px-3 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
+      } else if (vista === 'grafico') {
+        vGrafico.classList.remove("hidden");
+        btnGrafico.className = `flex-1 min-w-[120px] py-2 px-3 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
+      }
+    }
 
     function cambiarJornada() {
       jornadaActual = document.getElementById("select-jornada").value;
