@@ -129,7 +129,7 @@
             <button id="btn-pronosticos-semana" disabled onclick="abrirModalPronosticos()" class="flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed">
               📋 Pronósticos de la jornada (0/8)
             </button>
-            <button id="btn-resultado-jornada" disabled onclick="abrirModalEscrutinio()" class="flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-700 text-white shadow cursor-pointer">
+            <button id="btn-resultado-jornada" onclick="abrirModalEscrutinio()" class="flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-700 text-white shadow cursor-pointer">
               ✏️ Introduce el resultado de la jornada (Itziar / Jose)
             </button>
           </div>
@@ -560,7 +560,7 @@
       document.getElementById("modal-lbl-jornada").textContent = jornadaActual;
       document.getElementById("modal-esc-lbl-jornada").textContent = jornadaActual;
 
-      // Limpiar inmediatamente de forma visual los inputs al cambiar de jornada
+      // Limpiar inmediatamente los inputs visuales al cambiar de jornada
       for (let i = 1; i <= 14; i++) {
         document.querySelectorAll(`input[name="p${i}"]`).forEach(r => r.checked = false);
       }
@@ -652,7 +652,6 @@
       }
       document.getElementById("pleno-15").value = "";
 
-      // Comprobación de la marca `cerrada: true` en la jornada anterior
       const verificarSecuencia = jornadaAnteriorKey ? db.collection("jornadas").doc(jornadaAnteriorKey).get() : Promise.resolve({ exists: true, data: () => ({ cerrada: true }) });
 
       verificarSecuencia.then(antDoc => {
@@ -688,7 +687,7 @@
             `;
           });
 
-          // Limpieza previa de inputs
+          // Limpieza de inputs antes de cargar los datos de la jornada actual
           for (let i = 1; i <= 14; i++) {
             document.querySelectorAll(`input[name="p${i}"]`).forEach(r => r.checked = false);
           }
@@ -699,7 +698,7 @@
           const btnGuardar = document.getElementById("btn-guardar-pronostico");
           const inputsPronostico = document.querySelectorAll('#form-pronostico input');
 
-          // PRIORIDAD ABSOLUTA: Si la jornada anterior NO está cerrada oficialmente, se bloquea con el mensaje estricto.
+          // BLOQUEO ESTRICTO POR SECUENCIA DE JORNADA ANTERIOR
           if (!jornadaAnteriorCerrada) {
             avisoBloqueoSecuencial.classList.remove("hidden");
             avisoBloqueo.classList.add("hidden");
@@ -707,11 +706,11 @@
             btnGuardar.classList.add("bg-gray-400", "cursor-not-allowed");
             btnGuardar.classList.remove("bg-blue-600", "hover:bg-blue-700");
             inputsPronostico.forEach(input => input.disabled = true);
-            return; // DETIENE LA EJECUCIÓN PARA EVITAR CUALQUIER OTRO AVISO
+            return; // Detenemos aquí para que aparezca limpio y con el mensaje exacto
           } else {
             avisoBloqueoSecuencial.classList.add("hidden");
 
-            // Si la jornada anterior SÍ está cerrada, cargamos las respuestas guardadas (si el usuario ya las hizo)
+            // Si la jornada anterior SÍ está cerrada, cargamos las respuestas guardadas del usuario si existen
             if (usuarioActual && pronosticos[usuarioActual] && pronosticos[usuarioActual].respuestas) {
               const misRespuestas = pronosticos[usuarioActual].respuestas;
               for (let i = 1; i <= 14; i++) {
@@ -741,8 +740,6 @@
           }
 
           const btnPronosticos = document.getElementById("btn-pronosticos-semana");
-          const btnResultado = document.getElementById("btn-resultado-jornada");
-
           btnPronosticos.innerHTML = `📋 Pronósticos de la jornada (${totalEnviados}/8)`;
 
           if (totalEnviados === 8) {
