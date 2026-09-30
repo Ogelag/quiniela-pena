@@ -187,7 +187,7 @@
                   <tr>
                     <th class="p-3">Pos</th>
                     <th class="p-3">Jugador</th>
-                    <th class="p-3 text-center">Aciertos (14)</th>
+                    <th class="p-3 text-center">Puntos de la Jornada</th>
                     <th class="p-3 text-center">Pleno 15</th>
                   </tr>
                 </thead>
@@ -855,9 +855,9 @@
 
     function copiarResumenWhatsApp() {
       let texto = `⚽ *QUINIELA - ${jornadaActual}*\n\n`;
-      texto += `📊 *Aciertos ${jornadaActual}:*\n`;
+      texto += `📊 *Puntos ${jornadaActual}:*\n`;
       datosUltimoRankingJornada.forEach((r, idx) => {
-        texto += `${idx + 1}º ${r.jugador}: ${r.aciertos} aciertos (${r.pleno})\n`;
+        texto += `${idx + 1}º ${r.jugador}: ${r.aciertos} pts (${r.pleno})\n`;
       });
 
       texto += `\n🏆 *General Acumulada (${jornadaActual}):*\n`;
