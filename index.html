@@ -136,7 +136,7 @@
           <!-- BOTONES ESPECIALES (DISPONIBLES TRAS 8/8) -->
           <div class="pt-2 border-t flex flex-col sm:flex-row gap-3">
             <button id="btn-pronosticos-semana" disabled onclick="abrirModalPronosticos()" class="flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed">
-              📋 Pronósticos de la semana (8/8)
+              📋 Pronósticos de la jornada (0/8)
             </button>
             <button id="btn-resultado-jornada" disabled onclick="abrirModalEscrutinio()" class="flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed">
               ✏️ Introduce el resultado de la jornada (Itziar)
@@ -621,6 +621,9 @@
         const btnPronosticos = document.getElementById("btn-pronosticos-semana");
         const btnResultado = document.getElementById("btn-resultado-jornada");
 
+        // Actualización dinámica del texto según los pronósticos recibidos
+        btnPronosticos.innerHTML = `📋 Pronósticos de la jornada (${totalEnviados}/8)`;
+
         if (totalEnviados === 8) {
           btnPronosticos.disabled = false;
           btnPronosticos.className = "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white shadow cursor-pointer";
@@ -765,7 +768,6 @@
             aciertos++;
           }
         }
-        // Puntos de la jornada (puedes ajustar el cómputo si aplica alguna regla de puntuación)
         let puntosJornada = aciertos;
         return { jugador: j, puntos: puntosJornada, aciertos: aciertos, pleno: pronosticos[j]?.pleno || "-" };
       }).sort((a, b) => b.puntos - a.puntos || b.aciertos - a.aciertos);
@@ -884,3 +886,9 @@
   </script>
 </body>
 </html>
+```eof
+
+### Resumen de cambios aplicados:
+* **Texto dinámico del botón:** El botón ahora muestra **`Pronósticos de la jornada (X/8)`**.
+* **Contador en tiempo real:** Cuando no hay respuestas muestra `0/8`, y a medida que los jugadores van guardando su pronóstico se actualiza en tiempo real a `1/8`, `2/8`, etc.
+* **Habilitación automática:** Al alcanzar los `8/8` pronósticos, el botón se habilita y cambia a color azul para dar acceso al boleto conjunto.
