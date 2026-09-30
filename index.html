@@ -130,7 +130,7 @@
               📋 Pronósticos de la jornada (0/8)
             </button>
             <button id="btn-resultado-jornada" disabled onclick="abrirModalEscrutinio()" class="flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed">
-              ✏️ Introduce el resultado de la jornada (Itziar / Jose)
+              ✏ Introduce el resultado de la jornada (Itziar / Jose)
             </button>
           </div>
         </div>
@@ -139,6 +139,12 @@
       <section class="bg-white p-4 rounded-xl shadow border border-slate-200">
         <h2 class="text-lg font-bold mb-3 border-b pb-2">Rellenar Pronóstico (<span id="lbl-jornada-form">Jornada 1</span>)</h2>
         
+        <!-- AVISO DE BLOQUEO SECUENCIAL (JORNADA ANTERIOR SIN CERRAR O SIN RESULTADOS) -->
+        <div id="aviso-bloqueo-secuencial" class="hidden bg-red-50 border border-red-300 text-red-800 p-3 rounded-lg text-xs font-semibold mb-3 flex items-center gap-2">
+          <span>⛔ Todavía no se puede pronosticar porque no se ha cerrado la jornada anterior (faltan pronósticos o introducir el resultado real).</span>
+        </div>
+
+        <!-- AVISO DE BLOQUEO CUANDO SE ALCANZAN LOS 8/8 PRONÓSTICOS -->
         <div id="aviso-bloqueo-pronosticos" class="hidden bg-amber-50 border border-amber-300 text-amber-800 p-3 rounded-lg text-xs font-semibold mb-3 flex items-center gap-2">
           <span>🔒 Los 8 pronósticos de esta jornada ya han sido completados. Ya no se pueden modificar.</span>
         </div>
@@ -320,7 +326,6 @@
     let ultimosPronosticosCargados = {};
     let ultimoEscrutinioCargado = {};
 
-    // Poblar selects de jornadas (1 a 50)
     const selectJornada = document.getElementById("select-jornada");
     const selectJornadaTabla = document.getElementById("select-jornada-tabla");
     const selectJornadaAcum = document.getElementById("select-jornada-acum");
@@ -333,7 +338,6 @@
       selectJornadaAcum.innerHTML += `<option value="${optVal}">${optText}</option>`;
     }
 
-    // Generar partidos en formulario de pronóstico
     const partidosCont = document.getElementById("lista-partidos");
     for (let i = 1; i <= 14; i++) {
       partidosCont.innerHTML += `
@@ -354,7 +358,6 @@
       `;
     }
 
-    // Generar partidos en modal de escrutinio
     const escrutinioCont = document.getElementById("lista-escrutinio");
     for (let i = 1; i <= 14; i++) {
       escrutinioCont.innerHTML += `
@@ -633,88 +636,120 @@
     function escucharJornada() {
       if (unsubscribeJornada) unsubscribeJornada();
 
-      unsubscribeJornada = db.collection("jornadas").doc(jornadaActual).onSnapshot(doc => {
-        const data = doc.exists ? doc.data() : {};
-        const pronosticos = data.pronosticos || {};
-        const escrutinio = data.escrutinio || {};
+      const numJornadaActual = parseInt(jornadaActual.replace("J", ""));
+      const jornadaAnteriorKey = numJornadaActual > 1 ? `J${numJornadaActual - 1}` : null;
 
-        ultimosPronosticosCargados = pronosticos;
-        ultimoEscrutinioCargado = escrutinio;
+      // Verificar si la jornada anterior tiene 8/8 pronósticos Y el resultado real (escrutinio) introducido
+      const verificarSecuencia = jornadaAnteriorKey ? db.collection("jornadas").doc(jornadaAnteriorKey).get() : Promise.resolve({ exists: true, data: () => ({ pronosticos: { ...Array(8).fill(true) }, escrutinio: { ...Array(14).fill(true) } }) });
 
-        const grid = document.getElementById("grid-checks");
-        grid.innerHTML = "";
-        let totalEnviados = 0;
+      verificarSecuencia.then(antDoc => {
+        let jornadaAnteriorCerrada = true;
+        if (numJornadaActual > 1) {
+          const antData = antDoc.exists ? antDoc.data() : {};
+          const antPron = antData.pronosticos || {};
+          const antEsc = antData.escrutinio || {};
+          const totalAntPron = Object.keys(antPron).length;
+          const totalAntEsc = Object.keys(antEsc).length;
 
-        jugadores.forEach(j => {
-          const enviado = !!pronosticos[j];
-          if (enviado) totalEnviados++;
-
-          grid.innerHTML += `
-            <div class="flex items-center justify-between p-1.5 px-2 rounded text-[11px] font-semibold ${enviado ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-500'}">
-              <span class="truncate max-w-[70px]">${j}</span>
-              <span class="shrink-0">${enviado ? '✓ Listo' : '⏳ Pend.'}</span>
-            </div>
-          `;
-        });
-
-        for (let i = 1; i <= 14; i++) {
-          document.querySelectorAll(`input[name="p${i}"]`).forEach(r => r.checked = false);
+          // Exigir los 8 pronósticos y los 14 resultados del escrutinio oficial
+          if (totalAntPron < 8 || totalAntEsc < 14) {
+            jornadaAnteriorCerrada = false;
+          }
         }
-        if (usuarioActual && pronosticos[usuarioActual] && pronosticos[usuarioActual].respuestas) {
-          const misRespuestas = pronosticos[usuarioActual].respuestas;
+
+        unsubscribeJornada = db.collection("jornadas").doc(jornadaActual).onSnapshot(doc => {
+          const data = doc.exists ? doc.data() : {};
+          const pronosticos = data.pronosticos || {};
+          const escrutinio = data.escrutinio || {};
+
+          ultimosPronosticosCargados = pronosticos;
+          ultimoEscrutinioCargado = escrutinio;
+
+          const grid = document.getElementById("grid-checks");
+          grid.innerHTML = "";
+          let totalEnviados = 0;
+
+          jugadores.forEach(j => {
+            const enviado = !!pronosticos[j];
+            if (enviado) totalEnviados++;
+
+            grid.innerHTML += `
+              <div class="flex items-center justify-between p-1.5 px-2 rounded text-[11px] font-semibold ${enviado ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-500'}">
+                <span class="truncate max-w-[70px]">${j}</span>
+                <span class="shrink-0">${enviado ? '✓ Listo' : '⏳ Pend.'}</span>
+              </div>
+            `;
+          });
+
           for (let i = 1; i <= 14; i++) {
-            if (misRespuestas[`p${i}`]) {
-              const radio = document.querySelector(`input[name="p${i}"][value="${misRespuestas[`p${i}`]}"]`);
-              if (radio) radio.checked = true;
+            document.querySelectorAll(`input[name="p${i}"]`).forEach(r => r.checked = false);
+          }
+          if (usuarioActual && pronosticos[usuarioActual] && pronosticos[usuarioActual].respuestas) {
+            const misRespuestas = pronosticos[usuarioActual].respuestas;
+            for (let i = 1; i <= 14; i++) {
+              if (misRespuestas[`p${i}`]) {
+                const radio = document.querySelector(`input[name="p${i}"][value="${misRespuestas[`p${i}`]}"]`);
+                if (radio) radio.checked = true;
+              }
+            }
+            if (usuarioActual === encargadoPlenoActual && pronosticos[usuarioActual].pleno) {
+              document.getElementById("pleno-15").value = pronosticos[usuarioActual].pleno;
             }
           }
-          if (usuarioActual === encargadoPlenoActual && pronosticos[usuarioActual].pleno) {
-            document.getElementById("pleno-15").value = pronosticos[usuarioActual].pleno;
+
+          const avisoBloqueoSecuencial = document.getElementById("aviso-bloqueo-secuencial");
+          const avisoBloqueo = document.getElementById("aviso-bloqueo-pronosticos");
+          const btnGuardar = document.getElementById("btn-guardar-pronostico");
+          const inputsPronostico = document.querySelectorAll('#form-pronostico input');
+
+          if (!jornadaAnteriorCerrada) {
+            avisoBloqueoSecuencial.classList.remove("hidden");
+            avisoBloqueo.classList.add("hidden");
+            btnGuardar.disabled = true;
+            btnGuardar.classList.add("bg-gray-400", "cursor-not-allowed");
+            btnGuardar.classList.remove("bg-blue-600", "hover:bg-blue-700");
+            inputsPronostico.forEach(input => input.disabled = true);
+          } else {
+            avisoBloqueoSecuencial.classList.add("hidden");
+            if (totalEnviados === 8) {
+              avisoBloqueo.classList.remove("hidden");
+              btnGuardar.disabled = true;
+              btnGuardar.classList.add("bg-gray-400", "cursor-not-allowed");
+              btnGuardar.classList.remove("bg-blue-600", "hover:bg-blue-700");
+              inputsPronostico.forEach(input => input.disabled = true);
+            } else {
+              avisoBloqueo.classList.add("hidden");
+              btnGuardar.disabled = false;
+              btnGuardar.classList.remove("bg-gray-400", "cursor-not-allowed");
+              btnGuardar.classList.add("bg-blue-600", "hover:bg-blue-700");
+              inputsPronostico.forEach(input => input.disabled = false);
+            }
           }
-        }
 
-        const avisoBloqueo = document.getElementById("aviso-bloqueo-pronosticos");
-        const btnGuardar = document.getElementById("btn-guardar-pronostico");
-        const inputsPronostico = document.querySelectorAll('#form-pronostico input');
+          const btnPronosticos = document.getElementById("btn-pronosticos-semana");
+          const btnResultado = document.getElementById("btn-resultado-jornada");
 
-        if (totalEnviados === 8) {
-          avisoBloqueo.classList.remove("hidden");
-          btnGuardar.disabled = true;
-          btnGuardar.classList.add("bg-gray-400", "cursor-not-allowed");
-          btnGuardar.classList.remove("bg-blue-600", "hover:bg-blue-700");
-          inputsPronostico.forEach(input => input.disabled = true);
-        } else {
-          avisoBloqueo.classList.add("hidden");
-          btnGuardar.disabled = false;
-          btnGuardar.classList.remove("bg-gray-400", "cursor-not-allowed");
-          btnGuardar.classList.add("bg-blue-600", "hover:bg-blue-700");
-          inputsPronostico.forEach(input => input.disabled = false);
-        }
+          btnPronosticos.innerHTML = `📋 Pronósticos de la jornada (${totalEnviados}/8)`;
 
-        const btnPronosticos = document.getElementById("btn-pronosticos-semana");
-        const btnResultado = document.getElementById("btn-resultado-jornada");
+          if (totalEnviados === 8) {
+            btnPronosticos.disabled = false;
+            btnPronosticos.className = "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white shadow cursor-pointer";
+            
+            btnResultado.disabled = false;
+            btnResultado.className = "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-700 text-white shadow cursor-pointer";
+          } else {
+            btnPronosticos.disabled = true;
+            btnPronosticos.className = "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed";
 
-        btnPronosticos.innerHTML = `📋 Pronósticos de la jornada (${totalEnviados}/8)`;
+            btnResultado.disabled = true;
+            btnResultado.className = "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed";
+          }
 
-        if (totalEnviados === 8) {
-          btnPronosticos.disabled = false;
-          btnPronosticos.className = "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white shadow cursor-pointer";
-          
-          btnResultado.disabled = false;
-          btnResultado.className = "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-700 text-white shadow cursor-pointer";
-        } else {
-          btnPronosticos.disabled = true;
-          btnPronosticos.className = "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed";
-
-          btnResultado.disabled = true;
-          btnResultado.className = "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed";
-        }
-
-        // Actualizar tablas y gráficos generales/específicos
-        cargarClasificacionJornadaEspecifica(jornadaTablaActual);
-        cargarClasificacionAcumuladaHasta(jornadaAcumActual);
-        renderizarGraficoEvolucion();
-      }, err => console.log(err));
+          cargarClasificacionJornadaEspecifica(jornadaTablaActual);
+          cargarClasificacionAcumuladaHasta(jornadaAcumActual);
+          renderizarGraficoEvolucion();
+        }, err => console.log(err));
+      });
     }
 
     async function guardarPronostico(e) {
