@@ -139,7 +139,7 @@
               📋 Pronósticos de la jornada (0/8)
             </button>
             <button id="btn-resultado-jornada" disabled onclick="abrirModalEscrutinio()" class="flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed">
-              ✏️ Introduce el resultado de la jornada (Itziar / Jose)
+              ✏️️ Introduce el resultado de la jornada (Itziar / Jose)
             </button>
           </div>
         </div>
@@ -147,6 +147,12 @@
 
       <section class="bg-white p-4 rounded-xl shadow border border-slate-200">
         <h2 class="text-lg font-bold mb-3 border-b pb-2">Rellenar Pronóstico (<span id="lbl-jornada-form">Jornada 1</span>)</h2>
+        
+        <!-- AVISO DE BLOQUEO CUANDO SE ALCANZAN LOS 8/8 PRONÓSTICOS -->
+        <div id="aviso-bloqueo-pronosticos" class="hidden bg-amber-50 border border-amber-300 text-amber-800 p-3 rounded-lg text-xs font-semibold mb-3 flex items-center gap-2">
+          <span>🔒 Los 8 pronósticos de esta jornada ya han sido completados. Ya no se pueden modificar.</span>
+        </div>
+
         <form id="form-pronostico" onsubmit="guardarPronostico(event)" class="space-y-3">
           <div id="lista-partidos" class="space-y-2"></div>
 
@@ -160,7 +166,7 @@
             ℹ En esta jornada el Pleno al 15 le corresponde rellenarlo a: <span id="encargado-pleno-nombre" class="font-bold text-blue-900">...</span>
           </div>
 
-          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition shadow mt-4">
+          <button type="submit" id="btn-guardar-pronostico" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition shadow mt-4">
             Guardar Mi Pronóstico
           </button>
         </form>
@@ -252,7 +258,7 @@
     </div>
   </div>
 
-  <!-- MODAL: INTRODUCIR RESULTADO REAL (FORMATO IDÉNTICO AL PRONÓSTICO) -->
+  <!-- MODAL: INTRODUCIR RESULTADO REAL -->
   <div id="modal-escrutinio" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-xl w-full max-h-[90vh] flex flex-col overflow-hidden">
       <div class="p-4 border-b flex justify-between items-center bg-white">
@@ -333,7 +339,7 @@
       `;
     }
 
-    // Generar partidos en modal de escrutinio con el mismo formato limpio
+    // Generar partidos en modal de escrutinio
     const escrutinioCont = document.getElementById("lista-escrutinio");
     for (let i = 1; i <= 14; i++) {
       escrutinioCont.innerHTML += `
@@ -620,6 +626,42 @@
             </div>
           `;
         });
+
+        // Rellenar automáticamente los pronósticos si el usuario ya los había guardado
+        for (let i = 1; i <= 14; i++) {
+          document.querySelectorAll(`input[name="p${i}"]`).forEach(r => r.checked = false);
+        }
+        if (usuarioActual && pronosticos[usuarioActual] && pronosticos[usuarioActual].respuestas) {
+          const misRespuestas = pronosticos[usuarioActual].respuestas;
+          for (let i = 1; i <= 14; i++) {
+            if (misRespuestas[`p${i}`]) {
+              const radio = document.querySelector(`input[name="p${i}"][value="${misRespuestas[`p${i}`]}"]`);
+              if (radio) radio.checked = true;
+            }
+          }
+          if (usuarioActual === encargadoPlenoActual && pronosticos[usuarioActual].pleno) {
+            document.getElementById("pleno-15").value = pronosticos[usuarioActual].pleno;
+          }
+        }
+
+        // Control de bloqueo de pronósticos al llegar a 8/8
+        const avisoBloqueo = document.getElementById("aviso-bloqueo-pronosticos");
+        const btnGuardar = document.getElementById("btn-guardar-pronostico");
+        const inputsPronostico = document.querySelectorAll('#form-pronostico input');
+
+        if (totalEnviados === 8) {
+          avisoBloqueo.classList.remove("hidden");
+          btnGuardar.disabled = true;
+          btnGuardar.classList.add("bg-gray-400", "cursor-not-allowed");
+          btnGuardar.classList.remove("bg-blue-600", "hover:bg-blue-700");
+          inputsPronostico.forEach(input => input.disabled = true);
+        } else {
+          avisoBloqueo.classList.add("hidden");
+          btnGuardar.disabled = false;
+          btnGuardar.classList.remove("bg-gray-400", "cursor-not-allowed");
+          btnGuardar.classList.add("bg-blue-600", "hover:bg-blue-700");
+          inputsPronostico.forEach(input => input.disabled = false);
+        }
 
         const btnPronosticos = document.getElementById("btn-pronosticos-semana");
         const btnResultado = document.getElementById("btn-resultado-jornada");
