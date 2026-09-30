@@ -88,7 +88,7 @@
       </button>
     </div>
 
-    <!-- PESTAÑAS -->
+    <!-- PESTAÑAS (SIEMPRE ACTIVAS) -->
     <nav class="bg-slate-200 p-1.5 rounded-xl border border-slate-300 grid grid-cols-2 sm:grid-cols-4 gap-2">
       <button type="button" id="tab-btn-pronostico" onclick="cambiarPestanaPrincipal('pronostico')" class="py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition bg-blue-600 text-white border-blue-600 shadow">
         📝 Pronóstico Jornada
@@ -130,7 +130,7 @@
         </div>
 
         <div class="border-t pt-3 space-y-3">
-          <p class="text-xs font-semibold text-gray-500">Estado de recepción en <span id="lbl-jornada-check" class="font-bold">Jornada 1</span> (Oculto hasta 8/8):</p>
+          <p class="text-xs font-semibold text-gray-500">Estado de recepción en <span id="lbl-jornada-check" class="font-bold">Jornada 1</span>:</p>
           <div id="grid-checks" class="grid grid-cols-2 sm:grid-cols-4 gap-2"></div>
 
           <!-- BOTONES ESPECIALES (DISPONIBLES TRAS 8/8) -->
@@ -171,15 +171,7 @@
     <div id="seccion-resultados" class="hidden">
       <section class="bg-white p-4 rounded-xl shadow border border-slate-200">
         
-        <div id="mensaje-bloqueo" class="text-center py-8">
-          <div class="text-4xl mb-2">🔒</div>
-          <h3 class="text-base font-bold text-gray-700">Pronósticos Ocultos</h3>
-          <p class="text-xs text-gray-500 mt-1 max-w-sm mx-auto">
-            La información y clasificaciones de la <span id="lbl-jornada-bloqueo" class="font-bold">Jornada 1</span> están bloqueadas hasta que los 8 hayan guardado su jugada.
-          </p>
-        </div>
-
-        <div id="contenido-revelado" class="hidden space-y-6">
+        <div id="contenido-revelado" class="space-y-6">
           <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl flex items-center justify-between gap-3">
             <span class="text-xs font-semibold text-emerald-800"> Compartir resultados en la peña:</span>
             <button type="button" onclick="copiarResumenWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition shadow flex items-center gap-1 shrink-0">
@@ -517,7 +509,6 @@
       
       document.getElementById("lbl-jornada-check").textContent = jornadaActual;
       document.getElementById("lbl-jornada-form").textContent = jornadaActual;
-      document.getElementById("lbl-jornada-bloqueo").textContent = jornadaActual;
       document.getElementById("lbl-jornada-tabla").textContent = jornadaActual;
       document.getElementById("lbl-jornada-acum").textContent = jornadaActual;
       document.getElementById("lbl-jornada-graf").textContent = jornadaActual;
@@ -619,33 +610,26 @@
           `;
         });
 
-        // CONTROL DE ACTIVACIÓN DE LOS DOS BOTONES NUEVOS
+        // Activar botones modal de quiniela y resultado solo al completar 8/8
         const btnPronosticos = document.getElementById("btn-pronosticos-semana");
         const btnResultado = document.getElementById("btn-resultado-jornada");
 
         if (totalEnviados === 8) {
-          // Activar Botón 1: Pronósticos de la semana
           btnPronosticos.disabled = false;
           btnPronosticos.className = "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white shadow cursor-pointer";
           
-          // Activar Botón 2: Introduce resultado (Habilitado si es Itziar o para todos si es necesario)
           btnResultado.disabled = false;
           btnResultado.className = "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-700 text-white shadow cursor-pointer";
-
-          document.getElementById("mensaje-bloqueo").classList.add("hidden");
-          document.getElementById("contenido-revelado").classList.remove("hidden");
-          renderizarTablasYGrafico(pronosticos, escrutinio);
         } else {
-          // Desactivar ambos botones si no están los 8 pronósticos
           btnPronosticos.disabled = true;
           btnPronosticos.className = "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed";
 
           btnResultado.disabled = true;
           btnResultado.className = "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed";
-
-          document.getElementById("mensaje-bloqueo").classList.remove("hidden");
-          document.getElementById("contenido-revelado").classList.add("hidden");
         }
+
+        // Renderizar las tablas y el gráfico siempre
+        renderizarTablasYGrafico(pronosticos, escrutinio);
       }, err => console.log(err));
     }
 
@@ -684,19 +668,17 @@
       alert("¡Pronóstico guardado para " + usuarioActual + " en " + jornadaActual + "!");
     }
 
-    // MODAL DE PRONÓSTICOS DE LA SEMANA (FORMATO DE BOLETO MATRIZ DE QUINIELA)
+    // MODAL DE PRONÓSTICOS DE LA SEMANA
     function abrirModalPronosticos() {
       const modal = document.getElementById("modal-pronosticos");
       const tbody = document.getElementById("tbody-pronosticos-matriz");
 
-      // Cabecera con los nombres
       let thHTML = `<th class="p-2 border-r bg-slate-200">Resultado Real</th>`;
       jugadores.forEach(j => {
         thHTML += `<th class="p-2 border-r ${j === usuarioActual ? 'bg-blue-100 text-blue-900' : ''}">${j}</th>`;
       });
       document.getElementById("tmpl-th-jugadores").outerHTML = thHTML;
 
-      // Filas de partidos 1 al 14
       let tbodyHTML = "";
       for (let i = 1; i <= 14; i++) {
         const valReal = ultimoEscrutinioCargado[`p${i}`] || "-";
@@ -716,7 +698,6 @@
         tbodyHTML += `</tr>`;
       }
 
-      // Fila de Pleno al 15
       tbodyHTML += `<tr class="bg-amber-100 font-bold border-t-2 border-amber-300">`;
       tbodyHTML += `<td class="p-2 text-left border-r text-amber-900">P15</td>`;
       tbodyHTML += `<td class="p-2 border-r">-</td>`;
@@ -734,7 +715,7 @@
       document.getElementById("modal-pronosticos").classList.add("hidden");
     }
 
-    // MODAL DE INTRODUCCIÓN DE RESULTADO REAL (ITZIAR)
+    // MODAL DE INTRODUCCIÓN DE RESULTADO REAL
     function abrirModalEscrutinio() {
       if (usuarioActual !== "Itziar") {
         const confirmar = confirm("Este botón está pensado para Itziar. ¿Deseas guardar los resultados igualmente?");
