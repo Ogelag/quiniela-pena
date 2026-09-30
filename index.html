@@ -75,7 +75,7 @@
 
 
   <!-- ========================================================= -->
-  <!-- PANTALLA 1: LOGIN -->
+  <!-- PANTALLA 1: ACCESO DE JUGADORES -->
   <!-- ========================================================= -->
 
   <section
@@ -98,7 +98,9 @@
     <div class="space-y-4 text-left">
 
       <div>
-        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
+        <label
+          class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1"
+        >
           Tu Nombre
         </label>
 
@@ -122,7 +124,9 @@
 
       <div id="login-sec-pin" class="hidden space-y-3">
 
-        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">
+        <label
+          class="block text-xs font-semibold text-gray-500 uppercase tracking-wider"
+        >
           PIN / Clave (4 dígitos)
         </label>
 
@@ -134,10 +138,7 @@
           class="p-2.5 border rounded-lg bg-gray-50 font-semibold text-center tracking-widest w-full"
         >
 
-        <p
-          id="login-msg-status"
-          class="text-xs font-medium text-slate-500"
-        >
+        <p id="login-msg-status" class="text-xs font-medium text-slate-500">
           Introduce tu PIN de 4 dígitos para acceder o registrarlo si es tu primera vez.
         </p>
 
@@ -163,13 +164,14 @@
 
         </div>
       </div>
+
     </div>
   </section>
 
 
 
   <!-- ========================================================= -->
-  <!-- PANTALLA 2: APLICACIÓN -->
+  <!-- PANTALLA 2: CONTENIDO PRINCIPAL -->
   <!-- ========================================================= -->
 
   <main
@@ -177,11 +179,8 @@
     class="hidden max-w-4xl mx-auto p-4 space-y-6"
   >
 
-    <!-- USUARIO ACTIVO -->
-
-    <div
-      class="bg-blue-50 border border-blue-200 p-3 rounded-xl flex items-center justify-between"
-    >
+    <!-- Indicador de Usuario Activo -->
+    <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl flex items-center justify-between">
 
       <span class="text-xs font-semibold text-blue-900">
         👤 Sesión iniciada como:
@@ -262,12 +261,9 @@
         class="bg-white p-4 rounded-xl shadow border border-slate-200 space-y-4"
       >
 
-        <div
-          class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
-        >
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
 
           <div>
-
             <h2 class="text-base font-bold text-gray-800">
               Panel de Pronósticos
             </h2>
@@ -275,7 +271,6 @@
             <p class="text-xs text-gray-500">
               Introduce o consulta los datos de la jornada seleccionada.
             </p>
-
           </div>
 
 
@@ -301,16 +296,13 @@
         <div class="border-t pt-3 space-y-3">
 
           <p class="text-xs font-semibold text-gray-500">
-
             Estado de recepción en
-
             <span
               id="lbl-jornada-check"
               class="font-bold"
             >
-              J1
+              Jornada 1
             </span>:
-
           </p>
 
           <div
@@ -319,7 +311,7 @@
           ></div>
 
 
-          <!-- BOTONES -->
+          <!-- BOTONES ESPECIALES -->
 
           <div class="pt-2 border-t flex flex-col sm:flex-row gap-3">
 
@@ -348,21 +340,19 @@
 
 
 
-      <!-- FORMULARIO PRONÓSTICO -->
+      <!-- FORMULARIO DE PRONÓSTICO -->
 
       <section
         class="bg-white p-4 rounded-xl shadow border border-slate-200"
       >
 
         <h2 class="text-lg font-bold mb-3 border-b pb-2">
-
           Rellenar Pronóstico
-          (<span id="lbl-jornada-form">J1</span>)
-
+          (<span id="lbl-jornada-form">Jornada 1</span>)
         </h2>
 
 
-        <!-- BLOQUEO SECUENCIAL -->
+        <!-- AVISO DE BLOQUEO SECUENCIAL -->
 
         <div
           id="aviso-bloqueo-secuencial"
@@ -374,7 +364,7 @@
         </div>
 
 
-        <!-- BLOQUEO 8/8 -->
+        <!-- AVISO 8/8 -->
 
         <div
           id="aviso-bloqueo-pronosticos"
@@ -398,7 +388,7 @@
           ></div>
 
 
-          <!-- PLENO AL 15 -->
+          <!-- PLENO 15 -->
 
           <div
             id="container-pleno-15"
@@ -425,7 +415,6 @@
             id="msg-no-pleno-15"
             class="bg-gray-100 p-3 rounded-lg border border-gray-200 text-xs text-gray-500 italic mt-4"
           >
-
             ℹ En esta jornada el Pleno al 15 le corresponde rellenarlo a:
 
             <span
@@ -455,7 +444,7 @@
 
 
     <!-- ========================================================= -->
-    <!-- RESULTADOS Y CLASIFICACIONES -->
+    <!-- PESTAÑAS 2, 3 Y 4 -->
     <!-- ========================================================= -->
 
     <div
@@ -471,8 +460,6 @@
           id="contenido-revelado"
           class="space-y-6"
         >
-
-          <!-- WHATSAPP -->
 
           <div
             class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl flex items-center justify-between gap-3"
@@ -493,7 +480,8 @@
           </div>
 
 
-          <!-- CLASIFICACIÓN JORNADA -->
+
+          <!-- CLASIFICACIÓN ESPECÍFICA -->
 
           <div
             id="vista-clasif-jornada"
@@ -617,9 +605,7 @@
             <div
               class="relative w-full h-72 p-2 bg-white rounded-lg border border-slate-200"
             >
-
               <canvas id="chartEvolucion"></canvas>
-
             </div>
 
           </div>
@@ -635,7 +621,7 @@
 
 
   <!-- ========================================================= -->
-  <!-- MODAL PRONÓSTICOS -->
+  <!-- MODAL: PRONÓSTICOS -->
   <!-- ========================================================= -->
 
   <div
@@ -651,9 +637,7 @@
         class="bg-blue-900 text-white p-4 flex justify-between items-center"
       >
 
-        <h3
-          class="font-bold text-base flex items-center gap-2"
-        >
+        <h3 class="font-bold text-base flex items-center gap-2">
           ⚽ Boleto Conjunto -
           <span id="modal-lbl-jornada">Jornada 1</span>
         </h3>
@@ -718,7 +702,7 @@
 
 
   <!-- ========================================================= -->
-  <!-- MODAL ESCRUTINIO -->
+  <!-- MODAL: ESCRUTINIO -->
   <!-- ========================================================= -->
 
   <div
@@ -796,9 +780,9 @@
 
   <script>
 
-    /* =========================================================
-       FIREBASE
-       ========================================================= */
+    /* ========================================================= */
+    /* FIREBASE */
+    /* ========================================================= */
 
     const firebaseConfig = {
       apiKey: "AIzaSyDgzNw3E2-YKPNmworM2lKJ_N1LM66Stos",
@@ -822,9 +806,9 @@
 
 
 
-    /* =========================================================
-       DATOS GENERALES
-       ========================================================= */
+    /* ========================================================= */
+    /* VARIABLES */
+    /* ========================================================= */
 
     const jugadores = [
       "Borja",
@@ -837,6 +821,7 @@
       "Rodríguez"
     ];
 
+
     const coloresJugadores = {
       "Borja": "#3b82f6",
       "Carlos": "#334155",
@@ -848,11 +833,6 @@
       "Rodríguez": "#10b981"
     };
 
-
-
-    /* =========================================================
-       VARIABLES
-       ========================================================= */
 
     let usuarioActual = "";
 
@@ -877,17 +857,17 @@
     let unsubscribeJornada = null;
 
     /*
-      Esta variable evita que una respuesta antigua de Firebase,
-      correspondiente a una jornada anterior, pueda modificar
-      visualmente la jornada que acabamos de seleccionar.
+      Este contador evita que una respuesta antigua de Firebase
+      pueda pintar datos de una jornada anterior después de haber
+      cambiado rápidamente de jornada.
     */
     let versionEscuchaJornada = 0;
 
 
 
-    /* =========================================================
-       SELECTS DE JORNADAS
-       ========================================================= */
+    /* ========================================================= */
+    /* SELECTS DE JORNADAS */
+    /* ========================================================= */
 
     const selectJornada =
       document.getElementById("select-jornada");
@@ -916,13 +896,21 @@
     }
 
 
+    selectJornada.value = "J1";
 
-    /* =========================================================
-       CREAR LOS 14 PARTIDOS
-       ========================================================= */
+    selectJornadaTabla.value = "J1";
+
+    selectJornadaAcum.value = "J1";
+
+
+
+    /* ========================================================= */
+    /* CREAR LOS 14 PARTIDOS */
+    /* ========================================================= */
 
     const partidosCont =
       document.getElementById("lista-partidos");
+
 
     for (let i = 1; i <= 14; i++) {
 
@@ -983,12 +971,13 @@
 
 
 
-    /* =========================================================
-       CREAR ESCRUTINIO
-       ========================================================= */
+    /* ========================================================= */
+    /* CREAR ESCRUTINIO */
+    /* ========================================================= */
 
     const escrutinioCont =
       document.getElementById("lista-escrutinio");
+
 
     for (let i = 1; i <= 14; i++) {
 
@@ -1049,19 +1038,11 @@
 
 
 
-    /* =========================================================
-       AL CARGAR LA PÁGINA
-       ========================================================= */
+    /* ========================================================= */
+    /* INICIO */
+    /* ========================================================= */
 
     window.addEventListener("DOMContentLoaded", () => {
-
-      /*
-        Nos aseguramos de que al comenzar estamos en J1.
-      */
-
-      selectJornada.value = "J1";
-      selectJornadaTabla.value = "J1";
-      selectJornadaAcum.value = "J1";
 
       const usuarioGuardado =
         localStorage.getItem("quiniela_usuario_activo");
@@ -1078,9 +1059,9 @@
 
 
 
-    /* =========================================================
-       SELECCIONAR JUGADOR
-       ========================================================= */
+    /* ========================================================= */
+    /* LOGIN */
+    /* ========================================================= */
 
     function seleccionarJugador() {
 
@@ -1091,6 +1072,7 @@
         document.getElementById("login-sec-pin");
 
       document.getElementById("login-input-pin").value = "";
+
 
       if (!selNombre) {
 
@@ -1105,10 +1087,6 @@
     }
 
 
-
-    /* =========================================================
-       REGISTRAR PIN
-       ========================================================= */
 
     async function registrarPINLogin() {
 
@@ -1197,10 +1175,6 @@
     }
 
 
-
-    /* =========================================================
-       INICIAR SESIÓN
-       ========================================================= */
 
     async function iniciarSesion() {
 
@@ -1325,15 +1299,16 @@
 
 
 
-    /* =========================================================
-       MOSTRAR APLICACIÓN
-       ========================================================= */
+    /* ========================================================= */
+    /* MOSTRAR APLICACIÓN */
+    /* ========================================================= */
 
     function mostrarAplicacion() {
 
       document
         .getElementById("pantalla-login")
         .classList.add("hidden");
+
 
       document
         .getElementById("pantalla-app")
@@ -1345,22 +1320,21 @@
         .textContent = usuarioActual;
 
 
-      determinarEncargadoPleno15()
-        .then(() => {
+      determinarEncargadoPleno15().then(() => {
 
-          actualizarVisibilidadPleno15();
+        actualizarVisibilidadPleno15();
 
-          escucharJornada();
+        escucharJornada();
 
-        });
+      });
 
     }
 
 
 
-    /* =========================================================
-       CERRAR SESIÓN
-       ========================================================= */
+    /* ========================================================= */
+    /* CERRAR SESIÓN */
+    /* ========================================================= */
 
     function cerrarSesion() {
 
@@ -1372,12 +1346,14 @@
 
       }
 
+
       versionEscuchaJornada++;
 
 
       localStorage.removeItem(
         "quiniela_usuario_activo"
       );
+
 
       usuarioActual = "";
 
@@ -1405,9 +1381,9 @@
 
 
 
-    /* =========================================================
-       CAMBIAR PESTAÑA
-       ========================================================= */
+    /* ========================================================= */
+    /* CAMBIAR PESTAÑA */
+    /* ========================================================= */
 
     function cambiarPestanaPrincipal(pestana) {
 
@@ -1491,18 +1467,14 @@
           btnJornada.className =
             `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
 
-        }
-
-        else if (pestana === "acumulada") {
+        } else if (pestana === "acumulada") {
 
           vAcumulada.classList.remove("hidden");
 
           btnAcumulada.className =
             `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
 
-        }
-
-        else if (pestana === "grafico") {
+        } else if (pestana === "grafico") {
 
           vGrafico.classList.remove("hidden");
 
@@ -1517,9 +1489,9 @@
 
 
 
-    /* =========================================================
-       LIMPIAR FORMULARIO
-       ========================================================= */
+    /* ========================================================= */
+    /* LIMPIAR FORMULARIO */
+    /* ========================================================= */
 
     function limpiarFormularioPronostico() {
 
@@ -1533,60 +1505,13 @@
 
       }
 
-      document.getElementById("pleno-15").value = "";
 
-    }
+      const pleno =
+        document.getElementById("pleno-15");
 
+      if (pleno) {
 
-
-    /* =========================================================
-       HABILITAR / DESHABILITAR FORMULARIO
-       ========================================================= */
-
-    function establecerEstadoFormulario(habilitado) {
-
-      const btnGuardar =
-        document.getElementById("btn-guardar-pronostico");
-
-      const inputsPronostico =
-        document.querySelectorAll(
-          "#form-pronostico input"
-        );
-
-
-      inputsPronostico.forEach(input => {
-
-        input.disabled = !habilitado;
-
-      });
-
-
-      btnGuardar.disabled = !habilitado;
-
-
-      if (habilitado) {
-
-        btnGuardar.classList.remove(
-          "bg-gray-400",
-          "cursor-not-allowed"
-        );
-
-        btnGuardar.classList.add(
-          "bg-blue-600",
-          "hover:bg-blue-700"
-        );
-
-      } else {
-
-        btnGuardar.classList.add(
-          "bg-gray-400",
-          "cursor-not-allowed"
-        );
-
-        btnGuardar.classList.remove(
-          "bg-blue-600",
-          "hover:bg-blue-700"
-        );
+        pleno.value = "";
 
       }
 
@@ -1594,89 +1519,51 @@
 
 
 
-    /* =========================================================
-       CAMBIAR JORNADA
-       ========================================================= */
+    /* ========================================================= */
+    /* MOSTRAR TODOS COMO PENDIENTES */
+    /*
+       IMPORTANTE:
+       Esta función se utiliza cuando la jornada actual está
+       bloqueada por no haberse cerrado la jornada anterior.
 
-    async function cambiarJornada() {
+       Aunque existan datos guardados accidentalmente en J2/J3/etc.,
+       NO se muestran hasta que la jornada anterior esté cerrada.
+    */
+    /* ========================================================= */
 
-      jornadaActual =
-        document.getElementById("select-jornada").value;
+    function mostrarTodosPendientes() {
 
-      jornadaTablaActual =
-        jornadaActual;
+      const grid =
+        document.getElementById("grid-checks");
 
-      jornadaAcumActual =
-        jornadaActual;
-
-
-      document
-        .getElementById("select-jornada-tabla")
-        .value = jornadaActual;
-
-      document
-        .getElementById("select-jornada-acum")
-        .value = jornadaActual;
+      grid.innerHTML = "";
 
 
-      document
-        .getElementById("lbl-jornada-check")
-        .textContent = jornadaActual;
+      jugadores.forEach(jugador => {
 
-      document
-        .getElementById("lbl-jornada-form")
-        .textContent = jornadaActual;
+        grid.innerHTML += `
 
-      document
-        .getElementById("lbl-jornada-graf")
-        .textContent = jornadaActual;
+          <div
+            class="flex items-center justify-between p-1.5 px-2 rounded text-[11px] font-semibold bg-gray-100 text-gray-500"
+          >
 
-      document
-        .getElementById("modal-lbl-jornada")
-        .textContent = jornadaActual;
+            <span class="truncate max-w-[70px]">
+              ${jugador}
+            </span>
 
-      document
-        .getElementById("modal-esc-lbl-jornada")
-        .textContent = jornadaActual;
+            <span class="shrink-0">
+              ⏳ Pend.
+            </span>
 
+          </div>
 
-      /*
-        MUY IMPORTANTE:
+        `;
 
-        Limpiamos inmediatamente el formulario.
+      });
 
-        De esta forma, al pasar de J1 a J2,
-        nunca se quedan visualmente los pronósticos
-        de J1 mientras Firebase comprueba J2.
-      */
-
-      limpiarFormularioPronostico();
-
-      establecerEstadoFormulario(false);
-
-
-      document
-        .getElementById("aviso-bloqueo-pronosticos")
-        .classList.add("hidden");
-
-
-      document
-        .getElementById("aviso-bloqueo-secuencial")
-        .classList.add("hidden");
-
-
-      /*
-        Mientras comprobamos la jornada anterior,
-        mostramos 0/8.
-
-        Así no puede aparecer momentáneamente
-        el estado de la jornada anterior.
-      */
 
       const btnPronosticos =
-        document.getElementById(
-          "btn-pronosticos-semana"
-        );
+        document.getElementById("btn-pronosticos-semana");
 
       btnPronosticos.innerHTML =
         "📋 Pronósticos de la jornada (0/8)";
@@ -1686,25 +1573,202 @@
       btnPronosticos.className =
         "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed";
 
+    }
+
+
+
+    /* ========================================================= */
+    /* BLOQUEAR FORMULARIO POR SECUENCIA */
+    /* ========================================================= */
+
+    function bloquearFormularioPorJornadaAnterior() {
+
+      const avisoBloqueoSecuencial =
+        document.getElementById(
+          "aviso-bloqueo-secuencial"
+        );
+
+      const avisoBloqueo =
+        document.getElementById(
+          "aviso-bloqueo-pronosticos"
+        );
+
+      const btnGuardar =
+        document.getElementById(
+          "btn-guardar-pronostico"
+        );
+
+      const inputsPronostico =
+        document.querySelectorAll(
+          "#form-pronostico input"
+        );
+
+
+      avisoBloqueoSecuencial
+        .classList
+        .remove("hidden");
+
+
+      avisoBloqueo
+        .classList
+        .add("hidden");
+
+
+      btnGuardar.disabled = true;
+
+      btnGuardar.classList.add(
+        "bg-gray-400",
+        "cursor-not-allowed"
+      );
+
+      btnGuardar.classList.remove(
+        "bg-blue-600",
+        "hover:bg-blue-700"
+      );
+
+
+      inputsPronostico.forEach(input => {
+
+        input.disabled = true;
+
+      });
+
+
+      limpiarFormularioPronostico();
+
+
+      mostrarTodosPendientes();
+
+    }
+
+
+
+    /* ========================================================= */
+    /* HABILITAR FORMULARIO */
+    /* ========================================================= */
+
+    function habilitarFormularioPronostico() {
+
+      const btnGuardar =
+        document.getElementById(
+          "btn-guardar-pronostico"
+        );
+
+      const inputsPronostico =
+        document.querySelectorAll(
+          "#form-pronostico input"
+        );
+
+
+      btnGuardar.disabled = false;
+
+
+      btnGuardar.classList.remove(
+        "bg-gray-400",
+        "cursor-not-allowed"
+      );
+
+
+      btnGuardar.classList.add(
+        "bg-blue-600",
+        "hover:bg-blue-700"
+      );
+
+
+      inputsPronostico.forEach(input => {
+
+        input.disabled = false;
+
+      });
+
+
+      document
+        .getElementById("aviso-bloqueo-secuencial")
+        .classList.add("hidden");
+
+    }
+
+
+
+    /* ========================================================= */
+    /* CAMBIAR JORNADA */
+    /* ========================================================= */
+
+    async function cambiarJornada() {
+
+      jornadaActual =
+        document.getElementById(
+          "select-jornada"
+        ).value;
+
+
+      jornadaTablaActual =
+        jornadaActual;
+
+
+      jornadaAcumActual =
+        jornadaActual;
+
+
+      document.getElementById(
+        "select-jornada-tabla"
+      ).value = jornadaActual;
+
+
+      document.getElementById(
+        "select-jornada-acum"
+      ).value = jornadaActual;
+
+
+      document.getElementById(
+        "lbl-jornada-check"
+      ).textContent = jornadaActual;
+
+
+      document.getElementById(
+        "lbl-jornada-form"
+      ).textContent = jornadaActual;
+
+
+      document.getElementById(
+        "lbl-jornada-graf"
+      ).textContent = jornadaActual;
+
+
+      document.getElementById(
+        "modal-lbl-jornada"
+      ).textContent = jornadaActual;
+
+
+      document.getElementById(
+        "modal-esc-lbl-jornada"
+      ).textContent = jornadaActual;
+
 
       /*
-        Reseteamos los datos que están en memoria.
-
-        NO se borra nada de Firestore.
+        Limpiamos inmediatamente el formulario.
+        De esta manera no quedan visibles los pronósticos
+        de la jornada anterior mientras Firebase responde.
       */
 
-      ultimosPronosticosCargados = {};
-
-      ultimoEscrutinioCargado = {};
+      limpiarFormularioPronostico();
 
 
       /*
-        Primero determinamos quién tiene el Pleno al 15.
+        Por defecto dejamos el encargado como Jose hasta que
+        se compruebe quién ganó la jornada anterior.
       */
+
+      encargadoPlenoActual = "Jose";
+
+      actualizarVisibilidadPleno15();
+
 
       await determinarEncargadoPleno15();
 
+
       actualizarVisibilidadPleno15();
+
 
       escucharJornada();
 
@@ -1712,9 +1776,9 @@
 
 
 
-    /* =========================================================
-       CAMBIAR JORNADA DE TABLA
-       ========================================================= */
+    /* ========================================================= */
+    /* CAMBIAR JORNADA TABLA */
+    /* ========================================================= */
 
     function cambiarJornadaTabla() {
 
@@ -1722,6 +1786,7 @@
         document.getElementById(
           "select-jornada-tabla"
         ).value;
+
 
       cargarClasificacionJornadaEspecifica(
         jornadaTablaActual
@@ -1731,9 +1796,9 @@
 
 
 
-    /* =========================================================
-       CAMBIAR JORNADA ACUMULADA
-       ========================================================= */
+    /* ========================================================= */
+    /* CAMBIAR JORNADA ACUMULADA */
+    /* ========================================================= */
 
     function cambiarJornadaAcumulada() {
 
@@ -1741,6 +1806,7 @@
         document.getElementById(
           "select-jornada-acum"
         ).value;
+
 
       cargarClasificacionAcumuladaHasta(
         jornadaAcumActual
@@ -1750,9 +1816,9 @@
 
 
 
-    /* =========================================================
-       DETERMINAR ENCARGADO DEL PLENO 15
-       ========================================================= */
+    /* ========================================================= */
+    /* DETERMINAR ENCARGADO DEL PLENO 15 */
+    /* ========================================================= */
 
     async function determinarEncargadoPleno15() {
 
@@ -1761,10 +1827,6 @@
           jornadaActual.replace("J", "")
         );
 
-
-      /*
-        J1 comienza teniendo el Pleno Jose.
-      */
 
       if (numJornada === 1) {
 
@@ -1790,13 +1852,8 @@
 
         /*
           MUY IMPORTANTE:
-
-          La jornada anterior tiene que estar
-          oficialmente CERRADA para decidir
-          quién ganó y quién tiene el Pleno.
-
-          Si todavía no está cerrada,
-          mantenemos Jose como valor provisional.
+          Solo calculamos el encargado del Pleno cuando la
+          jornada anterior está realmente cerrada.
         */
 
         if (
@@ -1818,6 +1875,7 @@
         const pronosticos =
           data.pronosticos || {};
 
+
         const escrutinio =
           data.escrutinio || {};
 
@@ -1831,6 +1889,7 @@
 
           let aciertos = 0;
 
+
           const resp =
             pronosticos[j]?.respuestas || {};
 
@@ -1839,8 +1898,7 @@
 
             if (
               escrutinio[`p${i}`] &&
-              resp[`p${i}`] ===
-                escrutinio[`p${i}`]
+              resp[`p${i}`] === escrutinio[`p${i}`]
             ) {
 
               aciertos++;
@@ -1875,9 +1933,9 @@
 
 
 
-    /* =========================================================
-       VISIBILIDAD PLENO
-       ========================================================= */
+    /* ========================================================= */
+    /* VISIBILIDAD PLENO 15 */
+    /* ========================================================= */
 
     function actualizarVisibilidadPleno15() {
 
@@ -1886,10 +1944,12 @@
           "container-pleno-15"
         );
 
+
       const msgNoPleno =
         document.getElementById(
           "msg-no-pleno-15"
         );
+
 
       const lblEncargado =
         document.getElementById(
@@ -1903,8 +1963,7 @@
 
       if (
         usuarioActual &&
-        usuarioActual ===
-          encargadoPlenoActual
+        usuarioActual === encargadoPlenoActual
       ) {
 
         boxPleno.classList.remove("hidden");
@@ -1923,17 +1982,16 @@
 
 
 
-    /* =========================================================
-       ESCUCHAR JORNADA
-       ========================================================= */
+    /* ========================================================= */
+    /* ESCUCHAR JORNADA */
+    /* ========================================================= */
 
     function escucharJornada() {
 
       /*
-        Cada llamada genera una nueva versión.
-
-        Si Firebase devuelve después una respuesta
-        antigua de otra jornada, la ignoramos.
+        Cada vez que cambiamos de jornada aumentamos la versión.
+        Esto evita que una respuesta antigua de Firebase pueda
+        pintar datos de otra jornada.
       */
 
       const miVersion =
@@ -1941,7 +1999,7 @@
 
 
       /*
-        Cancelar listener anterior.
+        Cancelamos el listener anterior.
       */
 
       if (unsubscribeJornada) {
@@ -1951,6 +2009,31 @@
         unsubscribeJornada = null;
 
       }
+
+
+      /*
+        Limpiamos inmediatamente todo.
+      */
+
+      limpiarFormularioPronostico();
+
+      ultimosPronosticosCargados = {};
+
+      ultimoEscrutinioCargado = {};
+
+      mostrarTodosPendientes();
+
+
+      const avisoBloqueoSecuencial =
+        document.getElementById(
+          "aviso-bloqueo-secuencial"
+        );
+
+
+      const avisoBloqueo =
+        document.getElementById(
+          "aviso-bloqueo-pronosticos"
+        );
 
 
       const numJornadaActual =
@@ -1966,56 +2049,7 @@
 
 
       /*
-        Limpiamos el formulario SIEMPRE.
-
-        Esto es fundamental para que J2,
-        J3, etc. aparezcan vacías cuando están bloqueadas.
-      */
-
-      limpiarFormularioPronostico();
-
-      establecerEstadoFormulario(false);
-
-
-      /*
-        Ocultamos ambos avisos mientras hacemos
-        la comprobación.
-      */
-
-      document
-        .getElementById(
-          "aviso-bloqueo-secuencial"
-        )
-        .classList.add("hidden");
-
-      document
-        .getElementById(
-          "aviso-bloqueo-pronosticos"
-        )
-        .classList.add("hidden");
-
-
-      /*
-        El botón empieza en 0/8.
-      */
-
-      const btnPronosticos =
-        document.getElementById(
-          "btn-pronosticos-semana"
-        );
-
-      btnPronosticos.innerHTML =
-        "📋 Pronósticos de la jornada (0/8)";
-
-      btnPronosticos.disabled = true;
-
-      btnPronosticos.className =
-        "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed";
-
-
-      /*
-        Comprobamos si la jornada anterior
-        está cerrada.
+        J1 no necesita jornada anterior.
       */
 
       const verificarSecuencia =
@@ -2024,7 +2058,6 @@
               .collection("jornadas")
               .doc(jornadaAnteriorKey)
               .get()
-
           : Promise.resolve({
               exists: true,
               data: () => ({
@@ -2036,14 +2069,12 @@
       verificarSecuencia.then(antDoc => {
 
         /*
-          Si mientras esperábamos el resultado
-          el usuario cambió de jornada,
-          ignoramos esta respuesta.
+          Si mientras esperábamos Firebase el usuario cambió
+          de jornada, ignoramos esta respuesta.
         */
 
         if (
-          miVersion !==
-          versionEscuchaJornada
+          miVersion !== versionEscuchaJornada
         ) {
 
           return;
@@ -2051,17 +2082,7 @@
         }
 
 
-        /*
-          Comprobamos de nuevo que seguimos
-          en la misma jornada.
-        */
-
-        const jornadaComprobada =
-          jornadaActual;
-
-
-        let jornadaAnteriorCerrada =
-          true;
+        let jornadaAnteriorCerrada = true;
 
 
         if (numJornadaActual > 1) {
@@ -2078,60 +2099,27 @@
         }
 
 
-        /* =====================================================
-           CASO 1:
-           LA JORNADA ANTERIOR NO ESTÁ CERRADA
-           ===================================================== */
+        /* ===================================================== */
+        /* BLOQUEO SECUENCIAL */
+        /* ===================================================== */
 
         if (!jornadaAnteriorCerrada) {
 
           /*
-            Volvemos a limpiar por seguridad.
+            AQUÍ ESTÁ LA CORRECCIÓN PRINCIPAL.
+
+            NO abrimos ningún onSnapshot de la jornada actual.
+
+            Por tanto, aunque J2 tenga datos guardados en Firebase,
+            NO los mostramos hasta que J1 esté cerrada.
           */
 
-          limpiarFormularioPronostico();
-
-          establecerEstadoFormulario(false);
+          bloquearFormularioPorJornadaAnterior();
 
 
           /*
-            MOSTRAR MENSAJE EXACTO.
-          */
-
-          document
-            .getElementById(
-              "aviso-bloqueo-secuencial"
-            )
-            .classList.remove("hidden");
-
-
-          document
-            .getElementById(
-              "aviso-bloqueo-pronosticos"
-            )
-            .classList.add("hidden");
-
-
-          /*
-            Dejamos el botón 0/8 y deshabilitado.
-
-            Aunque en Firestore existiera accidentalmente
-            algún pronóstico de J2, NO lo mostramos todavía.
-          */
-
-          btnPronosticos.innerHTML =
-            "📋 Pronósticos de la jornada (0/8)";
-
-          btnPronosticos.disabled = true;
-
-          btnPronosticos.className =
-            "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed";
-
-
-          /*
-            Limpiamos los datos de memoria.
-
-            Esto NO elimina nada de Firebase.
+            También dejamos vacíos los datos internos que se
+            utilizan para los modales.
           */
 
           ultimosPronosticosCargados = {};
@@ -2140,9 +2128,9 @@
 
 
           /*
-            Actualizamos las clasificaciones de la jornada
-            que estamos consultando, pero NO cargamos
-            ningún pronóstico en el formulario.
+            Actualizamos las clasificaciones con la jornada
+            seleccionada, pero NO cargamos sus pronósticos
+            en el formulario.
           */
 
           cargarClasificacionJornadaEspecifica(
@@ -2156,26 +2144,18 @@
           renderizarGraficoEvolucion();
 
 
-          /*
-            MUY IMPORTANTE:
-
-            NO creamos onSnapshot de la jornada actual
-            en este momento.
-
-            Así Firebase no puede cargar J2
-            mientras J1 esté abierta.
-          */
-
           return;
 
         }
 
 
+        /* ===================================================== */
+        /* LA JORNADA ANTERIOR YA ESTÁ CERRADA */
+        /* ===================================================== */
 
-        /* =====================================================
-           CASO 2:
-           LA JORNADA ANTERIOR SÍ ESTÁ CERRADA
-           ===================================================== */
+        avisoBloqueoSecuencial
+          .classList
+          .add("hidden");
 
 
         /*
@@ -2185,33 +2165,18 @@
         unsubscribeJornada =
           db
             .collection("jornadas")
-            .doc(jornadaComprobada)
+            .doc(jornadaActual)
             .onSnapshot(
 
               doc => {
 
                 /*
-                  Ignorar respuestas antiguas.
+                  Evitamos que un snapshot antiguo pueda pintar
+                  datos en otra jornada.
                 */
 
                 if (
-                  miVersion !==
-                  versionEscuchaJornada
-                ) {
-
-                  return;
-
-                }
-
-
-                /*
-                  Verificar que seguimos realmente
-                  en la misma jornada.
-                */
-
-                if (
-                  jornadaActual !==
-                  jornadaComprobada
+                  miVersion !== versionEscuchaJornada
                 ) {
 
                   return;
@@ -2233,21 +2198,17 @@
                   data.escrutinio || {};
 
 
-                /*
-                  Guardamos los datos actuales
-                  en memoria.
-                */
-
                 ultimosPronosticosCargados =
                   pronosticos;
+
 
                 ultimoEscrutinioCargado =
                   escrutinio;
 
 
-                /* =============================================
-                   ESTADO DE LOS 8 JUGADORES
-                   ============================================= */
+                /*
+                  Estado de recepción.
+                */
 
                 const grid =
                   document.getElementById(
@@ -2303,44 +2264,18 @@
                 });
 
 
-
-                /* =============================================
-                   LIMPIAR FORMULARIO
-                   ============================================= */
+                /*
+                  Como la jornada anterior está cerrada,
+                  ahora sí cargamos los pronósticos del usuario.
+                */
 
                 limpiarFormularioPronostico();
 
 
-                const avisoBloqueoSecuencial =
-                  document.getElementById(
-                    "aviso-bloqueo-secuencial"
-                  );
-
-
-                const avisoBloqueo =
-                  document.getElementById(
-                    "aviso-bloqueo-pronosticos"
-                  );
-
-
-                /*
-                  Aquí ya sabemos que la jornada anterior
-                  está cerrada.
-                */
-
-                avisoBloqueoSecuencial
-                  .classList.add("hidden");
-
-
-                /* =============================================
-                   CARGAR PRONÓSTICO DEL USUARIO
-                   ============================================= */
-
                 if (
                   usuarioActual &&
                   pronosticos[usuarioActual] &&
-                  pronosticos[usuarioActual]
-                    .respuestas
+                  pronosticos[usuarioActual].respuestas
                 ) {
 
                   const misRespuestas =
@@ -2349,16 +2284,10 @@
                     ].respuestas;
 
 
-                  for (
-                    let i = 1;
-                    i <= 14;
-                    i++
-                  ) {
+                  for (let i = 1; i <= 14; i++) {
 
                     if (
-                      misRespuestas[
-                        `p${i}`
-                      ]
+                      misRespuestas[`p${i}`]
                     ) {
 
                       const radio =
@@ -2386,54 +2315,86 @@
                     ].pleno
                   ) {
 
-                    document
-                      .getElementById(
-                        "pleno-15"
-                      )
-                      .value =
-                        pronosticos[
-                          usuarioActual
-                        ].pleno;
+                    document.getElementById(
+                      "pleno-15"
+                    ).value =
+                      pronosticos[
+                        usuarioActual
+                      ].pleno;
 
                   }
 
                 }
 
 
+                const btnGuardar =
+                  document.getElementById(
+                    "btn-guardar-pronostico"
+                  );
 
-                /* =============================================
-                   BLOQUEO SI YA ESTÁN LOS 8
-                   ============================================= */
+
+                const inputsPronostico =
+                  document.querySelectorAll(
+                    "#form-pronostico input"
+                  );
+
+
+                /*
+                  Si ya hay 8 jugadores, se bloquea la jornada.
+                */
 
                 if (
                   totalEnviados === 8
                 ) {
 
                   avisoBloqueo
-                    .classList.remove("hidden");
+                    .classList
+                    .remove("hidden");
 
 
-                  establecerEstadoFormulario(
-                    false
+                  btnGuardar.disabled = true;
+
+
+                  btnGuardar.classList.add(
+                    "bg-gray-400",
+                    "cursor-not-allowed"
                   );
+
+
+                  btnGuardar.classList.remove(
+                    "bg-blue-600",
+                    "hover:bg-blue-700"
+                  );
+
+
+                  inputsPronostico.forEach(
+                    input => {
+                      input.disabled = true;
+                    }
+                  );
+
 
                 } else {
 
                   avisoBloqueo
-                    .classList.add("hidden");
+                    .classList
+                    .add("hidden");
 
 
-                  establecerEstadoFormulario(
-                    true
-                  );
+                  habilitarFormularioPronostico();
 
                 }
 
 
+                /*
+                  Botón para ver los pronósticos conjuntos.
+                */
 
-                /* =============================================
-                   BOTÓN BOLETO CONJUNTO
-                   ============================================= */
+                const btnPronosticos =
+                  document.getElementById(
+                    "btn-pronosticos-semana"
+                  );
+
 
                 btnPronosticos.innerHTML =
                   `📋 Pronósticos de la jornada (${totalEnviados}/8)`;
@@ -2443,8 +2404,7 @@
                   totalEnviados === 8
                 ) {
 
-                  btnPronosticos.disabled =
-                    false;
+                  btnPronosticos.disabled = false;
 
 
                   btnPronosticos.className =
@@ -2452,8 +2412,7 @@
 
                 } else {
 
-                  btnPronosticos.disabled =
-                    true;
+                  btnPronosticos.disabled = true;
 
 
                   btnPronosticos.className =
@@ -2462,18 +2421,19 @@
                 }
 
 
-
-                /* =============================================
-                   ACTUALIZAR CLASIFICACIONES
-                   ============================================= */
+                /*
+                  Actualizamos clasificaciones.
+                */
 
                 cargarClasificacionJornadaEspecifica(
                   jornadaTablaActual
                 );
 
+
                 cargarClasificacionAcumuladaHasta(
                   jornadaAcumActual
                 );
+
 
                 renderizarGraficoEvolucion();
 
@@ -2493,7 +2453,7 @@
       }).catch(error => {
 
         console.error(
-          "Error comprobando jornada anterior:",
+          "Error comprobando la jornada anterior:",
           error
         );
 
@@ -2503,9 +2463,9 @@
 
 
 
-    /* =========================================================
-       GUARDAR PRONÓSTICO
-       ========================================================= */
+    /* ========================================================= */
+    /* GUARDAR PRONÓSTICO */
+    /* ========================================================= */
 
     async function guardarPronostico(e) {
 
@@ -2524,11 +2484,11 @@
 
 
       /*
-        SEGUNDA PROTECCIÓN:
+        SEGUNDA PROTECCIÓN.
 
-        Aunque alguien consiguiera pulsar el botón
-        mientras la interfaz está cambiando, volvemos
-        a comprobar que la jornada anterior está cerrada.
+        Aunque alguien intentase guardar manualmente mientras
+        la jornada está bloqueada, volvemos a comprobar que la
+        jornada anterior esté cerrada.
       */
 
       const numJornada =
@@ -2541,34 +2501,27 @@
 
         try {
 
-          const jornadaAnterior =
+          const jornadaAnteriorKey =
             `J${numJornada - 1}`;
 
 
-          const docAnterior =
+          const anteriorDoc =
             await db
               .collection("jornadas")
-              .doc(jornadaAnterior)
+              .doc(jornadaAnteriorKey)
               .get();
 
 
           const anteriorCerrada =
-            docAnterior.exists &&
-            docAnterior.data().cerrada === true;
+            anteriorDoc.exists &&
+            anteriorDoc.data().cerrada === true;
 
 
           if (!anteriorCerrada) {
 
             limpiarFormularioPronostico();
 
-            establecerEstadoFormulario(false);
-
-
-            document
-              .getElementById(
-                "aviso-bloqueo-secuencial"
-              )
-              .classList.remove("hidden");
+            bloquearFormularioPorJornadaAnterior();
 
 
             alert(
@@ -2581,13 +2534,8 @@
 
         } catch (error) {
 
-          console.error(
-            "Error comprobando jornada anterior:",
-            error
-          );
-
           alert(
-            "No se ha podido comprobar si la jornada anterior está cerrada."
+            "No se ha podido comprobar el estado de la jornada anterior."
           );
 
           return;
@@ -2598,78 +2546,14 @@
 
 
 
-      /* =====================================================
-         COMPROBAR SI YA ESTÁN LOS 8
-         ===================================================== */
-
-      try {
-
-        const jornadaDoc =
-          await db
-            .collection("jornadas")
-            .doc(jornadaActual)
-            .get();
-
-
-        if (jornadaDoc.exists) {
-
-          const data =
-            jornadaDoc.data() || {};
-
-
-          const pronosticos =
-            data.pronosticos || {};
-
-
-          const jugadoresConPronostico =
-            Object.keys(pronosticos);
-
-
-          /*
-            Si hay 8 jugadores y este usuario todavía
-            no estaba entre ellos, no permitimos un noveno.
-          */
-
-          if (
-            jugadoresConPronostico.length >= 8 &&
-            !pronosticos[usuarioActual]
-          ) {
-
-            alert(
-              "🔒 Los 8 pronósticos de esta jornada ya han sido completados."
-            );
-
-            establecerEstadoFormulario(false);
-
-            return;
-
-          }
-
-        }
-
-      } catch (error) {
-
-        console.error(
-          "Error comprobando pronósticos:",
-          error
-        );
-
-      }
-
-
-
-      /* =====================================================
-         RECOGER LOS 14 PRONÓSTICOS
-         ===================================================== */
+      /* ===================================================== */
+      /* COMPROBAR LOS 14 PARTIDOS */
+      /* ===================================================== */
 
       const opciones = {};
 
 
-      for (
-        let i = 1;
-        i <= 14;
-        i++
-      ) {
+      for (let i = 1; i <= 14; i++) {
 
         const marcado =
           document.querySelector(
@@ -2695,9 +2579,9 @@
 
 
 
-      /* =====================================================
-         PLENO AL 15
-         ===================================================== */
+      /* ===================================================== */
+      /* PLENO 15 */
+      /* ===================================================== */
 
       let pleno = "-";
 
@@ -2727,82 +2611,48 @@
 
 
 
-      /* =====================================================
-         GUARDAR SOLO EL JUGADOR ACTUAL
-         ===================================================== */
-
+      /* ===================================================== */
       /*
         IMPORTANTE:
+        Guardamos únicamente el jugador actual.
 
-        Antes se hacía:
-
-        pronosticos: {
-          [usuarioActual]: ...
-        }
-
-        Eso podía sustituir el mapa completo de pronósticos.
-
-        Ahora usamos:
-
-        pronosticos.NombreJugador
-
-        Así solamente se modifica el jugador actual
-        y se conservan los otros 7.
+        Esto evita que al guardar Borja, por ejemplo, se borren
+        accidentalmente los pronósticos de Carlos, Itziar, etc.
       */
+      /* ===================================================== */
 
-      const datosJugador = {
-        respuestas: opciones,
-        pleno: pleno,
-        fecha: new Date()
-      };
-
-
-      try {
-
-        await db
-          .collection("jornadas")
-          .doc(jornadaActual)
-          .set(
-            {
-              [`pronosticos.${usuarioActual}`]:
-                datosJugador
-            },
-            {
-              merge: true
+      await db
+        .collection("jornadas")
+        .doc(jornadaActual)
+        .set(
+          {
+            [`pronosticos.${usuarioActual}`]: {
+              respuestas: opciones,
+              pleno: pleno,
+              fecha: new Date()
             }
-          );
-
-
-        alert(
-          "¡Pronóstico guardado para " +
-          usuarioActual +
-          " en " +
-          jornadaActual +
-          "!"
+          },
+          {
+            merge: true
+          }
         );
 
 
-      } catch (error) {
-
-        console.error(
-          "Error guardando pronóstico:",
-          error
-        );
-
-
-        alert(
-          "❌ No se ha podido guardar el pronóstico. Inténtalo de nuevo."
-        );
-
-      }
+      alert(
+        "¡Pronóstico guardado para " +
+        usuarioActual +
+        " en " +
+        jornadaActual +
+        "!"
+      );
 
     }
 
 
 
-    /* =========================================================
-       MODAL PRONÓSTICOS
-       ========================================================= */
+    /* ========================================================= */
+    /* MODAL PRONÓSTICOS */
+    /* ========================================================= */
 
     function abrirModalPronosticos() {
 
@@ -2825,18 +2675,22 @@
 
 
       let thHTML =
-        `<th class="p-2 text-left border-r">Partido</th>
-         <th class="p-2 border-r bg-slate-200">Resultado Real</th>`;
+        `<th class="p-2 text-left border-r">Partido</th>`;
+
+      thHTML +=
+        `<th class="p-2 border-r bg-slate-200">Resultado Real</th>`;
 
 
       jugadores.forEach(j => {
 
         thHTML += `
-          <th class="p-2 border-r ${
-            j === usuarioActual
-              ? "bg-blue-100 text-blue-900"
-              : ""
-          }">
+          <th
+            class="p-2 border-r ${
+              j === usuarioActual
+                ? "bg-blue-100 text-blue-900"
+                : ""
+            }"
+          >
             ${j}
           </th>
         `;
@@ -2851,11 +2705,7 @@
       let tbodyHTML = "";
 
 
-      for (
-        let i = 1;
-        i <= 14;
-        i++
-      ) {
+      for (let i = 1; i <= 14; i++) {
 
         const valReal =
           ultimoEscrutinioCargado[
@@ -2864,11 +2714,13 @@
 
 
         tbodyHTML += `
-          <tr class="border-b ${
-            i % 2 === 0
-              ? "bg-slate-50"
-              : "bg-white"
-          }">
+          <tr
+            class="border-b ${
+              i % 2 === 0
+                ? "bg-slate-50"
+                : "bg-white"
+            }"
+          >
         `;
 
 
@@ -2889,11 +2741,9 @@
         jugadores.forEach(j => {
 
           const resp =
-            ultimosPronosticosCargados[
-              j
-            ]?.respuestas?.[
-              `p${i}`
-            ] || "-";
+            ultimosPronosticosCargados[j]
+              ?.respuestas
+              ?. [`p${i}`] || "-";
 
 
           const esAcierto =
@@ -2918,37 +2768,40 @@
         });
 
 
-        tbodyHTML += `
-          </tr>
-        `;
+        tbodyHTML += `</tr>`;
 
       }
 
 
 
-      /* =====================================================
-         PLENO 15
-         ===================================================== */
+      /* P15 */
 
       tbodyHTML += `
-        <tr class="bg-amber-100 font-bold border-t-2 border-amber-300">
+        <tr
+          class="bg-amber-100 font-bold border-t-2 border-amber-300"
+        >
+      `;
 
-          <td class="p-2 text-left border-r text-amber-900">
-            P15
-          </td>
 
-          <td class="p-2 border-r">
-            -
-          </td>
+      tbodyHTML += `
+        <td class="p-2 text-left border-r text-amber-900">
+          P15
+        </td>
+      `;
+
+
+      tbodyHTML += `
+        <td class="p-2 border-r">
+          -
+        </td>
       `;
 
 
       jugadores.forEach(j => {
 
         const plenoVal =
-          ultimosPronosticosCargados[
-            j
-          ]?.pleno || "-";
+          ultimosPronosticosCargados[j]
+            ?.pleno || "-";
 
 
         tbodyHTML += `
@@ -2960,9 +2813,7 @@
       });
 
 
-      tbodyHTML += `
-        </tr>
-      `;
+      tbodyHTML += `</tr>`;
 
 
       tbody.innerHTML =
@@ -2989,9 +2840,9 @@
 
 
 
-    /* =========================================================
-       ABRIR ESCRUTINIO
-       ========================================================= */
+    /* ========================================================= */
+    /* MODAL ESCRUTINIO */
+    /* ========================================================= */
 
     function abrirModalEscrutinio() {
 
@@ -3015,11 +2866,7 @@
       }
 
 
-      for (
-        let i = 1;
-        i <= 14;
-        i++
-      ) {
+      for (let i = 1; i <= 14; i++) {
 
         const valGuardado =
           ultimoEscrutinioCargado[
@@ -3047,11 +2894,9 @@
             .querySelectorAll(
               `input[name="esc_p${i}"]`
             )
-            .forEach(r => {
-
-              r.checked = false;
-
-            });
+            .forEach(
+              r => r.checked = false
+            );
 
         }
 
@@ -3080,20 +2925,16 @@
 
 
 
-    /* =========================================================
-       GUARDAR ESCRUTINIO
-       ========================================================= */
+    /* ========================================================= */
+    /* GUARDAR ESCRUTINIO */
+    /* ========================================================= */
 
     async function guardarEscrutinioModal() {
 
       const esc = {};
 
 
-      for (
-        let i = 1;
-        i <= 14;
-        i++
-      ) {
+      for (let i = 1; i <= 14; i++) {
 
         const marcado =
           document.querySelector(
@@ -3111,52 +2952,35 @@
       }
 
 
-      try {
-
-        await db
-          .collection("jornadas")
-          .doc(jornadaActual)
-          .set(
-            {
-              escrutinio: esc
-            },
-            {
-              merge: true
-            }
-          );
-
-
-        alert(
-          "✅ Resultado oficial de " +
-          jornadaActual +
-          " guardado correctamente."
+      await db
+        .collection("jornadas")
+        .doc(jornadaActual)
+        .set(
+          {
+            escrutinio: esc
+          },
+          {
+            merge: true
+          }
         );
 
 
-        cerrarModalEscrutinio();
+      alert(
+        "✅ Resultado oficial de " +
+        jornadaActual +
+        " guardado correctamente."
+      );
 
 
-      } catch (error) {
-
-        console.error(
-          "Error guardando escrutinio:",
-          error
-        );
-
-
-        alert(
-          "❌ No se ha podido guardar el resultado."
-        );
-
-      }
+      cerrarModalEscrutinio();
 
     }
 
 
 
-    /* =========================================================
-       CERRAR JORNADA OFICIAL
-       ========================================================= */
+    /* ========================================================= */
+    /* CERRAR JORNADA OFICIAL */
+    /* ========================================================= */
 
     async function cerrarJornadaOficial() {
 
@@ -3176,11 +3000,7 @@
       const esc = {};
 
 
-      for (
-        let i = 1;
-        i <= 14;
-        i++
-      ) {
+      for (let i = 1; i <= 14; i++) {
 
         const marcado =
           document.querySelector(
@@ -3198,59 +3018,41 @@
       }
 
 
-      try {
-
-        await db
-          .collection("jornadas")
-          .doc(jornadaActual)
-          .set(
-            {
-              escrutinio: esc,
-              cerrada: true
-            },
-            {
-              merge: true
-            }
-          );
-
-
-        alert(
-          `🔒 La ${jornadaActual} ha sido cerrada oficialmente.`
+      await db
+        .collection("jornadas")
+        .doc(jornadaActual)
+        .set(
+          {
+            escrutinio: esc,
+            cerrada: true
+          },
+          {
+            merge: true
+          }
         );
 
 
-        cerrarModalEscrutinio();
+      alert(
+        `🔒 La ${jornadaActual} ha sido cerrada oficialmente.`
+      );
 
 
-        /*
-          Volvemos a escuchar la jornada actual
-          para actualizar clasificación y estado.
-        */
-
-        escucharJornada();
+      cerrarModalEscrutinio();
 
 
-      } catch (error) {
+      /*
+        Volvemos a escuchar la jornada para actualizar su estado.
+      */
 
-        console.error(
-          "Error cerrando jornada:",
-          error
-        );
-
-
-        alert(
-          "❌ No se ha podido cerrar la jornada."
-        );
-
-      }
+      escucharJornada();
 
     }
 
 
 
-    /* =========================================================
-       CLASIFICACIÓN DE JORNADA
-       ========================================================= */
+    /* ========================================================= */
+    /* CLASIFICACIÓN DE JORNADA */
+    /* ========================================================= */
 
     async function cargarClasificacionJornadaEspecifica(
       jKey
@@ -3262,585 +3064,10 @@
         );
 
 
-      tbodyJornada.innerHTML =
-        "";
+      tbodyJornada.innerHTML = "";
 
 
-      try {
-
-        const jDoc =
-          await db
-            .collection("jornadas")
-            .doc(jKey)
-            .get();
-
-
-        const data =
-          jDoc.exists
-            ? jDoc.data()
-            : {};
-
-
-        const pronosticos =
-          data.pronosticos || {};
-
-
-        const escrutinio =
-          data.escrutinio || {};
-
-
-        datosUltimoRankingJornada =
-          jugadores
-            .map(j => {
-
-              let aciertos = 0;
-
-
-              const resp =
-                pronosticos[j]
-                  ?.respuestas || {};
-
-
-              for (
-                let i = 1;
-                i <= 14;
-                i++
-              ) {
-
-                if (
-                  escrutinio[`p${i}`] &&
-                  resp[`p${i}`] ===
-                    escrutinio[`p${i}`]
-                ) {
-
-                  aciertos++;
-
-                }
-
-              }
-
-
-              return {
-                jugador: j,
-                puntos: aciertos,
-                aciertos: aciertos,
-                pleno:
-                  pronosticos[j]?.pleno ||
-                  "-"
-              };
-
-            })
-            .sort(
-              (a, b) =>
-                b.puntos - a.puntos ||
-                b.aciertos - a.aciertos
-            );
-
-
-        datosUltimoRankingJornada
-          .forEach((r, idx) => {
-
-            tbodyJornada.innerHTML += `
-
-              <tr
-                class="border-b ${
-                  idx === 0
-                    ? "bg-amber-50 font-bold"
-                    : ""
-                }"
-              >
-
-                <td class="p-3">
-                  ${idx + 1}º
-                </td>
-
-                <td class="p-3">
-                  ${r.jugador}
-                </td>
-
-                <td class="p-3 text-center font-semibold">
-                  ${r.puntos}
-                </td>
-
-                <td class="p-3 text-center text-gray-500">
-                  ${r.aciertos}
-                </td>
-
-                <td class="p-3 text-center">
-                  ${r.pleno}
-                </td>
-
-              </tr>
-
-            `;
-
-          });
-
-
-      } catch (error) {
-
-        console.error(
-          "Error cargando clasificación:",
-          error
-        );
-
-      }
-
-    }
-
-
-
-    /* =========================================================
-       CLASIFICACIÓN ACUMULADA
-       ========================================================= */
-
-    async function cargarClasificacionAcumuladaHasta(
-      jKey
-    ) {
-
-      const tbodyAcumulada =
-        document.getElementById(
-          "tabla-acumulada"
-        );
-
-
-      tbodyAcumulada.innerHTML =
-        "";
-
-
-      try {
-
-        const todasJornadasSnap =
-          await db
-            .collection("jornadas")
-            .get();
-
-
-        const puntosAcumulados = {};
-
-
-        jugadores.forEach(j => {
-
-          puntosAcumulados[j] = 0;
-
-        });
-
-
-        const numMax =
-          parseInt(
-            jKey.replace("J", "")
-          );
-
-
-        for (
-          let i = 1;
-          i <= numMax;
-          i++
-        ) {
-
-          const currentKey =
-            `J${i}`;
-
-
-          const jDoc =
-            todasJornadasSnap.docs.find(
-              d => d.id === currentKey
-            );
-
-
-          if (jDoc) {
-
-            const jData =
-              jDoc.data();
-
-
-            const jPron =
-              jData.pronosticos || {};
-
-
-            const jEsc =
-              jData.escrutinio || {};
-
-
-            jugadores.forEach(j => {
-
-              let pts = 0;
-
-
-              const resp =
-                jPron[j]
-                  ?.respuestas || {};
-
-
-              for (
-                let p = 1;
-                p <= 14;
-                p++
-              ) {
-
-                if (
-                  jEsc[`p${p}`] &&
-                  resp[`p${p}`] ===
-                    jEsc[`p${p}`]
-                ) {
-
-                  pts++;
-
-                }
-
-              }
-
-
-              puntosAcumulados[j] +=
-                pts;
-
-            });
-
-          }
-
-        }
-
-
-        datosUltimoRankingAcumulado =
-          jugadores
-            .map(j => ({
-              jugador: j,
-              total:
-                puntosAcumulados[j]
-            }))
-            .sort(
-              (a, b) =>
-                b.total - a.total
-            );
-
-
-        datosUltimoRankingAcumulado
-          .forEach((r, idx) => {
-
-            tbodyAcumulada.innerHTML += `
-
-              <tr
-                class="border-b ${
-                  idx === 0
-                    ? "bg-green-50 font-bold"
-                    : ""
-                }"
-              >
-
-                <td class="p-3">
-                  ${idx + 1}º
-                </td>
-
-                <td class="p-3">
-                  ${r.jugador}
-                </td>
-
-                <td class="p-3 text-center font-bold text-blue-900">
-                  ${r.total}
-                </td>
-
-              </tr>
-
-            `;
-
-          });
-
-
-      } catch (error) {
-
-        console.error(
-          "Error cargando clasificación acumulada:",
-          error
-        );
-
-      }
-
-    }
-
-
-
-    /* =========================================================
-       GRÁFICO
-       ========================================================= */
-
-    async function renderizarGraficoEvolucion() {
-
-      try {
-
-        const todasJornadasSnap =
-          await db
-            .collection("jornadas")
-            .get();
-
-
-        const puntosAcumulados = {};
-
-        const historicoGrafico = {};
-
-
-        jugadores.forEach(j => {
-
-          puntosAcumulados[j] = 0;
-
-          historicoGrafico[j] = [];
-
-        });
-
-
-        const jornadasTotales = [];
-
-
-        for (
-          let i = 1;
-          i <= 50;
-          i++
-        ) {
-
-          jornadasTotales.push(
-            `J${i}`
-          );
-
-        }
-
-
-        const numJornadaSeleccionada =
-          parseInt(
-            jornadaActual.replace("J", "")
-          );
-
-
-        const jornadasHastaActual =
-          jornadasTotales.slice(
-            0,
-            numJornadaSeleccionada
-          );
-
-
-        jornadasHastaActual.forEach(
-          jKey => {
-
-            const jDoc =
-              todasJornadasSnap.docs.find(
-                d => d.id === jKey
-              );
-
-
-            if (jDoc) {
-
-              const jData =
-                jDoc.data();
-
-
-              const jPron =
-                jData.pronosticos || {};
-
-
-              const jEsc =
-                jData.escrutinio || {};
-
-
-              jugadores.forEach(j => {
-
-                let pts = 0;
-
-
-                const resp =
-                  jPron[j]
-                    ?.respuestas || {};
-
-
-                for (
-                  let i = 1;
-                  i <= 14;
-                  i++
-                ) {
-
-                  if (
-                    jEsc[`p${i}`] &&
-                    resp[`p${i}`] ===
-                      jEsc[`p${i}`]
-                  ) {
-
-                    pts++;
-
-                  }
-
-                }
-
-
-                puntosAcumulados[j] +=
-                  pts;
-
-
-                historicoGrafico[j]
-                  .push(
-                    puntosAcumulados[j]
-                  );
-
-              });
-
-            } else {
-
-              jugadores.forEach(j => {
-
-                historicoGrafico[j]
-                  .push(
-                    puntosAcumulados[j]
-                  );
-
-              });
-
-            }
-
-          }
-        );
-
-
-        const ctx =
-          document
-            .getElementById(
-              "chartEvolucion"
-            )
-            .getContext("2d");
-
-
-        if (chartInstancia) {
-
-          chartInstancia.destroy();
-
-        }
-
-
-        const datasets =
-          jugadores.map(j => ({
-
-            label: j,
-
-            data:
-              historicoGrafico[j],
-
-            borderColor:
-              coloresJugadores[j] ||
-              "#000",
-
-            backgroundColor:
-              coloresJugadores[j] ||
-              "#000",
-
-            fill: false,
-
-            tension: 0.2
-
-          }));
-
-
-        chartInstancia =
-          new Chart(
-            ctx,
-            {
-              type: "line",
-
-              data: {
-
-                labels:
-                  jornadasHastaActual,
-
-                datasets:
-                  datasets
-
-              },
-
-              options: {
-
-                responsive: true,
-
-                maintainAspectRatio:
-                  false,
-
-                plugins: {
-
-                  legend: {
-                    position:
-                      "bottom"
-                  }
-
-                }
-
-              }
-
-            }
-          );
-
-
-      } catch (error) {
-
-        console.error(
-          "Error renderizando gráfico:",
-          error
-        );
-
-      }
-
-    }
-
-
-
-    /* =========================================================
-       COPIAR RESUMEN WHATSAPP
-       ========================================================= */
-
-    function copiarResumenWhatsApp() {
-
-      let texto =
-        `⚽ *QUINIELA - ${jornadaActual}*\n\n`;
-
-
-      texto +=
-        `📊 *Puntos ${jornadaActual}:*\n`;
-
-
-      datosUltimoRankingJornada
-        .forEach((r, idx) => {
-
-          texto +=
-            `${idx + 1}º ${r.jugador}: ${r.puntos} pts (${r.aciertos} aciertos, P15: ${r.pleno})\n`;
-
-        });
-
-
-      texto +=
-        `\n🏆 *General Acumulada (${jornadaActual}):*\n`;
-
-
-      datosUltimoRankingAcumulado
-        .forEach((r, idx) => {
-
-          texto +=
-            `${idx + 1}º ${r.jugador}: ${r.total} pts\n`;
-
-        });
-
-
-      navigator.clipboard
-        .writeText(texto)
-        .then(() => {
-
-          alert(
-            "📋 ¡Resumen copiado! Ya puedes pegarlo directamente en el grupo de WhatsApp de la peña."
-          );
-
-        })
-        .catch(() => {
-
-          alert(
-            "Error al copiar. Inténtalo de nuevo."
-          );
-
-        });
-
-    }
-
-  </script>
-
-</body>
-</html>
+      const jDoc =
+        await db
+          .collection("jornadas")
+          .
