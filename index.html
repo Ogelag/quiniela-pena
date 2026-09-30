@@ -139,7 +139,7 @@
       <section class="bg-white p-4 rounded-xl shadow border border-slate-200">
         <h2 class="text-lg font-bold mb-3 border-b pb-2">Rellenar Pronóstico (<span id="lbl-jornada-form">Jornada 1</span>)</h2>
         
-        <!-- AVISO DE BLOQUEO SECUENCIAL SOLICITADO -->
+        <!-- AVISO DE BLOQUEO SECUENCIAL (OBLIGATORIO SI LA ANTERIOR NO ESTÁ CERRADA) -->
         <div id="aviso-bloqueo-secuencial" class="hidden bg-red-50 border border-red-300 text-red-800 p-3 rounded-lg text-xs font-semibold mb-3 flex items-center gap-2">
           <span>⛔ Todavía no se puede pronosticar porque no se ha cerrado la jornada anterior.</span>
         </div>
@@ -559,6 +559,12 @@
       document.getElementById("modal-lbl-jornada").textContent = jornadaActual;
       document.getElementById("modal-esc-lbl-jornada").textContent = jornadaActual;
 
+      // Limpiar inmediatamente las selecciones visuales del formulario al cambiar de jornada
+      for (let i = 1; i <= 14; i++) {
+        document.querySelectorAll(`input[name="p${i}"]`).forEach(r => r.checked = false);
+      }
+      document.getElementById("pleno-15").value = "";
+
       await determinarEncargadoPleno15();
       actualizarVisibilidadPleno15();
       escucharJornada();
@@ -679,19 +685,25 @@
             `;
           });
 
+          // Limpiar primero todos los inputs
           for (let i = 1; i <= 14; i++) {
             document.querySelectorAll(`input[name="p${i}"]`).forEach(r => r.checked = false);
           }
-          if (usuarioActual && pronosticos[usuarioActual] && pronosticos[usuarioActual].respuestas) {
-            const misRespuestas = pronosticos[usuarioActual].respuestas;
-            for (let i = 1; i <= 14; i++) {
-              if (misRespuestas[`p${i}`]) {
-                const radio = document.querySelector(`input[name="p${i}"][value="${misRespuestas[`p${i}`]}"]`);
-                if (radio) radio.checked = true;
+          document.getElementById("pleno-15").value = "";
+
+          // Si la jornada anterior está cerrada, cargamos las respuestas guardadas del usuario si las tiene
+          if (jornadaAnteriorCerrada) {
+            if (usuarioActual && pronosticos[usuarioActual] && pronosticos[usuarioActual].respuestas) {
+              const misRespuestas = pronosticos[usuarioActual].respuestas;
+              for (let i = 1; i <= 14; i++) {
+                if (misRespuestas[`p${i}`]) {
+                  const radio = document.querySelector(`input[name="p${i}"][value="${misRespuestas[`p${i}`]}"]`);
+                  if (radio) radio.checked = true;
+                }
               }
-            }
-            if (usuarioActual === encargadoPlenoActual && pronosticos[usuarioActual].pleno) {
-              document.getElementById("pleno-15").value = pronosticos[usuarioActual].pleno;
+              if (usuarioActual === encargadoPlenoActual && pronosticos[usuarioActual].pleno) {
+                document.getElementById("pleno-15").value = pronosticos[usuarioActual].pleno;
+              }
             }
           }
 
@@ -700,6 +712,7 @@
           const btnGuardar = document.getElementById("btn-guardar-pronostico");
           const inputsPronostico = document.querySelectorAll('#form-pronostico input');
 
+          // PRIORIDAD ABSOLUTA: Verificar primero si la jornada anterior NO está cerrada
           if (!jornadaAnteriorCerrada) {
             avisoBloqueoSecuencial.classList.remove("hidden");
             avisoBloqueo.classList.add("hidden");
