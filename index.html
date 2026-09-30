@@ -139,7 +139,7 @@
               📋 Pronósticos de la jornada (0/8)
             </button>
             <button id="btn-resultado-jornada" disabled onclick="abrirModalEscrutinio()" class="flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed">
-              ✏️️ Introduce el resultado de la jornada (Itziar / Jose)
+              ✏️ Introduce el resultado de la jornada (Itziar / Jose)
             </button>
           </div>
         </div>
@@ -242,9 +242,8 @@
       <div class="p-4 overflow-x-auto flex-1">
         <table class="w-full text-xs text-center border-collapse">
           <thead>
-            <tr class="bg-slate-100 text-slate-700 font-bold border-b">
+            <tr id="tr-th-jugadores" class="bg-slate-100 text-slate-700 font-bold border-b">
               <th class="p-2 text-left border-r">Partido</th>
-              <template id="tmpl-th-jugadores"></template>
             </tr>
           </thead>
           <tbody id="tbody-pronosticos-matriz"></tbody>
@@ -721,16 +720,17 @@
       alert("¡Pronóstico guardado para " + usuarioActual + " en " + jornadaActual + "!");
     }
 
-    // MODAL DE PRONÓSTICOS DE LA SEMANA
+    // MODAL DE PRONÓSTICOS DE LA SEMANA (CORREGIDO PARA REUTILIZACIÓN)
     function abrirModalPronosticos() {
       const modal = document.getElementById("modal-pronosticos");
+      const trTh = document.getElementById("tr-th-jugadores");
       const tbody = document.getElementById("tbody-pronosticos-matriz");
 
-      let thHTML = `<th class="p-2 border-r bg-slate-200">Resultado Real</th>`;
+      let thHTML = `<th class="p-2 text-left border-r">Partido</th><th class="p-2 border-r bg-slate-200">Resultado Real</th>`;
       jugadores.forEach(j => {
         thHTML += `<th class="p-2 border-r ${j === usuarioActual ? 'bg-blue-100 text-blue-900' : ''}">${j}</th>`;
       });
-      document.getElementById("tmpl-th-jugadores").outerHTML = thHTML;
+      trTh.innerHTML = thHTML;
 
       let tbodyHTML = "";
       for (let i = 1; i <= 14; i++) {
