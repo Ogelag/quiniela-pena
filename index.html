@@ -188,6 +188,7 @@
                     <th class="p-3">Pos</th>
                     <th class="p-3">Jugador</th>
                     <th class="p-3 text-center">Puntos de la Jornada</th>
+                    <th class="p-3 text-center">Aciertos</th>
                     <th class="p-3 text-center">Pleno 15</th>
                   </tr>
                 </thead>
@@ -294,8 +295,14 @@
 
     const jugadores = ["Borja", "Carlos", "Itziar", "Jose", "Quique", "Currás", "García", "Rodríguez"];
     const coloresJugadores = {
-      "Borja": "#3b82f6", "Carlos": "#ef4444", "Itziar": "#ec4899", "Jose": "#10b981",
-      "Quique": "#f59e0b", "Currás": "#8b5cf6", "García": "#06b6d4", "Rodríguez": "#64748b"
+      "Borja": "#3b82f6",     // Azul
+      "Carlos": "#334155",    // Gris oscuro / Pizarra
+      "Itziar": "#ec4899",    // Rosa
+      "Jose": "#ef4444",      // Rojo asignado a Jose
+      "Quique": "#f59e0b",    // Ámbar
+      "Currás": "#8b5cf6",    // Violeta
+      "García": "#06b6d4",    // Cían
+      "Rodríguez": "#10b981"  // Esmeralda
     };
 
     let usuarioActual = "";
@@ -758,15 +765,18 @@
             aciertos++;
           }
         }
-        return { jugador: j, aciertos: aciertos, pleno: pronosticos[j]?.pleno || "-" };
-      }).sort((a, b) => b.aciertos - a.aciertos);
+        // Puntos de la jornada (puedes ajustar el cómputo si aplica alguna regla de puntuación)
+        let puntosJornada = aciertos;
+        return { jugador: j, puntos: puntosJornada, aciertos: aciertos, pleno: pronosticos[j]?.pleno || "-" };
+      }).sort((a, b) => b.puntos - a.puntos || b.aciertos - a.aciertos);
 
       datosUltimoRankingJornada.forEach((r, idx) => {
         tbodyJornada.innerHTML += `
           <tr class="border-b ${idx === 0 ? 'bg-amber-50 font-bold' : ''}">
             <td class="p-3">${idx + 1}º</td>
             <td class="p-3">${r.jugador}</td>
-            <td class="p-3 text-center font-semibold">${r.aciertos}</td>
+            <td class="p-3 text-center font-semibold">${r.puntos}</td>
+            <td class="p-3 text-center text-gray-500">${r.aciertos}</td>
             <td class="p-3 text-center">${r.pleno}</td>
           </tr>
         `;
@@ -857,7 +867,7 @@
       let texto = `⚽ *QUINIELA - ${jornadaActual}*\n\n`;
       texto += `📊 *Puntos ${jornadaActual}:*\n`;
       datosUltimoRankingJornada.forEach((r, idx) => {
-        texto += `${idx + 1}º ${r.jugador}: ${r.aciertos} pts (${r.pleno})\n`;
+        texto += `${idx + 1}º ${r.jugador}: ${r.puntos} pts (${r.aciertos} aciertos, P15: ${r.pleno})\n`;
       });
 
       texto += `\n🏆 *General Acumulada (${jornadaActual}):*\n`;
