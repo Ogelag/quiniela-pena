@@ -252,18 +252,18 @@
     </div>
   </div>
 
-  <!-- MODAL: INTRODUCIR RESULTADO REAL (ESCRUTINIO) -->
+  <!-- MODAL: INTRODUCIR RESULTADO REAL (ESCRUTINIO EN FORMATO 1, X, 2) -->
   <div id="modal-escrutinio" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-lg w-full p-5 space-y-4">
-      <div class="flex justify-between items-center border-b pb-2">
-        <h3 class="font-bold text-base text-blue-900">✏️ Introducir Resultado Oficial (<span id="modal-esc-lbl-jornada">J1</span>)</h3>
-        <button type="button" onclick="cerrarModalEscrutinio()" class="text-gray-400 hover:text-red-500 font-bold text-lg">✖</button>
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden">
+      <div class="bg-blue-900 text-white p-4 flex justify-between items-center">
+        <h3 class="font-bold text-base flex items-center gap-2">✏️ Resultado Oficial - <span id="modal-esc-lbl-jornada">Jornada 1</span></h3>
+        <button type="button" onclick="cerrarModalEscrutinio()" class="text-white hover:text-red-300 font-bold text-lg">✖</button>
       </div>
-      <p class="text-xs text-gray-500">Rellena la combinación ganadora oficial (1, X, 2) para calcular los aciertos y puntos:</p>
-      
-      <div id="grid-escrutinio" class="grid grid-cols-7 gap-2 text-center"></div>
-
-      <div class="pt-3 border-t flex gap-2 justify-end">
+      <div class="p-4 overflow-y-auto space-y-3 flex-1">
+        <p class="text-xs text-gray-500">Selecciona el resultado oficial para cada partido:</p>
+        <div id="lista-escrutinio" class="space-y-2"></div>
+      </div>
+      <div class="p-3 bg-slate-50 border-t flex justify-end gap-2 shrink-0">
         <button type="button" onclick="cerrarModalEscrutinio()" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-xs font-bold hover:bg-gray-300 transition">
           Cancelar
         </button>
@@ -313,7 +313,7 @@
     let ultimosPronosticosCargados = {};
     let ultimoEscrutinioCargado = {};
 
-    // Generar partidos en formulario
+    // Generar partidos en formulario de pronóstico
     const partidosCont = document.getElementById("lista-partidos");
     for (let i = 1; i <= 14; i++) {
       partidosCont.innerHTML += `
@@ -334,13 +334,23 @@
       `;
     }
 
-    // Generar campos de escrutinio
-    const escrutinioCont = document.getElementById("grid-escrutinio");
+    // Generar partidos en modal de escrutinio con formato de botones 1, X, 2
+    const escrutinioCont = document.getElementById("lista-escrutinio");
     for (let i = 1; i <= 14; i++) {
       escrutinioCont.innerHTML += `
-        <div>
-          <span class="text-[10px] text-gray-400 block">P${i}</span>
-          <input type="text" id="esc-p${i}" maxlength="1" placeholder="1/X/2" class="w-full p-1 border text-center uppercase font-bold rounded text-xs">
+        <div class="flex items-center justify-between bg-gray-50 p-2 rounded border text-sm">
+          <span class="font-medium">Partido ${i}</span>
+          <div class="flex gap-2">
+            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-amber-50">
+              <input type="radio" name="esc_p${i}" value="1"> 1
+            </label>
+            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-amber-50">
+              <input type="radio" name="esc_p${i}" value="X"> X
+            </label>
+            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-amber-50">
+              <input type="radio" name="esc_p${i}" value="2"> 2
+            </label>
+          </div>
         </div>
       `;
     }
@@ -596,10 +606,6 @@
         ultimosPronosticosCargados = pronosticos;
         ultimoEscrutinioCargado = escrutinio;
 
-        for (let i = 1; i <= 14; i++) {
-          document.getElementById(`esc-p${i}`).value = escrutinio[`p${i}`] || "";
-        }
-
         const grid = document.getElementById("grid-checks");
         grid.innerHTML = "";
         let totalEnviados = 0;
@@ -721,7 +727,7 @@
       document.getElementById("modal-pronosticos").classList.add("hidden");
     }
 
-    // MODAL DE INTRODUCCIÓN DE RESULTADO REAL (ITZIAR / JOSE)
+    // MODAL DE INTRODUCIR RESULTADO REAL (ITZIAR / JOSE)
     function abrirModalEscrutinio() {
       if (usuarioActual !== "Itziar" && usuarioActual !== "Jose") {
         const confirmar = confirm("Este botón está pensado para Itziar o Jose. ¿Deseas guardar los resultados igualmente?");
@@ -729,7 +735,13 @@
       }
 
       for (let i = 1; i <= 14; i++) {
-        document.getElementById(`esc-p${i}`).value = ultimoEscrutinioCargado[`p${i}`] || "";
+        const valGuardado = ultimoEscrutinioCargado[`p${i}`];
+        if (valGuardado) {
+          const elem = document.querySelector(`input[name="esc_p${i}"][value="${valGuardado}"]`);
+          if (elem) elem.checked = true;
+        } else {
+          document.querySelectorAll(`input[name="esc_p${i}"]`).forEach(r => r.checked = false);
+        }
       }
       document.getElementById("modal-escrutinio").classList.remove("hidden");
     }
@@ -741,9 +753,9 @@
     async function guardarEscrutinioModal() {
       const esc = {};
       for (let i = 1; i <= 14; i++) {
-        const val = document.getElementById(`esc-p${i}`).value.toUpperCase().trim();
-        if (val && ["1", "X", "2"].includes(val)) {
-          esc[`p${i}`] = val;
+        const marcado = document.querySelector(`input[name="esc_p${i}"]:checked`);
+        if (marcado) {
+          esc[`p${i}`] = marcado.value;
         }
       }
 
