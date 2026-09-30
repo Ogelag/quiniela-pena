@@ -130,7 +130,7 @@
               📋 Pronósticos de la jornada (0/8)
             </button>
             <button id="btn-resultado-jornada" disabled onclick="abrirModalEscrutinio()" class="flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed">
-              ✏ Introduce el resultado de la jornada (Itziar / Jose)
+              ✏️ Introduce el resultado de la jornada (Itziar / Jose)
             </button>
           </div>
         </div>
@@ -139,9 +139,9 @@
       <section class="bg-white p-4 rounded-xl shadow border border-slate-200">
         <h2 class="text-lg font-bold mb-3 border-b pb-2">Rellenar Pronóstico (<span id="lbl-jornada-form">Jornada 1</span>)</h2>
         
-        <!-- AVISO DE BLOQUEO SECUENCIAL (JORNADA ANTERIOR SIN CERRAR O SIN RESULTADOS) -->
+        <!-- AVISO DE BLOQUEO SECUENCIAL SOLICITADO -->
         <div id="aviso-bloqueo-secuencial" class="hidden bg-red-50 border border-red-300 text-red-800 p-3 rounded-lg text-xs font-semibold mb-3 flex items-center gap-2">
-          <span>⛔ Todavía no se puede pronosticar porque no se ha cerrado la jornada anterior (faltan pronósticos o introducir el resultado real).</span>
+          <span>⛔ Todavía no se puede pronosticar porque no se ha cerrado la jornada anterior.</span>
         </div>
 
         <!-- AVISO DE BLOQUEO CUANDO SE ALCANZAN LOS 8/8 PRONÓSTICOS -->
@@ -639,7 +639,6 @@
       const numJornadaActual = parseInt(jornadaActual.replace("J", ""));
       const jornadaAnteriorKey = numJornadaActual > 1 ? `J${numJornadaActual - 1}` : null;
 
-      // Verificar si la jornada anterior tiene 8/8 pronósticos Y el resultado real (escrutinio) introducido
       const verificarSecuencia = jornadaAnteriorKey ? db.collection("jornadas").doc(jornadaAnteriorKey).get() : Promise.resolve({ exists: true, data: () => ({ pronosticos: { ...Array(8).fill(true) }, escrutinio: { ...Array(14).fill(true) } }) });
 
       verificarSecuencia.then(antDoc => {
@@ -651,7 +650,6 @@
           const totalAntPron = Object.keys(antPron).length;
           const totalAntEsc = Object.keys(antEsc).length;
 
-          // Exigir los 8 pronósticos y los 14 resultados del escrutinio oficial
           if (totalAntPron < 8 || totalAntEsc < 14) {
             jornadaAnteriorCerrada = false;
           }
