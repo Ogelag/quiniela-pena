@@ -4,23 +4,61 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiniela</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
+
   <!-- Firebase SDK Compat -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     @media (prefers-color-scheme: dark) {
-      body { background-color: #0f172a; color: #f8fafc; }
-      .bg-white { background-color: #1e293b !important; color: #f8fafc !important; }
-      .bg-slate-100 { background-color: #0f172a !important; }
-      .bg-slate-50 { background-color: #334155 !important; color: #f8fafc !important; }
-      .bg-gray-50 { background-color: #334155 !important; color: #f8fafc !important; }
-      .border { border-color: #475569 !important; }
-      .text-gray-800, .text-gray-700, .text-gray-600 { color: #cbd5e1 !important; }
-      .text-gray-500 { color: #94a3b8 !important; }
-      input, select { background-color: #334155 !important; color: #ffffff !important; border-color: #475569 !important; }
+      body {
+        background-color: #0f172a;
+        color: #f8fafc;
+      }
+
+      .bg-white {
+        background-color: #1e293b !important;
+        color: #f8fafc !important;
+      }
+
+      .bg-slate-100 {
+        background-color: #0f172a !important;
+      }
+
+      .bg-slate-50 {
+        background-color: #334155 !important;
+        color: #f8fafc !important;
+      }
+
+      .bg-gray-50 {
+        background-color: #334155 !important;
+        color: #f8fafc !important;
+      }
+
+      .border {
+        border-color: #475569 !important;
+      }
+
+      .text-gray-800,
+      .text-gray-700,
+      .text-gray-600 {
+        color: #cbd5e1 !important;
+      }
+
+      .text-gray-500 {
+        color: #94a3b8 !important;
+      }
+
+      input,
+      select {
+        background-color: #334155 !important;
+        color: #ffffff !important;
+        border-color: #475569 !important;
+      }
     }
   </style>
 </head>
@@ -35,13 +73,23 @@
     </p>
   </header>
 
-  <!-- PANTALLA 1: ACCESO DE JUGADORES -->
-  <section id="pantalla-login"
-    class="max-w-md mx-auto my-12 p-6 bg-white rounded-xl shadow-lg border border-slate-200 text-center space-y-6">
+
+  <!-- ========================================================= -->
+  <!-- PANTALLA 1: LOGIN -->
+  <!-- ========================================================= -->
+
+  <section
+    id="pantalla-login"
+    class="max-w-md mx-auto my-12 p-6 bg-white rounded-xl shadow-lg border border-slate-200 text-center space-y-6"
+  >
 
     <div>
       <div class="text-4xl mb-2">🔐</div>
-      <h2 class="text-xl font-bold text-blue-900">Acceso de Jugadores</h2>
+
+      <h2 class="text-xl font-bold text-blue-900">
+        Acceso de Jugadores
+      </h2>
+
       <p class="text-xs text-gray-500 mt-1">
         Identifícate para entrar en la Quiniela
       </p>
@@ -54,10 +102,11 @@
           Tu Nombre
         </label>
 
-        <select id="login-select-jugador"
+        <select
+          id="login-select-jugador"
           onchange="seleccionarJugador()"
-          class="p-2.5 border rounded-lg bg-gray-50 font-semibold text-blue-900 w-full">
-
+          class="p-2.5 border rounded-lg bg-gray-50 font-semibold text-blue-900 w-full"
+        >
           <option value="">-- Selecciona tu Nombre --</option>
           <option value="Borja">Borja</option>
           <option value="Carlos">Carlos</option>
@@ -67,9 +116,9 @@
           <option value="Currás">Currás</option>
           <option value="García">García</option>
           <option value="Rodríguez">Rodríguez</option>
-
         </select>
       </div>
+
 
       <div id="login-sec-pin" class="hidden space-y-3">
 
@@ -77,29 +126,38 @@
           PIN / Clave (4 dígitos)
         </label>
 
-        <input type="password"
+        <input
+          type="password"
           id="login-input-pin"
           maxlength="4"
           placeholder="****"
-          class="p-2.5 border rounded-lg bg-gray-50 font-semibold text-center tracking-widest w-full">
+          class="p-2.5 border rounded-lg bg-gray-50 font-semibold text-center tracking-widest w-full"
+        >
 
-        <p id="login-msg-status" class="text-xs font-medium text-slate-500">
+        <p
+          id="login-msg-status"
+          class="text-xs font-medium text-slate-500"
+        >
           Introduce tu PIN de 4 dígitos para acceder o registrarlo si es tu primera vez.
         </p>
 
         <div class="flex gap-2 pt-2">
 
-          <button type="button"
+          <button
+            type="button"
             id="btn-entrar"
             onclick="iniciarSesion()"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg transition shadow text-xs">
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg transition shadow text-xs"
+          >
             Entrar a la Quiniela
           </button>
 
-          <button type="button"
+          <button
+            type="button"
             id="btn-registrar-pin"
             onclick="registrarPINLogin()"
-            class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg transition shadow text-xs">
+            class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg transition shadow text-xs"
+          >
             Registrar Mi PIN
           </button>
 
@@ -108,42 +166,3681 @@
     </div>
   </section>
 
-  <!-- PANTALLA 2: CONTENIDO PRINCIPAL -->
-  <main id="pantalla-app" class="hidden max-w-4xl mx-auto p-4 space-y-6">
+
+
+  <!-- ========================================================= -->
+  <!-- PANTALLA 2: APLICACIÓN -->
+  <!-- ========================================================= -->
+
+  <main
+    id="pantalla-app"
+    class="hidden max-w-4xl mx-auto p-4 space-y-6"
+  >
 
     <!-- USUARIO ACTIVO -->
-    <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl flex items-center justify-between">
+
+    <div
+      class="bg-blue-50 border border-blue-200 p-3 rounded-xl flex items-center justify-between"
+    >
 
       <span class="text-xs font-semibold text-blue-900">
         👤 Sesión iniciada como:
-        <span id="lbl-usuario-activo" class="font-bold text-blue-700">...</span>
+        <span
+          id="lbl-usuario-activo"
+          class="font-bold text-blue-700"
+        >
+          ...
+        </span>
       </span>
 
-      <button type="button"
+      <button
+        type="button"
         onclick="cerrarSesion()"
-        class="text-xs text-red-600 hover:underline font-bold">
+        class="text-xs text-red-600 hover:underline font-bold"
+      >
         Cerrar Sesión ✖
       </button>
 
     </div>
 
-    <!-- PESTAÑAS -->
-    <nav class="bg-slate-200 p-1.5 rounded-xl border border-slate-300 grid grid-cols-2 sm:grid-cols-4 gap-2">
 
-      <button type="button"
+    <!-- ========================================================= -->
+    <!-- PESTAÑAS -->
+    <!-- ========================================================= -->
+
+    <nav
+      class="bg-slate-200 p-1.5 rounded-xl border border-slate-300 grid grid-cols-2 sm:grid-cols-4 gap-2"
+    >
+
+      <button
+        type="button"
         id="tab-btn-pronostico"
         onclick="cambiarPestanaPrincipal('pronostico')"
-        class="py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition bg-blue-600 text-white border-blue-600 shadow">
+        class="py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition bg-blue-600 text-white border-blue-600 shadow"
+      >
         📝 Pronóstico Jornada
       </button>
 
-      <button type="button"
+      <button
+        type="button"
         id="tab-btn-jornada"
         onclick="cambiarPestanaPrincipal('jornada')"
-        class="py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition bg-white text-gray-700 border-gray-200 hover:bg-gray-50">
+        class="py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+      >
         🥇 Clasificación Jornada
       </button>
 
-      <button type="button"
+      <button
+        type="button"
         id="tab-btn-acumulada"
-        onclick
+        onclick="cambiarPestanaPrincipal('acumulada')"
+        class="py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+      >
+        🏆 Clasificación General
+      </button>
+
+      <button
+        type="button"
+        id="tab-btn-grafico"
+        onclick="cambiarPestanaPrincipal('grafico')"
+        class="py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+      >
+        📈 Gráfico Evolución
+      </button>
+
+    </nav>
+
+
+
+    <!-- ========================================================= -->
+    <!-- PESTAÑA 1: PRONÓSTICO -->
+    <!-- ========================================================= -->
+
+    <div id="seccion-pronostico" class="space-y-6">
+
+      <section
+        class="bg-white p-4 rounded-xl shadow border border-slate-200 space-y-4"
+      >
+
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+        >
+
+          <div>
+
+            <h2 class="text-base font-bold text-gray-800">
+              Panel de Pronósticos
+            </h2>
+
+            <p class="text-xs text-gray-500">
+              Introduce o consulta los datos de la jornada seleccionada.
+            </p>
+
+          </div>
+
+
+          <div class="w-full sm:w-auto text-left sm:text-right">
+
+            <label
+              class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1"
+            >
+              Jornada Consultada
+            </label>
+
+            <select
+              id="select-jornada"
+              onchange="cambiarJornada()"
+              class="p-2 border rounded-lg bg-blue-50 font-bold text-blue-900 w-full sm:w-auto"
+            ></select>
+
+          </div>
+
+        </div>
+
+
+        <div class="border-t pt-3 space-y-3">
+
+          <p class="text-xs font-semibold text-gray-500">
+
+            Estado de recepción en
+
+            <span
+              id="lbl-jornada-check"
+              class="font-bold"
+            >
+              J1
+            </span>:
+
+          </p>
+
+          <div
+            id="grid-checks"
+            class="grid grid-cols-2 sm:grid-cols-4 gap-2"
+          ></div>
+
+
+          <!-- BOTONES -->
+
+          <div class="pt-2 border-t flex flex-col sm:flex-row gap-3">
+
+            <button
+              id="btn-pronosticos-semana"
+              disabled
+              onclick="abrirModalPronosticos()"
+              class="flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed"
+            >
+              📋 Pronósticos de la jornada (0/8)
+            </button>
+
+            <button
+              id="btn-resultado-jornada"
+              onclick="abrirModalEscrutinio()"
+              class="flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-700 text-white shadow cursor-pointer"
+            >
+              ✏️ Introduce el resultado de la jornada (Itziar / Jose)
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- FORMULARIO PRONÓSTICO -->
+
+      <section
+        class="bg-white p-4 rounded-xl shadow border border-slate-200"
+      >
+
+        <h2 class="text-lg font-bold mb-3 border-b pb-2">
+
+          Rellenar Pronóstico
+          (<span id="lbl-jornada-form">J1</span>)
+
+        </h2>
+
+
+        <!-- BLOQUEO SECUENCIAL -->
+
+        <div
+          id="aviso-bloqueo-secuencial"
+          class="hidden bg-red-50 border border-red-300 text-red-800 p-3 rounded-lg text-xs font-semibold mb-3 flex items-center gap-2"
+        >
+          <span>
+            ⛔ No se puede pronosticar porque no se ha cerrado la jornada anterior.
+          </span>
+        </div>
+
+
+        <!-- BLOQUEO 8/8 -->
+
+        <div
+          id="aviso-bloqueo-pronosticos"
+          class="hidden bg-amber-50 border border-amber-300 text-amber-800 p-3 rounded-lg text-xs font-semibold mb-3 flex items-center gap-2"
+        >
+          <span>
+            🔒 Los 8 pronósticos de esta jornada ya han sido completados. Ya no se pueden modificar.
+          </span>
+        </div>
+
+
+        <form
+          id="form-pronostico"
+          onsubmit="guardarPronostico(event)"
+          class="space-y-3"
+        >
+
+          <div
+            id="lista-partidos"
+            class="space-y-2"
+          ></div>
+
+
+          <!-- PLENO AL 15 -->
+
+          <div
+            id="container-pleno-15"
+            class="bg-amber-50 p-3 rounded-lg border border-amber-200 mt-4 hidden"
+          >
+
+            <label
+              class="block text-xs font-bold text-amber-800 mb-1"
+            >
+              🌟 Pleno al 15 (¡Te toca asignarlo esta jornada!)
+            </label>
+
+            <input
+              type="text"
+              id="pleno-15"
+              placeholder="Ej: 2-1"
+              class="p-2 border rounded w-full text-sm"
+            >
+
+          </div>
+
+
+          <div
+            id="msg-no-pleno-15"
+            class="bg-gray-100 p-3 rounded-lg border border-gray-200 text-xs text-gray-500 italic mt-4"
+          >
+
+            ℹ En esta jornada el Pleno al 15 le corresponde rellenarlo a:
+
+            <span
+              id="encargado-pleno-nombre"
+              class="font-bold text-blue-900"
+            >
+              ...
+            </span>
+
+          </div>
+
+
+          <button
+            type="submit"
+            id="btn-guardar-pronostico"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition shadow mt-4"
+          >
+            Guardar Mi Pronóstico
+          </button>
+
+        </form>
+
+      </section>
+
+    </div>
+
+
+
+    <!-- ========================================================= -->
+    <!-- RESULTADOS Y CLASIFICACIONES -->
+    <!-- ========================================================= -->
+
+    <div
+      id="seccion-resultados"
+      class="hidden"
+    >
+
+      <section
+        class="bg-white p-4 rounded-xl shadow border border-slate-200"
+      >
+
+        <div
+          id="contenido-revelado"
+          class="space-y-6"
+        >
+
+          <!-- WHATSAPP -->
+
+          <div
+            class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl flex items-center justify-between gap-3"
+          >
+
+            <span class="text-xs font-semibold text-emerald-800">
+              Compartir resultados en la peña:
+            </span>
+
+            <button
+              type="button"
+              onclick="copiarResumenWhatsApp()"
+              class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition shadow flex items-center gap-1 shrink-0"
+            >
+              📋 Copiar para WhatsApp
+            </button>
+
+          </div>
+
+
+          <!-- CLASIFICACIÓN JORNADA -->
+
+          <div
+            id="vista-clasif-jornada"
+            class="space-y-4"
+          >
+
+            <div
+              class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3"
+            >
+
+              <h3 class="text-base font-bold text-slate-800">
+                Clasificación Específica de la Jornada
+              </h3>
+
+              <select
+                id="select-jornada-tabla"
+                onchange="cambiarJornadaTabla()"
+                class="p-2 border rounded-lg bg-slate-50 font-bold text-blue-900 text-xs"
+              ></select>
+
+            </div>
+
+
+            <div
+              class="overflow-x-auto rounded-lg border border-slate-200"
+            >
+
+              <table class="w-full text-sm text-left">
+
+                <thead
+                  class="bg-slate-100 text-gray-600 uppercase text-xs"
+                >
+
+                  <tr>
+                    <th class="p-3">Pos</th>
+                    <th class="p-3">Jugador</th>
+                    <th class="p-3 text-center">Puntos de la Jornada</th>
+                    <th class="p-3 text-center">Aciertos</th>
+                    <th class="p-3 text-center">Pleno 15</th>
+                  </tr>
+
+                </thead>
+
+                <tbody id="tabla-jornada"></tbody>
+
+              </table>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- CLASIFICACIÓN GENERAL -->
+
+          <div
+            id="vista-clasif-acumulada"
+            class="hidden space-y-4"
+          >
+
+            <div
+              class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3"
+            >
+
+              <h3 class="text-base font-bold text-slate-800">
+                Clasificación General Acumulada
+              </h3>
+
+              <select
+                id="select-jornada-acum"
+                onchange="cambiarJornadaAcumulada()"
+                class="p-2 border rounded-lg bg-slate-50 font-bold text-blue-900 text-xs"
+              ></select>
+
+            </div>
+
+
+            <div
+              class="overflow-x-auto rounded-lg border border-slate-200"
+            >
+
+              <table class="w-full text-sm text-left">
+
+                <thead
+                  class="bg-blue-900 text-white uppercase text-xs"
+                >
+
+                  <tr>
+                    <th class="p-3">Pos</th>
+                    <th class="p-3">Jugador</th>
+                    <th class="p-3 text-center">Puntos Totales</th>
+                  </tr>
+
+                </thead>
+
+                <tbody id="tabla-acumulada"></tbody>
+
+              </table>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- GRÁFICO -->
+
+          <div
+            id="vista-clasif-grafico"
+            class="hidden space-y-4"
+          >
+
+            <h3
+              class="text-base font-bold border-b pb-2 text-slate-800"
+            >
+              Evolución Acumulada
+              (Hasta
+              <span id="lbl-jornada-graf">J1</span>)
+            </h3>
+
+            <div
+              class="relative w-full h-72 p-2 bg-white rounded-lg border border-slate-200"
+            >
+
+              <canvas id="chartEvolucion"></canvas>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+
+  <!-- ========================================================= -->
+  <!-- MODAL PRONÓSTICOS -->
+  <!-- ========================================================= -->
+
+  <div
+    id="modal-pronosticos"
+    class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden"
+  >
+
+    <div
+      class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden"
+    >
+
+      <div
+        class="bg-blue-900 text-white p-4 flex justify-between items-center"
+      >
+
+        <h3
+          class="font-bold text-base flex items-center gap-2"
+        >
+          ⚽ Boleto Conjunto -
+          <span id="modal-lbl-jornada">Jornada 1</span>
+        </h3>
+
+        <button
+          type="button"
+          onclick="cerrarModalPronosticos()"
+          class="text-white hover:text-red-300 font-bold text-lg"
+        >
+          ✖
+        </button>
+
+      </div>
+
+
+      <div class="p-4 overflow-x-auto flex-1">
+
+        <table
+          class="w-full text-xs text-center border-collapse"
+        >
+
+          <thead>
+
+            <tr
+              id="tr-th-jugadores"
+              class="bg-slate-100 text-slate-700 font-bold border-b"
+            >
+
+              <th class="p-2 text-left border-r">
+                Partido
+              </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody id="tbody-pronosticos-matriz"></tbody>
+
+        </table>
+
+      </div>
+
+
+      <div
+        class="p-3 bg-slate-50 border-t text-right"
+      >
+
+        <button
+          type="button"
+          onclick="cerrarModalPronosticos()"
+          class="bg-slate-700 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-slate-800 transition"
+        >
+          Cerrar
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ========================================================= -->
+  <!-- MODAL ESCRUTINIO -->
+  <!-- ========================================================= -->
+
+  <div
+    id="modal-escrutinio"
+    class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden"
+  >
+
+    <div
+      class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-xl w-full max-h-[90vh] flex flex-col overflow-hidden"
+    >
+
+      <div
+        class="p-4 border-b flex justify-between items-center bg-white"
+      >
+
+        <h2 class="text-lg font-bold text-gray-800">
+          Resultado Oficial
+          (<span id="modal-esc-lbl-jornada">Jornada 1</span>)
+        </h2>
+
+        <button
+          type="button"
+          onclick="cerrarModalEscrutinio()"
+          class="text-gray-400 hover:text-gray-600 font-bold text-xl"
+        >
+          ✖
+        </button>
+
+      </div>
+
+
+      <div
+        class="p-4 overflow-y-auto space-y-3 flex-1 bg-white"
+      >
+
+        <div
+          id="lista-escrutinio"
+          class="space-y-2"
+        ></div>
+
+      </div>
+
+
+      <div
+        class="p-4 border-t bg-white flex flex-col sm:flex-row gap-2"
+      >
+
+        <button
+          type="button"
+          onclick="guardarEscrutinioModal()"
+          class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg transition shadow text-xs"
+        >
+          Guardar Resultado
+        </button>
+
+        <button
+          type="button"
+          onclick="cerrarJornadaOficial()"
+          class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-lg transition shadow text-xs"
+        >
+          🔒 CERRAR JORNADA
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ========================================================= -->
+  <!-- JAVASCRIPT -->
+  <!-- ========================================================= -->
+
+  <script>
+
+    /* =========================================================
+       FIREBASE
+       ========================================================= */
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDgzNw3E2-YKPNmworM2lKJ_N1LM66Stos",
+      authDomain: "quiniela-f245b.firebaseapp.com",
+      projectId: "quiniela-f245b",
+      storageBucket: "quiniela-f245b.firebasestorage.app",
+      messagingSenderId: "361132198755",
+      appId: "1:361132198755:web:5e1de81f74fb92d1de2156",
+      measurementId: "G-J3F63GNQXG"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    const db = firebase.firestore();
+
+    try {
+      db.settings({
+        experimentalForceLongPolling: true
+      });
+    } catch (e) {}
+
+
+
+    /* =========================================================
+       DATOS GENERALES
+       ========================================================= */
+
+    const jugadores = [
+      "Borja",
+      "Carlos",
+      "Itziar",
+      "Jose",
+      "Quique",
+      "Currás",
+      "García",
+      "Rodríguez"
+    ];
+
+    const coloresJugadores = {
+      "Borja": "#3b82f6",
+      "Carlos": "#334155",
+      "Itziar": "#ec4899",
+      "Jose": "#ef4444",
+      "Quique": "#f59e0b",
+      "Currás": "#8b5cf6",
+      "García": "#06b6d4",
+      "Rodríguez": "#10b981"
+    };
+
+
+
+    /* =========================================================
+       VARIABLES
+       ========================================================= */
+
+    let usuarioActual = "";
+
+    let jornadaActual = "J1";
+
+    let jornadaTablaActual = "J1";
+
+    let jornadaAcumActual = "J1";
+
+    let chartInstancia = null;
+
+    let datosUltimoRankingJornada = [];
+
+    let datosUltimoRankingAcumulado = [];
+
+    let encargadoPlenoActual = "Jose";
+
+    let ultimosPronosticosCargados = {};
+
+    let ultimoEscrutinioCargado = {};
+
+    let unsubscribeJornada = null;
+
+    /*
+      Esta variable evita que una respuesta antigua de Firebase,
+      correspondiente a una jornada anterior, pueda modificar
+      visualmente la jornada que acabamos de seleccionar.
+    */
+    let versionEscuchaJornada = 0;
+
+
+
+    /* =========================================================
+       SELECTS DE JORNADAS
+       ========================================================= */
+
+    const selectJornada =
+      document.getElementById("select-jornada");
+
+    const selectJornadaTabla =
+      document.getElementById("select-jornada-tabla");
+
+    const selectJornadaAcum =
+      document.getElementById("select-jornada-acum");
+
+
+    for (let i = 1; i <= 50; i++) {
+
+      const optText = `Jornada ${i}`;
+
+      const optVal = `J${i}`;
+
+      selectJornada.innerHTML +=
+        `<option value="${optVal}">${optText}</option>`;
+
+      selectJornadaTabla.innerHTML +=
+        `<option value="${optVal}">${optText}</option>`;
+
+      selectJornadaAcum.innerHTML +=
+        `<option value="${optVal}">${optText}</option>`;
+    }
+
+
+
+    /* =========================================================
+       CREAR LOS 14 PARTIDOS
+       ========================================================= */
+
+    const partidosCont =
+      document.getElementById("lista-partidos");
+
+    for (let i = 1; i <= 14; i++) {
+
+      partidosCont.innerHTML += `
+
+        <div class="flex items-center justify-between bg-gray-50 p-2 rounded border text-sm">
+
+          <span class="font-medium">
+            Partido ${i}
+          </span>
+
+          <div class="flex gap-2">
+
+            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50">
+
+              <input
+                type="radio"
+                name="p${i}"
+                value="1"
+              >
+
+              1
+
+            </label>
+
+
+            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50">
+
+              <input
+                type="radio"
+                name="p${i}"
+                value="X"
+              >
+
+              X
+
+            </label>
+
+
+            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50">
+
+              <input
+                type="radio"
+                name="p${i}"
+                value="2"
+              >
+
+              2
+
+            </label>
+
+          </div>
+
+        </div>
+
+      `;
+    }
+
+
+
+    /* =========================================================
+       CREAR ESCRUTINIO
+       ========================================================= */
+
+    const escrutinioCont =
+      document.getElementById("lista-escrutinio");
+
+    for (let i = 1; i <= 14; i++) {
+
+      escrutinioCont.innerHTML += `
+
+        <div class="flex items-center justify-between bg-gray-50 p-2 rounded border text-sm">
+
+          <span class="font-medium">
+            Partido ${i}
+          </span>
+
+          <div class="flex gap-2">
+
+            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50">
+
+              <input
+                type="radio"
+                name="esc_p${i}"
+                value="1"
+              >
+
+              1
+
+            </label>
+
+
+            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50">
+
+              <input
+                type="radio"
+                name="esc_p${i}"
+                value="X"
+              >
+
+              X
+
+            </label>
+
+
+            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50">
+
+              <input
+                type="radio"
+                name="esc_p${i}"
+                value="2"
+              >
+
+              2
+
+            </label>
+
+          </div>
+
+        </div>
+
+      `;
+    }
+
+
+
+    /* =========================================================
+       AL CARGAR LA PÁGINA
+       ========================================================= */
+
+    window.addEventListener("DOMContentLoaded", () => {
+
+      /*
+        Nos aseguramos de que al comenzar estamos en J1.
+      */
+
+      selectJornada.value = "J1";
+      selectJornadaTabla.value = "J1";
+      selectJornadaAcum.value = "J1";
+
+      const usuarioGuardado =
+        localStorage.getItem("quiniela_usuario_activo");
+
+      if (usuarioGuardado) {
+
+        usuarioActual = usuarioGuardado;
+
+        mostrarAplicacion();
+
+      }
+
+    });
+
+
+
+    /* =========================================================
+       SELECCIONAR JUGADOR
+       ========================================================= */
+
+    function seleccionarJugador() {
+
+      const selNombre =
+        document.getElementById("login-select-jugador").value;
+
+      const secPin =
+        document.getElementById("login-sec-pin");
+
+      document.getElementById("login-input-pin").value = "";
+
+      if (!selNombre) {
+
+        secPin.classList.add("hidden");
+
+      } else {
+
+        secPin.classList.remove("hidden");
+
+      }
+
+    }
+
+
+
+    /* =========================================================
+       REGISTRAR PIN
+       ========================================================= */
+
+    async function registrarPINLogin() {
+
+      const selNombre =
+        document.getElementById("login-select-jugador").value;
+
+      const pinIngresado =
+        document.getElementById("login-input-pin").value;
+
+
+      if (!selNombre) {
+
+        alert("Selecciona tu nombre primero.");
+
+        return;
+
+      }
+
+
+      if (
+        !pinIngresado ||
+        pinIngresado.length !== 4 ||
+        isNaN(pinIngresado)
+      ) {
+
+        alert("Introduce un PIN compuesto por 4 números.");
+
+        return;
+
+      }
+
+
+      const btnReg =
+        document.getElementById("btn-registrar-pin");
+
+      btnReg.disabled = true;
+
+      btnReg.textContent = "Guardando...";
+
+
+      try {
+
+        const setDocPromise =
+          db.collection("usuarios")
+            .doc(selNombre)
+            .set({
+              pin: pinIngresado
+            });
+
+
+        const timeoutPromise =
+          new Promise((_, reject) =>
+            setTimeout(
+              () => reject(new Error("Timeout")),
+              3500
+            )
+          );
+
+
+        await Promise.race([
+          setDocPromise,
+          timeoutPromise
+        ]);
+
+
+        alert(
+          "✅ PIN registrado para " +
+          selNombre +
+          ". Haz clic en 'Entrar a la Quiniela'."
+        );
+
+      } catch (e) {
+
+        alert(
+          "PIN enviado correctamente. Pulsa 'Entrar a la Quiniela' para continuar."
+        );
+
+      } finally {
+
+        btnReg.disabled = false;
+
+        btnReg.textContent = "Registrar Mi PIN";
+
+      }
+
+    }
+
+
+
+    /* =========================================================
+       INICIAR SESIÓN
+       ========================================================= */
+
+    async function iniciarSesion() {
+
+      const selNombre =
+        document.getElementById("login-select-jugador").value;
+
+      const pinIngresado =
+        document.getElementById("login-input-pin").value;
+
+
+      if (!selNombre) {
+
+        alert("Selecciona tu nombre.");
+
+        return;
+
+      }
+
+
+      if (
+        !pinIngresado ||
+        pinIngresado.length !== 4
+      ) {
+
+        alert("Escribe tu PIN de 4 dígitos.");
+
+        return;
+
+      }
+
+
+      const btnEntrar =
+        document.getElementById("btn-entrar");
+
+      btnEntrar.disabled = true;
+
+      btnEntrar.textContent = "Entrando...";
+
+
+      try {
+
+        const fetchDocPromise =
+          db.collection("usuarios")
+            .doc(selNombre)
+            .get();
+
+
+        const timeoutPromise =
+          new Promise((_, reject) =>
+            setTimeout(
+              () => reject(new Error("Timeout")),
+              3500
+            )
+          );
+
+
+        const userDoc =
+          await Promise.race([
+            fetchDocPromise,
+            timeoutPromise
+          ]);
+
+
+        if (
+          userDoc.exists &&
+          userDoc.data().pin
+        ) {
+
+          if (
+            userDoc.data().pin !== pinIngresado
+          ) {
+
+            alert(
+              "🔒 PIN incorrecto para " +
+              selNombre +
+              "."
+            );
+
+            btnEntrar.disabled = false;
+
+            btnEntrar.textContent =
+              "Entrar a la Quiniela";
+
+            return;
+
+          }
+
+        }
+
+
+        usuarioActual = selNombre;
+
+        localStorage.setItem(
+          "quiniela_usuario_activo",
+          usuarioActual
+        );
+
+        mostrarAplicacion();
+
+
+      } catch (e) {
+
+        usuarioActual = selNombre;
+
+        localStorage.setItem(
+          "quiniela_usuario_activo",
+          usuarioActual
+        );
+
+        mostrarAplicacion();
+
+      } finally {
+
+        btnEntrar.disabled = false;
+
+        btnEntrar.textContent =
+          "Entrar a la Quiniela";
+
+      }
+
+    }
+
+
+
+    /* =========================================================
+       MOSTRAR APLICACIÓN
+       ========================================================= */
+
+    function mostrarAplicacion() {
+
+      document
+        .getElementById("pantalla-login")
+        .classList.add("hidden");
+
+      document
+        .getElementById("pantalla-app")
+        .classList.remove("hidden");
+
+
+      document
+        .getElementById("lbl-usuario-activo")
+        .textContent = usuarioActual;
+
+
+      determinarEncargadoPleno15()
+        .then(() => {
+
+          actualizarVisibilidadPleno15();
+
+          escucharJornada();
+
+        });
+
+    }
+
+
+
+    /* =========================================================
+       CERRAR SESIÓN
+       ========================================================= */
+
+    function cerrarSesion() {
+
+      if (unsubscribeJornada) {
+
+        unsubscribeJornada();
+
+        unsubscribeJornada = null;
+
+      }
+
+      versionEscuchaJornada++;
+
+
+      localStorage.removeItem(
+        "quiniela_usuario_activo"
+      );
+
+      usuarioActual = "";
+
+
+      document
+        .getElementById("pantalla-app")
+        .classList.add("hidden");
+
+
+      document
+        .getElementById("pantalla-login")
+        .classList.remove("hidden");
+
+
+      document
+        .getElementById("login-select-jugador")
+        .value = "";
+
+
+      document
+        .getElementById("login-sec-pin")
+        .classList.add("hidden");
+
+    }
+
+
+
+    /* =========================================================
+       CAMBIAR PESTAÑA
+       ========================================================= */
+
+    function cambiarPestanaPrincipal(pestana) {
+
+      const secPronostico =
+        document.getElementById("seccion-pronostico");
+
+      const secResultados =
+        document.getElementById("seccion-resultados");
+
+
+      const vJornada =
+        document.getElementById("vista-clasif-jornada");
+
+      const vAcumulada =
+        document.getElementById("vista-clasif-acumulada");
+
+      const vGrafico =
+        document.getElementById("vista-clasif-grafico");
+
+
+      const btnPronostico =
+        document.getElementById("tab-btn-pronostico");
+
+      const btnJornada =
+        document.getElementById("tab-btn-jornada");
+
+      const btnAcumulada =
+        document.getElementById("tab-btn-acumulada");
+
+      const btnGrafico =
+        document.getElementById("tab-btn-grafico");
+
+
+      const activeClass =
+        "bg-blue-600 text-white border-blue-600 shadow";
+
+      const inactiveClass =
+        "bg-white text-gray-700 border-gray-200 hover:bg-gray-50";
+
+
+      btnPronostico.className =
+        `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
+
+      btnJornada.className =
+        `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
+
+      btnAcumulada.className =
+        `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
+
+      btnGrafico.className =
+        `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
+
+
+      if (pestana === "pronostico") {
+
+        secPronostico.classList.remove("hidden");
+
+        secResultados.classList.add("hidden");
+
+        btnPronostico.className =
+          `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
+
+      } else {
+
+        secPronostico.classList.add("hidden");
+
+        secResultados.classList.remove("hidden");
+
+
+        vJornada.classList.add("hidden");
+
+        vAcumulada.classList.add("hidden");
+
+        vGrafico.classList.add("hidden");
+
+
+        if (pestana === "jornada") {
+
+          vJornada.classList.remove("hidden");
+
+          btnJornada.className =
+            `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
+
+        }
+
+        else if (pestana === "acumulada") {
+
+          vAcumulada.classList.remove("hidden");
+
+          btnAcumulada.className =
+            `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
+
+        }
+
+        else if (pestana === "grafico") {
+
+          vGrafico.classList.remove("hidden");
+
+          btnGrafico.className =
+            `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
+
+        }
+
+      }
+
+    }
+
+
+
+    /* =========================================================
+       LIMPIAR FORMULARIO
+       ========================================================= */
+
+    function limpiarFormularioPronostico() {
+
+      for (let i = 1; i <= 14; i++) {
+
+        document
+          .querySelectorAll(`input[name="p${i}"]`)
+          .forEach(radio => {
+            radio.checked = false;
+          });
+
+      }
+
+      document.getElementById("pleno-15").value = "";
+
+    }
+
+
+
+    /* =========================================================
+       HABILITAR / DESHABILITAR FORMULARIO
+       ========================================================= */
+
+    function establecerEstadoFormulario(habilitado) {
+
+      const btnGuardar =
+        document.getElementById("btn-guardar-pronostico");
+
+      const inputsPronostico =
+        document.querySelectorAll(
+          "#form-pronostico input"
+        );
+
+
+      inputsPronostico.forEach(input => {
+
+        input.disabled = !habilitado;
+
+      });
+
+
+      btnGuardar.disabled = !habilitado;
+
+
+      if (habilitado) {
+
+        btnGuardar.classList.remove(
+          "bg-gray-400",
+          "cursor-not-allowed"
+        );
+
+        btnGuardar.classList.add(
+          "bg-blue-600",
+          "hover:bg-blue-700"
+        );
+
+      } else {
+
+        btnGuardar.classList.add(
+          "bg-gray-400",
+          "cursor-not-allowed"
+        );
+
+        btnGuardar.classList.remove(
+          "bg-blue-600",
+          "hover:bg-blue-700"
+        );
+
+      }
+
+    }
+
+
+
+    /* =========================================================
+       CAMBIAR JORNADA
+       ========================================================= */
+
+    async function cambiarJornada() {
+
+      jornadaActual =
+        document.getElementById("select-jornada").value;
+
+      jornadaTablaActual =
+        jornadaActual;
+
+      jornadaAcumActual =
+        jornadaActual;
+
+
+      document
+        .getElementById("select-jornada-tabla")
+        .value = jornadaActual;
+
+      document
+        .getElementById("select-jornada-acum")
+        .value = jornadaActual;
+
+
+      document
+        .getElementById("lbl-jornada-check")
+        .textContent = jornadaActual;
+
+      document
+        .getElementById("lbl-jornada-form")
+        .textContent = jornadaActual;
+
+      document
+        .getElementById("lbl-jornada-graf")
+        .textContent = jornadaActual;
+
+      document
+        .getElementById("modal-lbl-jornada")
+        .textContent = jornadaActual;
+
+      document
+        .getElementById("modal-esc-lbl-jornada")
+        .textContent = jornadaActual;
+
+
+      /*
+        MUY IMPORTANTE:
+
+        Limpiamos inmediatamente el formulario.
+
+        De esta forma, al pasar de J1 a J2,
+        nunca se quedan visualmente los pronósticos
+        de J1 mientras Firebase comprueba J2.
+      */
+
+      limpiarFormularioPronostico();
+
+      establecerEstadoFormulario(false);
+
+
+      document
+        .getElementById("aviso-bloqueo-pronosticos")
+        .classList.add("hidden");
+
+
+      document
+        .getElementById("aviso-bloqueo-secuencial")
+        .classList.add("hidden");
+
+
+      /*
+        Mientras comprobamos la jornada anterior,
+        mostramos 0/8.
+
+        Así no puede aparecer momentáneamente
+        el estado de la jornada anterior.
+      */
+
+      const btnPronosticos =
+        document.getElementById(
+          "btn-pronosticos-semana"
+        );
+
+      btnPronosticos.innerHTML =
+        "📋 Pronósticos de la jornada (0/8)";
+
+      btnPronosticos.disabled = true;
+
+      btnPronosticos.className =
+        "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed";
+
+
+      /*
+        Reseteamos los datos que están en memoria.
+
+        NO se borra nada de Firestore.
+      */
+
+      ultimosPronosticosCargados = {};
+
+      ultimoEscrutinioCargado = {};
+
+
+      /*
+        Primero determinamos quién tiene el Pleno al 15.
+      */
+
+      await determinarEncargadoPleno15();
+
+      actualizarVisibilidadPleno15();
+
+      escucharJornada();
+
+    }
+
+
+
+    /* =========================================================
+       CAMBIAR JORNADA DE TABLA
+       ========================================================= */
+
+    function cambiarJornadaTabla() {
+
+      jornadaTablaActual =
+        document.getElementById(
+          "select-jornada-tabla"
+        ).value;
+
+      cargarClasificacionJornadaEspecifica(
+        jornadaTablaActual
+      );
+
+    }
+
+
+
+    /* =========================================================
+       CAMBIAR JORNADA ACUMULADA
+       ========================================================= */
+
+    function cambiarJornadaAcumulada() {
+
+      jornadaAcumActual =
+        document.getElementById(
+          "select-jornada-acum"
+        ).value;
+
+      cargarClasificacionAcumuladaHasta(
+        jornadaAcumActual
+      );
+
+    }
+
+
+
+    /* =========================================================
+       DETERMINAR ENCARGADO DEL PLENO 15
+       ========================================================= */
+
+    async function determinarEncargadoPleno15() {
+
+      const numJornada =
+        parseInt(
+          jornadaActual.replace("J", "")
+        );
+
+
+      /*
+        J1 comienza teniendo el Pleno Jose.
+      */
+
+      if (numJornada === 1) {
+
+        encargadoPlenoActual = "Jose";
+
+        return;
+
+      }
+
+
+      try {
+
+        const jAnteriorKey =
+          "J" + (numJornada - 1);
+
+
+        const jAntDoc =
+          await db
+            .collection("jornadas")
+            .doc(jAnteriorKey)
+            .get();
+
+
+        /*
+          MUY IMPORTANTE:
+
+          La jornada anterior tiene que estar
+          oficialmente CERRADA para decidir
+          quién ganó y quién tiene el Pleno.
+
+          Si todavía no está cerrada,
+          mantenemos Jose como valor provisional.
+        */
+
+        if (
+          !jAntDoc.exists ||
+          jAntDoc.data().cerrada !== true
+        ) {
+
+          encargadoPlenoActual = "Jose";
+
+          return;
+
+        }
+
+
+        const data =
+          jAntDoc.data();
+
+
+        const pronosticos =
+          data.pronosticos || {};
+
+        const escrutinio =
+          data.escrutinio || {};
+
+
+        let maxAciertos = -1;
+
+        let ganador = "Jose";
+
+
+        jugadores.forEach(j => {
+
+          let aciertos = 0;
+
+          const resp =
+            pronosticos[j]?.respuestas || {};
+
+
+          for (let i = 1; i <= 14; i++) {
+
+            if (
+              escrutinio[`p${i}`] &&
+              resp[`p${i}`] ===
+                escrutinio[`p${i}`]
+            ) {
+
+              aciertos++;
+
+            }
+
+          }
+
+
+          if (aciertos > maxAciertos) {
+
+            maxAciertos = aciertos;
+
+            ganador = j;
+
+          }
+
+        });
+
+
+        encargadoPlenoActual =
+          ganador;
+
+
+      } catch (e) {
+
+        encargadoPlenoActual = "Jose";
+
+      }
+
+    }
+
+
+
+    /* =========================================================
+       VISIBILIDAD PLENO
+       ========================================================= */
+
+    function actualizarVisibilidadPleno15() {
+
+      const boxPleno =
+        document.getElementById(
+          "container-pleno-15"
+        );
+
+      const msgNoPleno =
+        document.getElementById(
+          "msg-no-pleno-15"
+        );
+
+      const lblEncargado =
+        document.getElementById(
+          "encargado-pleno-nombre"
+        );
+
+
+      lblEncargado.textContent =
+        encargadoPlenoActual;
+
+
+      if (
+        usuarioActual &&
+        usuarioActual ===
+          encargadoPlenoActual
+      ) {
+
+        boxPleno.classList.remove("hidden");
+
+        msgNoPleno.classList.add("hidden");
+
+      } else {
+
+        boxPleno.classList.add("hidden");
+
+        msgNoPleno.classList.remove("hidden");
+
+      }
+
+    }
+
+
+
+    /* =========================================================
+       ESCUCHAR JORNADA
+       ========================================================= */
+
+    function escucharJornada() {
+
+      /*
+        Cada llamada genera una nueva versión.
+
+        Si Firebase devuelve después una respuesta
+        antigua de otra jornada, la ignoramos.
+      */
+
+      const miVersion =
+        ++versionEscuchaJornada;
+
+
+      /*
+        Cancelar listener anterior.
+      */
+
+      if (unsubscribeJornada) {
+
+        unsubscribeJornada();
+
+        unsubscribeJornada = null;
+
+      }
+
+
+      const numJornadaActual =
+        parseInt(
+          jornadaActual.replace("J", "")
+        );
+
+
+      const jornadaAnteriorKey =
+        numJornadaActual > 1
+          ? `J${numJornadaActual - 1}`
+          : null;
+
+
+      /*
+        Limpiamos el formulario SIEMPRE.
+
+        Esto es fundamental para que J2,
+        J3, etc. aparezcan vacías cuando están bloqueadas.
+      */
+
+      limpiarFormularioPronostico();
+
+      establecerEstadoFormulario(false);
+
+
+      /*
+        Ocultamos ambos avisos mientras hacemos
+        la comprobación.
+      */
+
+      document
+        .getElementById(
+          "aviso-bloqueo-secuencial"
+        )
+        .classList.add("hidden");
+
+      document
+        .getElementById(
+          "aviso-bloqueo-pronosticos"
+        )
+        .classList.add("hidden");
+
+
+      /*
+        El botón empieza en 0/8.
+      */
+
+      const btnPronosticos =
+        document.getElementById(
+          "btn-pronosticos-semana"
+        );
+
+      btnPronosticos.innerHTML =
+        "📋 Pronósticos de la jornada (0/8)";
+
+      btnPronosticos.disabled = true;
+
+      btnPronosticos.className =
+        "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed";
+
+
+      /*
+        Comprobamos si la jornada anterior
+        está cerrada.
+      */
+
+      const verificarSecuencia =
+        jornadaAnteriorKey
+          ? db
+              .collection("jornadas")
+              .doc(jornadaAnteriorKey)
+              .get()
+
+          : Promise.resolve({
+              exists: true,
+              data: () => ({
+                cerrada: true
+              })
+            });
+
+
+      verificarSecuencia.then(antDoc => {
+
+        /*
+          Si mientras esperábamos el resultado
+          el usuario cambió de jornada,
+          ignoramos esta respuesta.
+        */
+
+        if (
+          miVersion !==
+          versionEscuchaJornada
+        ) {
+
+          return;
+
+        }
+
+
+        /*
+          Comprobamos de nuevo que seguimos
+          en la misma jornada.
+        */
+
+        const jornadaComprobada =
+          jornadaActual;
+
+
+        let jornadaAnteriorCerrada =
+          true;
+
+
+        if (numJornadaActual > 1) {
+
+          const antData =
+            antDoc.exists
+              ? antDoc.data()
+              : {};
+
+
+          jornadaAnteriorCerrada =
+            antData.cerrada === true;
+
+        }
+
+
+        /* =====================================================
+           CASO 1:
+           LA JORNADA ANTERIOR NO ESTÁ CERRADA
+           ===================================================== */
+
+        if (!jornadaAnteriorCerrada) {
+
+          /*
+            Volvemos a limpiar por seguridad.
+          */
+
+          limpiarFormularioPronostico();
+
+          establecerEstadoFormulario(false);
+
+
+          /*
+            MOSTRAR MENSAJE EXACTO.
+          */
+
+          document
+            .getElementById(
+              "aviso-bloqueo-secuencial"
+            )
+            .classList.remove("hidden");
+
+
+          document
+            .getElementById(
+              "aviso-bloqueo-pronosticos"
+            )
+            .classList.add("hidden");
+
+
+          /*
+            Dejamos el botón 0/8 y deshabilitado.
+
+            Aunque en Firestore existiera accidentalmente
+            algún pronóstico de J2, NO lo mostramos todavía.
+          */
+
+          btnPronosticos.innerHTML =
+            "📋 Pronósticos de la jornada (0/8)";
+
+          btnPronosticos.disabled = true;
+
+          btnPronosticos.className =
+            "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed";
+
+
+          /*
+            Limpiamos los datos de memoria.
+
+            Esto NO elimina nada de Firebase.
+          */
+
+          ultimosPronosticosCargados = {};
+
+          ultimoEscrutinioCargado = {};
+
+
+          /*
+            Actualizamos las clasificaciones de la jornada
+            que estamos consultando, pero NO cargamos
+            ningún pronóstico en el formulario.
+          */
+
+          cargarClasificacionJornadaEspecifica(
+            jornadaTablaActual
+          );
+
+          cargarClasificacionAcumuladaHasta(
+            jornadaAcumActual
+          );
+
+          renderizarGraficoEvolucion();
+
+
+          /*
+            MUY IMPORTANTE:
+
+            NO creamos onSnapshot de la jornada actual
+            en este momento.
+
+            Así Firebase no puede cargar J2
+            mientras J1 esté abierta.
+          */
+
+          return;
+
+        }
+
+
+
+        /* =====================================================
+           CASO 2:
+           LA JORNADA ANTERIOR SÍ ESTÁ CERRADA
+           ===================================================== */
+
+
+        /*
+          Ahora sí podemos escuchar la jornada actual.
+        */
+
+        unsubscribeJornada =
+          db
+            .collection("jornadas")
+            .doc(jornadaComprobada)
+            .onSnapshot(
+
+              doc => {
+
+                /*
+                  Ignorar respuestas antiguas.
+                */
+
+                if (
+                  miVersion !==
+                  versionEscuchaJornada
+                ) {
+
+                  return;
+
+                }
+
+
+                /*
+                  Verificar que seguimos realmente
+                  en la misma jornada.
+                */
+
+                if (
+                  jornadaActual !==
+                  jornadaComprobada
+                ) {
+
+                  return;
+
+                }
+
+
+                const data =
+                  doc.exists
+                    ? doc.data()
+                    : {};
+
+
+                const pronosticos =
+                  data.pronosticos || {};
+
+
+                const escrutinio =
+                  data.escrutinio || {};
+
+
+                /*
+                  Guardamos los datos actuales
+                  en memoria.
+                */
+
+                ultimosPronosticosCargados =
+                  pronosticos;
+
+                ultimoEscrutinioCargado =
+                  escrutinio;
+
+
+                /* =============================================
+                   ESTADO DE LOS 8 JUGADORES
+                   ============================================= */
+
+                const grid =
+                  document.getElementById(
+                    "grid-checks"
+                  );
+
+
+                grid.innerHTML = "";
+
+
+                let totalEnviados = 0;
+
+
+                jugadores.forEach(j => {
+
+                  const enviado =
+                    !!pronosticos[j];
+
+
+                  if (enviado) {
+
+                    totalEnviados++;
+
+                  }
+
+
+                  grid.innerHTML += `
+
+                    <div
+                      class="flex items-center justify-between p-1.5 px-2 rounded text-[11px] font-semibold ${
+                        enviado
+                          ? "bg-green-100 text-green-800"
+                          : "bg-gray-100 text-gray-500"
+                      }"
+                    >
+
+                      <span class="truncate max-w-[70px]">
+                        ${j}
+                      </span>
+
+                      <span class="shrink-0">
+                        ${
+                          enviado
+                            ? "✓ Listo"
+                            : "⏳ Pend."
+                        }
+                      </span>
+
+                    </div>
+
+                  `;
+
+                });
+
+
+
+                /* =============================================
+                   LIMPIAR FORMULARIO
+                   ============================================= */
+
+                limpiarFormularioPronostico();
+
+
+                const avisoBloqueoSecuencial =
+                  document.getElementById(
+                    "aviso-bloqueo-secuencial"
+                  );
+
+
+                const avisoBloqueo =
+                  document.getElementById(
+                    "aviso-bloqueo-pronosticos"
+                  );
+
+
+                /*
+                  Aquí ya sabemos que la jornada anterior
+                  está cerrada.
+                */
+
+                avisoBloqueoSecuencial
+                  .classList.add("hidden");
+
+
+                /* =============================================
+                   CARGAR PRONÓSTICO DEL USUARIO
+                   ============================================= */
+
+                if (
+                  usuarioActual &&
+                  pronosticos[usuarioActual] &&
+                  pronosticos[usuarioActual]
+                    .respuestas
+                ) {
+
+                  const misRespuestas =
+                    pronosticos[
+                      usuarioActual
+                    ].respuestas;
+
+
+                  for (
+                    let i = 1;
+                    i <= 14;
+                    i++
+                  ) {
+
+                    if (
+                      misRespuestas[
+                        `p${i}`
+                      ]
+                    ) {
+
+                      const radio =
+                        document.querySelector(
+                          `input[name="p${i}"][value="${misRespuestas[`p${i}`]}"]`
+                        );
+
+
+                      if (radio) {
+
+                        radio.checked = true;
+
+                      }
+
+                    }
+
+                  }
+
+
+                  if (
+                    usuarioActual ===
+                      encargadoPlenoActual &&
+                    pronosticos[
+                      usuarioActual
+                    ].pleno
+                  ) {
+
+                    document
+                      .getElementById(
+                        "pleno-15"
+                      )
+                      .value =
+                        pronosticos[
+                          usuarioActual
+                        ].pleno;
+
+                  }
+
+                }
+
+
+
+                /* =============================================
+                   BLOQUEO SI YA ESTÁN LOS 8
+                   ============================================= */
+
+                if (
+                  totalEnviados === 8
+                ) {
+
+                  avisoBloqueo
+                    .classList.remove("hidden");
+
+
+                  establecerEstadoFormulario(
+                    false
+                  );
+
+                } else {
+
+                  avisoBloqueo
+                    .classList.add("hidden");
+
+
+                  establecerEstadoFormulario(
+                    true
+                  );
+
+                }
+
+
+
+                /* =============================================
+                   BOTÓN BOLETO CONJUNTO
+                   ============================================= */
+
+                btnPronosticos.innerHTML =
+                  `📋 Pronósticos de la jornada (${totalEnviados}/8)`;
+
+
+                if (
+                  totalEnviados === 8
+                ) {
+
+                  btnPronosticos.disabled =
+                    false;
+
+
+                  btnPronosticos.className =
+                    "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white shadow cursor-pointer";
+
+                } else {
+
+                  btnPronosticos.disabled =
+                    true;
+
+
+                  btnPronosticos.className =
+                    "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed";
+
+                }
+
+
+
+                /* =============================================
+                   ACTUALIZAR CLASIFICACIONES
+                   ============================================= */
+
+                cargarClasificacionJornadaEspecifica(
+                  jornadaTablaActual
+                );
+
+                cargarClasificacionAcumuladaHasta(
+                  jornadaAcumActual
+                );
+
+                renderizarGraficoEvolucion();
+
+              },
+
+              err => {
+
+                console.error(
+                  "Error escuchando jornada:",
+                  err
+                );
+
+              }
+
+            );
+
+      }).catch(error => {
+
+        console.error(
+          "Error comprobando jornada anterior:",
+          error
+        );
+
+      });
+
+    }
+
+
+
+    /* =========================================================
+       GUARDAR PRONÓSTICO
+       ========================================================= */
+
+    async function guardarPronostico(e) {
+
+      e.preventDefault();
+
+
+      if (!usuarioActual) {
+
+        alert(
+          "Identificación no válida."
+        );
+
+        return;
+
+      }
+
+
+      /*
+        SEGUNDA PROTECCIÓN:
+
+        Aunque alguien consiguiera pulsar el botón
+        mientras la interfaz está cambiando, volvemos
+        a comprobar que la jornada anterior está cerrada.
+      */
+
+      const numJornada =
+        parseInt(
+          jornadaActual.replace("J", "")
+        );
+
+
+      if (numJornada > 1) {
+
+        try {
+
+          const jornadaAnterior =
+            `J${numJornada - 1}`;
+
+
+          const docAnterior =
+            await db
+              .collection("jornadas")
+              .doc(jornadaAnterior)
+              .get();
+
+
+          const anteriorCerrada =
+            docAnterior.exists &&
+            docAnterior.data().cerrada === true;
+
+
+          if (!anteriorCerrada) {
+
+            limpiarFormularioPronostico();
+
+            establecerEstadoFormulario(false);
+
+
+            document
+              .getElementById(
+                "aviso-bloqueo-secuencial"
+              )
+              .classList.remove("hidden");
+
+
+            alert(
+              "⛔ No se puede pronosticar porque no se ha cerrado la jornada anterior."
+            );
+
+            return;
+
+          }
+
+        } catch (error) {
+
+          console.error(
+            "Error comprobando jornada anterior:",
+            error
+          );
+
+          alert(
+            "No se ha podido comprobar si la jornada anterior está cerrada."
+          );
+
+          return;
+
+        }
+
+      }
+
+
+
+      /* =====================================================
+         COMPROBAR SI YA ESTÁN LOS 8
+         ===================================================== */
+
+      try {
+
+        const jornadaDoc =
+          await db
+            .collection("jornadas")
+            .doc(jornadaActual)
+            .get();
+
+
+        if (jornadaDoc.exists) {
+
+          const data =
+            jornadaDoc.data() || {};
+
+
+          const pronosticos =
+            data.pronosticos || {};
+
+
+          const jugadoresConPronostico =
+            Object.keys(pronosticos);
+
+
+          /*
+            Si hay 8 jugadores y este usuario todavía
+            no estaba entre ellos, no permitimos un noveno.
+          */
+
+          if (
+            jugadoresConPronostico.length >= 8 &&
+            !pronosticos[usuarioActual]
+          ) {
+
+            alert(
+              "🔒 Los 8 pronósticos de esta jornada ya han sido completados."
+            );
+
+            establecerEstadoFormulario(false);
+
+            return;
+
+          }
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          "Error comprobando pronósticos:",
+          error
+        );
+
+      }
+
+
+
+      /* =====================================================
+         RECOGER LOS 14 PRONÓSTICOS
+         ===================================================== */
+
+      const opciones = {};
+
+
+      for (
+        let i = 1;
+        i <= 14;
+        i++
+      ) {
+
+        const marcado =
+          document.querySelector(
+            `input[name="p${i}"]:checked`
+          );
+
+
+        if (!marcado) {
+
+          alert(
+            `Te falta marcar la opción del Partido ${i}.`
+          );
+
+          return;
+
+        }
+
+
+        opciones[`p${i}`] =
+          marcado.value;
+
+      }
+
+
+
+      /* =====================================================
+         PLENO AL 15
+         ===================================================== */
+
+      let pleno = "-";
+
+
+      if (
+        usuarioActual ===
+        encargadoPlenoActual
+      ) {
+
+        pleno =
+          document.getElementById(
+            "pleno-15"
+          ).value;
+
+
+        if (!pleno) {
+
+          alert(
+            "Te toca rellenar el Pleno al 15 esta jornada. Por favor, especifícalo."
+          );
+
+          return;
+
+        }
+
+      }
+
+
+
+      /* =====================================================
+         GUARDAR SOLO EL JUGADOR ACTUAL
+         ===================================================== */
+
+      /*
+        IMPORTANTE:
+
+        Antes se hacía:
+
+        pronosticos: {
+          [usuarioActual]: ...
+        }
+
+        Eso podía sustituir el mapa completo de pronósticos.
+
+        Ahora usamos:
+
+        pronosticos.NombreJugador
+
+        Así solamente se modifica el jugador actual
+        y se conservan los otros 7.
+      */
+
+      const datosJugador = {
+        respuestas: opciones,
+        pleno: pleno,
+        fecha: new Date()
+      };
+
+
+      try {
+
+        await db
+          .collection("jornadas")
+          .doc(jornadaActual)
+          .set(
+            {
+              [`pronosticos.${usuarioActual}`]:
+                datosJugador
+            },
+            {
+              merge: true
+            }
+          );
+
+
+        alert(
+          "¡Pronóstico guardado para " +
+          usuarioActual +
+          " en " +
+          jornadaActual +
+          "!"
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Error guardando pronóstico:",
+          error
+        );
+
+
+        alert(
+          "❌ No se ha podido guardar el pronóstico. Inténtalo de nuevo."
+        );
+
+      }
+
+    }
+
+
+
+    /* =========================================================
+       MODAL PRONÓSTICOS
+       ========================================================= */
+
+    function abrirModalPronosticos() {
+
+      const modal =
+        document.getElementById(
+          "modal-pronosticos"
+        );
+
+
+      const trTh =
+        document.getElementById(
+          "tr-th-jugadores"
+        );
+
+
+      const tbody =
+        document.getElementById(
+          "tbody-pronosticos-matriz"
+        );
+
+
+      let thHTML =
+        `<th class="p-2 text-left border-r">Partido</th>
+         <th class="p-2 border-r bg-slate-200">Resultado Real</th>`;
+
+
+      jugadores.forEach(j => {
+
+        thHTML += `
+          <th class="p-2 border-r ${
+            j === usuarioActual
+              ? "bg-blue-100 text-blue-900"
+              : ""
+          }">
+            ${j}
+          </th>
+        `;
+
+      });
+
+
+      trTh.innerHTML =
+        thHTML;
+
+
+      let tbodyHTML = "";
+
+
+      for (
+        let i = 1;
+        i <= 14;
+        i++
+      ) {
+
+        const valReal =
+          ultimoEscrutinioCargado[
+            `p${i}`
+          ] || "-";
+
+
+        tbodyHTML += `
+          <tr class="border-b ${
+            i % 2 === 0
+              ? "bg-slate-50"
+              : "bg-white"
+          }">
+        `;
+
+
+        tbodyHTML += `
+          <td class="p-2 font-bold text-left border-r text-slate-700">
+            P${i}
+          </td>
+        `;
+
+
+        tbodyHTML += `
+          <td class="p-2 border-r font-bold text-amber-600 bg-amber-50">
+            ${valReal}
+          </td>
+        `;
+
+
+        jugadores.forEach(j => {
+
+          const resp =
+            ultimosPronosticosCargados[
+              j
+            ]?.respuestas?.[
+              `p${i}`
+            ] || "-";
+
+
+          const esAcierto =
+            valReal !== "-" &&
+            resp === valReal;
+
+
+          tbodyHTML += `
+
+            <td
+              class="p-2 border-r font-semibold ${
+                esAcierto
+                  ? "bg-emerald-100 text-emerald-800 font-bold"
+                  : ""
+              }"
+            >
+              ${resp}
+            </td>
+
+          `;
+
+        });
+
+
+        tbodyHTML += `
+          </tr>
+        `;
+
+      }
+
+
+
+      /* =====================================================
+         PLENO 15
+         ===================================================== */
+
+      tbodyHTML += `
+        <tr class="bg-amber-100 font-bold border-t-2 border-amber-300">
+
+          <td class="p-2 text-left border-r text-amber-900">
+            P15
+          </td>
+
+          <td class="p-2 border-r">
+            -
+          </td>
+      `;
+
+
+      jugadores.forEach(j => {
+
+        const plenoVal =
+          ultimosPronosticosCargados[
+            j
+          ]?.pleno || "-";
+
+
+        tbodyHTML += `
+          <td class="p-2 border-r text-amber-900">
+            ${plenoVal}
+          </td>
+        `;
+
+      });
+
+
+      tbodyHTML += `
+        </tr>
+      `;
+
+
+      tbody.innerHTML =
+        tbodyHTML;
+
+
+      modal.classList.remove(
+        "hidden"
+      );
+
+    }
+
+
+
+    function cerrarModalPronosticos() {
+
+      document
+        .getElementById(
+          "modal-pronosticos"
+        )
+        .classList.add("hidden");
+
+    }
+
+
+
+    /* =========================================================
+       ABRIR ESCRUTINIO
+       ========================================================= */
+
+    function abrirModalEscrutinio() {
+
+      if (
+        usuarioActual !== "Itziar" &&
+        usuarioActual !== "Jose"
+      ) {
+
+        const confirmar =
+          confirm(
+            "Este botón está pensado para Itziar o Jose. ¿Deseas guardar los resultados igualmente?"
+          );
+
+
+        if (!confirmar) {
+
+          return;
+
+        }
+
+      }
+
+
+      for (
+        let i = 1;
+        i <= 14;
+        i++
+      ) {
+
+        const valGuardado =
+          ultimoEscrutinioCargado[
+            `p${i}`
+          ];
+
+
+        if (valGuardado) {
+
+          const elem =
+            document.querySelector(
+              `input[name="esc_p${i}"][value="${valGuardado}"]`
+            );
+
+
+          if (elem) {
+
+            elem.checked = true;
+
+          }
+
+        } else {
+
+          document
+            .querySelectorAll(
+              `input[name="esc_p${i}"]`
+            )
+            .forEach(r => {
+
+              r.checked = false;
+
+            });
+
+        }
+
+      }
+
+
+      document
+        .getElementById(
+          "modal-escrutinio"
+        )
+        .classList.remove("hidden");
+
+    }
+
+
+
+    function cerrarModalEscrutinio() {
+
+      document
+        .getElementById(
+          "modal-escrutinio"
+        )
+        .classList.add("hidden");
+
+    }
+
+
+
+    /* =========================================================
+       GUARDAR ESCRUTINIO
+       ========================================================= */
+
+    async function guardarEscrutinioModal() {
+
+      const esc = {};
+
+
+      for (
+        let i = 1;
+        i <= 14;
+        i++
+      ) {
+
+        const marcado =
+          document.querySelector(
+            `input[name="esc_p${i}"]:checked`
+          );
+
+
+        if (marcado) {
+
+          esc[`p${i}`] =
+            marcado.value;
+
+        }
+
+      }
+
+
+      try {
+
+        await db
+          .collection("jornadas")
+          .doc(jornadaActual)
+          .set(
+            {
+              escrutinio: esc
+            },
+            {
+              merge: true
+            }
+          );
+
+
+        alert(
+          "✅ Resultado oficial de " +
+          jornadaActual +
+          " guardado correctamente."
+        );
+
+
+        cerrarModalEscrutinio();
+
+
+      } catch (error) {
+
+        console.error(
+          "Error guardando escrutinio:",
+          error
+        );
+
+
+        alert(
+          "❌ No se ha podido guardar el resultado."
+        );
+
+      }
+
+    }
+
+
+
+    /* =========================================================
+       CERRAR JORNADA OFICIAL
+       ========================================================= */
+
+    async function cerrarJornadaOficial() {
+
+      const confirmar =
+        confirm(
+          `¿Estás seguro de que quieres cerrar ${jornadaActual}? Una vez cerrada, se considerará finalizada oficialmente y se desbloqueará la siguiente jornada.`
+        );
+
+
+      if (!confirmar) {
+
+        return;
+
+      }
+
+
+      const esc = {};
+
+
+      for (
+        let i = 1;
+        i <= 14;
+        i++
+      ) {
+
+        const marcado =
+          document.querySelector(
+            `input[name="esc_p${i}"]:checked`
+          );
+
+
+        if (marcado) {
+
+          esc[`p${i}`] =
+            marcado.value;
+
+        }
+
+      }
+
+
+      try {
+
+        await db
+          .collection("jornadas")
+          .doc(jornadaActual)
+          .set(
+            {
+              escrutinio: esc,
+              cerrada: true
+            },
+            {
+              merge: true
+            }
+          );
+
+
+        alert(
+          `🔒 La ${jornadaActual} ha sido cerrada oficialmente.`
+        );
+
+
+        cerrarModalEscrutinio();
+
+
+        /*
+          Volvemos a escuchar la jornada actual
+          para actualizar clasificación y estado.
+        */
+
+        escucharJornada();
+
+
+      } catch (error) {
+
+        console.error(
+          "Error cerrando jornada:",
+          error
+        );
+
+
+        alert(
+          "❌ No se ha podido cerrar la jornada."
+        );
+
+      }
+
+    }
+
+
+
+    /* =========================================================
+       CLASIFICACIÓN DE JORNADA
+       ========================================================= */
+
+    async function cargarClasificacionJornadaEspecifica(
+      jKey
+    ) {
+
+      const tbodyJornada =
+        document.getElementById(
+          "tabla-jornada"
+        );
+
+
+      tbodyJornada.innerHTML =
+        "";
+
+
+      try {
+
+        const jDoc =
+          await db
+            .collection("jornadas")
+            .doc(jKey)
+            .get();
+
+
+        const data =
+          jDoc.exists
+            ? jDoc.data()
+            : {};
+
+
+        const pronosticos =
+          data.pronosticos || {};
+
+
+        const escrutinio =
+          data.escrutinio || {};
+
+
+        datosUltimoRankingJornada =
+          jugadores
+            .map(j => {
+
+              let aciertos = 0;
+
+
+              const resp =
+                pronosticos[j]
+                  ?.respuestas || {};
+
+
+              for (
+                let i = 1;
+                i <= 14;
+                i++
+              ) {
+
+                if (
+                  escrutinio[`p${i}`] &&
+                  resp[`p${i}`] ===
+                    escrutinio[`p${i}`]
+                ) {
+
+                  aciertos++;
+
+                }
+
+              }
+
+
+              return {
+                jugador: j,
+                puntos: aciertos,
+                aciertos: aciertos,
+                pleno:
+                  pronosticos[j]?.pleno ||
+                  "-"
+              };
+
+            })
+            .sort(
+              (a, b) =>
+                b.puntos - a.puntos ||
+                b.aciertos - a.aciertos
+            );
+
+
+        datosUltimoRankingJornada
+          .forEach((r, idx) => {
+
+            tbodyJornada.innerHTML += `
+
+              <tr
+                class="border-b ${
+                  idx === 0
+                    ? "bg-amber-50 font-bold"
+                    : ""
+                }"
+              >
+
+                <td class="p-3">
+                  ${idx + 1}º
+                </td>
+
+                <td class="p-3">
+                  ${r.jugador}
+                </td>
+
+                <td class="p-3 text-center font-semibold">
+                  ${r.puntos}
+                </td>
+
+                <td class="p-3 text-center text-gray-500">
+                  ${r.aciertos}
+                </td>
+
+                <td class="p-3 text-center">
+                  ${r.pleno}
+                </td>
+
+              </tr>
+
+            `;
+
+          });
+
+
+      } catch (error) {
+
+        console.error(
+          "Error cargando clasificación:",
+          error
+        );
+
+      }
+
+    }
+
+
+
+    /* =========================================================
+       CLASIFICACIÓN ACUMULADA
+       ========================================================= */
+
+    async function cargarClasificacionAcumuladaHasta(
+      jKey
+    ) {
+
+      const tbodyAcumulada =
+        document.getElementById(
+          "tabla-acumulada"
+        );
+
+
+      tbodyAcumulada.innerHTML =
+        "";
+
+
+      try {
+
+        const todasJornadasSnap =
+          await db
+            .collection("jornadas")
+            .get();
+
+
+        const puntosAcumulados = {};
+
+
+        jugadores.forEach(j => {
+
+          puntosAcumulados[j] = 0;
+
+        });
+
+
+        const numMax =
+          parseInt(
+            jKey.replace("J", "")
+          );
+
+
+        for (
+          let i = 1;
+          i <= numMax;
+          i++
+        ) {
+
+          const currentKey =
+            `J${i}`;
+
+
+          const jDoc =
+            todasJornadasSnap.docs.find(
+              d => d.id === currentKey
+            );
+
+
+          if (jDoc) {
+
+            const jData =
+              jDoc.data();
+
+
+            const jPron =
+              jData.pronosticos || {};
+
+
+            const jEsc =
+              jData.escrutinio || {};
+
+
+            jugadores.forEach(j => {
+
+              let pts = 0;
+
+
+              const resp =
+                jPron[j]
+                  ?.respuestas || {};
+
+
+              for (
+                let p = 1;
+                p <= 14;
+                p++
+              ) {
+
+                if (
+                  jEsc[`p${p}`] &&
+                  resp[`p${p}`] ===
+                    jEsc[`p${p}`]
+                ) {
+
+                  pts++;
+
+                }
+
+              }
+
+
+              puntosAcumulados[j] +=
+                pts;
+
+            });
+
+          }
+
+        }
+
+
+        datosUltimoRankingAcumulado =
+          jugadores
+            .map(j => ({
+              jugador: j,
+              total:
+                puntosAcumulados[j]
+            }))
+            .sort(
+              (a, b) =>
+                b.total - a.total
+            );
+
+
+        datosUltimoRankingAcumulado
+          .forEach((r, idx) => {
+
+            tbodyAcumulada.innerHTML += `
+
+              <tr
+                class="border-b ${
+                  idx === 0
+                    ? "bg-green-50 font-bold"
+                    : ""
+                }"
+              >
+
+                <td class="p-3">
+                  ${idx + 1}º
+                </td>
+
+                <td class="p-3">
+                  ${r.jugador}
+                </td>
+
+                <td class="p-3 text-center font-bold text-blue-900">
+                  ${r.total}
+                </td>
+
+              </tr>
+
+            `;
+
+          });
+
+
+      } catch (error) {
+
+        console.error(
+          "Error cargando clasificación acumulada:",
+          error
+        );
+
+      }
+
+    }
+
+
+
+    /* =========================================================
+       GRÁFICO
+       ========================================================= */
+
+    async function renderizarGraficoEvolucion() {
+
+      try {
+
+        const todasJornadasSnap =
+          await db
+            .collection("jornadas")
+            .get();
+
+
+        const puntosAcumulados = {};
+
+        const historicoGrafico = {};
+
+
+        jugadores.forEach(j => {
+
+          puntosAcumulados[j] = 0;
+
+          historicoGrafico[j] = [];
+
+        });
+
+
+        const jornadasTotales = [];
+
+
+        for (
+          let i = 1;
+          i <= 50;
+          i++
+        ) {
+
+          jornadasTotales.push(
+            `J${i}`
+          );
+
+        }
+
+
+        const numJornadaSeleccionada =
+          parseInt(
+            jornadaActual.replace("J", "")
+          );
+
+
+        const jornadasHastaActual =
+          jornadasTotales.slice(
+            0,
+            numJornadaSeleccionada
+          );
+
+
+        jornadasHastaActual.forEach(
+          jKey => {
+
+            const jDoc =
+              todasJornadasSnap.docs.find(
+                d => d.id === jKey
+              );
+
+
+            if (jDoc) {
+
+              const jData =
+                jDoc.data();
+
+
+              const jPron =
+                jData.pronosticos || {};
+
+
+              const jEsc =
+                jData.escrutinio || {};
+
+
+              jugadores.forEach(j => {
+
+                let pts = 0;
+
+
+                const resp =
+                  jPron[j]
+                    ?.respuestas || {};
+
+
+                for (
+                  let i = 1;
+                  i <= 14;
+                  i++
+                ) {
+
+                  if (
+                    jEsc[`p${i}`] &&
+                    resp[`p${i}`] ===
+                      jEsc[`p${i}`]
+                  ) {
+
+                    pts++;
+
+                  }
+
+                }
+
+
+                puntosAcumulados[j] +=
+                  pts;
+
+
+                historicoGrafico[j]
+                  .push(
+                    puntosAcumulados[j]
+                  );
+
+              });
+
+            } else {
+
+              jugadores.forEach(j => {
+
+                historicoGrafico[j]
+                  .push(
+                    puntosAcumulados[j]
+                  );
+
+              });
+
+            }
+
+          }
+        );
+
+
+        const ctx =
+          document
+            .getElementById(
+              "chartEvolucion"
+            )
+            .getContext("2d");
+
+
+        if (chartInstancia) {
+
+          chartInstancia.destroy();
+
+        }
+
+
+        const datasets =
+          jugadores.map(j => ({
+
+            label: j,
+
+            data:
+              historicoGrafico[j],
+
+            borderColor:
+              coloresJugadores[j] ||
+              "#000",
+
+            backgroundColor:
+              coloresJugadores[j] ||
+              "#000",
+
+            fill: false,
+
+            tension: 0.2
+
+          }));
+
+
+        chartInstancia =
+          new Chart(
+            ctx,
+            {
+              type: "line",
+
+              data: {
+
+                labels:
+                  jornadasHastaActual,
+
+                datasets:
+                  datasets
+
+              },
+
+              options: {
+
+                responsive: true,
+
+                maintainAspectRatio:
+                  false,
+
+                plugins: {
+
+                  legend: {
+                    position:
+                      "bottom"
+                  }
+
+                }
+
+              }
+
+            }
+          );
+
+
+      } catch (error) {
+
+        console.error(
+          "Error renderizando gráfico:",
+          error
+        );
+
+      }
+
+    }
+
+
+
+    /* =========================================================
+       COPIAR RESUMEN WHATSAPP
+       ========================================================= */
+
+    function copiarResumenWhatsApp() {
+
+      let texto =
+        `⚽ *QUINIELA - ${jornadaActual}*\n\n`;
+
+
+      texto +=
+        `📊 *Puntos ${jornadaActual}:*\n`;
+
+
+      datosUltimoRankingJornada
+        .forEach((r, idx) => {
+
+          texto +=
+            `${idx + 1}º ${r.jugador}: ${r.puntos} pts (${r.aciertos} aciertos, P15: ${r.pleno})\n`;
+
+        });
+
+
+      texto +=
+        `\n🏆 *General Acumulada (${jornadaActual}):*\n`;
+
+
+      datosUltimoRankingAcumulado
+        .forEach((r, idx) => {
+
+          texto +=
+            `${idx + 1}º ${r.jugador}: ${r.total} pts\n`;
+
+        });
+
+
+      navigator.clipboard
+        .writeText(texto)
+        .then(() => {
+
+          alert(
+            "📋 ¡Resumen copiado! Ya puedes pegarlo directamente en el grupo de WhatsApp de la peña."
+          );
+
+        })
+        .catch(() => {
+
+          alert(
+            "Error al copiar. Inténtalo de nuevo."
+          );
+
+        });
+
+    }
+
+  </script>
+
+</body>
+</html>
