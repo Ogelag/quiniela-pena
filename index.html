@@ -139,7 +139,7 @@
               📋 Pronósticos de la jornada (0/8)
             </button>
             <button id="btn-resultado-jornada" disabled onclick="abrirModalEscrutinio()" class="flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed">
-              ✏️ Introduce el resultado de la jornada (Itziar)
+              ✏️ Introduce el resultado de la jornada (Itziar / Jose)
             </button>
           </div>
         </div>
@@ -238,7 +238,6 @@
           <thead>
             <tr class="bg-slate-100 text-slate-700 font-bold border-b">
               <th class="p-2 text-left border-r">Partido</th>
-              <!-- Columnas de jugadores -->
               <template id="tmpl-th-jugadores"></template>
             </tr>
           </thead>
@@ -260,7 +259,7 @@
         <h3 class="font-bold text-base text-blue-900">✏️ Introducir Resultado Oficial (<span id="modal-esc-lbl-jornada">J1</span>)</h3>
         <button type="button" onclick="cerrarModalEscrutinio()" class="text-gray-400 hover:text-red-500 font-bold text-lg">✖</button>
       </div>
-      <p class="text-xs text-gray-500">Rellena la combinación ganadora oficial para calcular los aciertos de la jornada:</p>
+      <p class="text-xs text-gray-500">Rellena la combinación ganadora oficial (1, X, 2) para calcular los aciertos y puntos:</p>
       
       <div id="grid-escrutinio" class="grid grid-cols-7 gap-2 text-center"></div>
 
@@ -617,7 +616,6 @@
           `;
         });
 
-        // Activar botones modal de quiniela y resultado solo al completar 8/8
         const btnPronosticos = document.getElementById("btn-pronosticos-semana");
         const btnResultado = document.getElementById("btn-resultado-jornada");
 
@@ -723,10 +721,10 @@
       document.getElementById("modal-pronosticos").classList.add("hidden");
     }
 
-    // MODAL DE INTRODUCCIÓN DE RESULTADO REAL
+    // MODAL DE INTRODUCCIÓN DE RESULTADO REAL (ITZIAR / JOSE)
     function abrirModalEscrutinio() {
-      if (usuarioActual !== "Itziar") {
-        const confirmar = confirm("Este botón está pensado para Itziar. ¿Deseas guardar los resultados igualmente?");
+      if (usuarioActual !== "Itziar" && usuarioActual !== "Jose") {
+        const confirmar = confirm("Este botón está pensado para Itziar o Jose. ¿Deseas guardar los resultados igualmente?");
         if (!confirmar) return;
       }
 
