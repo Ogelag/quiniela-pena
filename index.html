@@ -560,6 +560,12 @@
       document.getElementById("modal-lbl-jornada").textContent = jornadaActual;
       document.getElementById("modal-esc-lbl-jornada").textContent = jornadaActual;
 
+      // Limpiar inmediatamente de forma visual los inputs al cambiar de jornada
+      for (let i = 1; i <= 14; i++) {
+        document.querySelectorAll(`input[name="p${i}"]`).forEach(r => r.checked = false);
+      }
+      document.getElementById("pleno-15").value = "";
+
       await determinarEncargadoPleno15();
       actualizarVisibilidadPleno15();
       escucharJornada();
@@ -646,7 +652,7 @@
       }
       document.getElementById("pleno-15").value = "";
 
-      // Comprobación estricta de la marca `cerrada: true` en la jornada anterior
+      // Comprobación de la marca `cerrada: true` en la jornada anterior
       const verificarSecuencia = jornadaAnteriorKey ? db.collection("jornadas").doc(jornadaAnteriorKey).get() : Promise.resolve({ exists: true, data: () => ({ cerrada: true }) });
 
       verificarSecuencia.then(antDoc => {
@@ -682,7 +688,7 @@
             `;
           });
 
-          // Limpiar inputs antes de cargar los datos de esta jornada
+          // Limpieza previa de inputs
           for (let i = 1; i <= 14; i++) {
             document.querySelectorAll(`input[name="p${i}"]`).forEach(r => r.checked = false);
           }
@@ -693,7 +699,7 @@
           const btnGuardar = document.getElementById("btn-guardar-pronostico");
           const inputsPronostico = document.querySelectorAll('#form-pronostico input');
 
-          // CONTROL ESTRICTO DE BLOQUEO POR ORDEN DE JORNADA
+          // PRIORIDAD ABSOLUTA: Si la jornada anterior NO está cerrada oficialmente, se bloquea con el mensaje estricto.
           if (!jornadaAnteriorCerrada) {
             avisoBloqueoSecuencial.classList.remove("hidden");
             avisoBloqueo.classList.add("hidden");
@@ -701,10 +707,11 @@
             btnGuardar.classList.add("bg-gray-400", "cursor-not-allowed");
             btnGuardar.classList.remove("bg-blue-600", "hover:bg-blue-700");
             inputsPronostico.forEach(input => input.disabled = true);
+            return; // DETIENE LA EJECUCIÓN PARA EVITAR CUALQUIER OTRO AVISO
           } else {
             avisoBloqueoSecuencial.classList.add("hidden");
 
-            // Si la jornada anterior SÍ está cerrada, cargamos las respuestas guardadas del usuario si existen
+            // Si la jornada anterior SÍ está cerrada, cargamos las respuestas guardadas (si el usuario ya las hizo)
             if (usuarioActual && pronosticos[usuarioActual] && pronosticos[usuarioActual].respuestas) {
               const misRespuestas = pronosticos[usuarioActual].respuestas;
               for (let i = 1; i <= 14; i++) {
