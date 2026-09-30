@@ -9,6 +9,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
     @media (prefers-color-scheme: dark) {
       body { background-color: #0f172a; color: #f8fafc; }
@@ -23,26 +24,40 @@
     }
   </style>
 </head>
+
 <body class="bg-slate-100 text-gray-800 font-sans pb-12 transition-colors duration-200">
 
-  <!-- Encabezado -->
+  <!-- ENCABEZADO -->
   <header class="bg-blue-900 text-white p-4 shadow-md text-center">
     <h1 class="text-2xl font-bold tracking-wide">⚽ Quiniela</h1>
-    <p class="text-xs text-blue-200 mt-1">Borja · Carlos · Itziar · Jose · Quique · Currás · García · Rodríguez</p>
+    <p class="text-xs text-blue-200 mt-1">
+      Borja · Carlos · Itziar · Jose · Quique · Currás · García · Rodríguez
+    </p>
   </header>
 
   <!-- PANTALLA 1: ACCESO DE JUGADORES -->
-  <section id="pantalla-login" class="max-w-md mx-auto my-12 p-6 bg-white rounded-xl shadow-lg border border-slate-200 text-center space-y-6">
+  <section id="pantalla-login"
+    class="max-w-md mx-auto my-12 p-6 bg-white rounded-xl shadow-lg border border-slate-200 text-center space-y-6">
+
     <div>
       <div class="text-4xl mb-2">🔐</div>
       <h2 class="text-xl font-bold text-blue-900">Acceso de Jugadores</h2>
-      <p class="text-xs text-gray-500 mt-1">Identifícate para entrar en la Quiniela</p>
+      <p class="text-xs text-gray-500 mt-1">
+        Identifícate para entrar en la Quiniela
+      </p>
     </div>
 
     <div class="space-y-4 text-left">
+
       <div>
-        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tu Nombre</label>
-        <select id="login-select-jugador" onchange="seleccionarJugador()" class="p-2.5 border rounded-lg bg-gray-50 font-semibold text-blue-900 w-full">
+        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
+          Tu Nombre
+        </label>
+
+        <select id="login-select-jugador"
+          onchange="seleccionarJugador()"
+          class="p-2.5 border rounded-lg bg-gray-50 font-semibold text-blue-900 w-full">
+
           <option value="">-- Selecciona tu Nombre --</option>
           <option value="Borja">Borja</option>
           <option value="Carlos">Carlos</option>
@@ -52,24 +67,42 @@
           <option value="Currás">Currás</option>
           <option value="García">García</option>
           <option value="Rodríguez">Rodríguez</option>
+
         </select>
       </div>
 
       <div id="login-sec-pin" class="hidden space-y-3">
-        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">PIN / Clave (4 dígitos)</label>
-        <input type="password" id="login-input-pin" maxlength="4" placeholder="****" class="p-2.5 border rounded-lg bg-gray-50 font-semibold text-center tracking-widest w-full">
-        
+
+        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">
+          PIN / Clave (4 dígitos)
+        </label>
+
+        <input type="password"
+          id="login-input-pin"
+          maxlength="4"
+          placeholder="****"
+          class="p-2.5 border rounded-lg bg-gray-50 font-semibold text-center tracking-widest w-full">
+
         <p id="login-msg-status" class="text-xs font-medium text-slate-500">
           Introduce tu PIN de 4 dígitos para acceder o registrarlo si es tu primera vez.
         </p>
 
         <div class="flex gap-2 pt-2">
-          <button type="button" id="btn-entrar" onclick="iniciarSesion()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg transition shadow text-xs">
+
+          <button type="button"
+            id="btn-entrar"
+            onclick="iniciarSesion()"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg transition shadow text-xs">
             Entrar a la Quiniela
           </button>
-          <button type="button" id="btn-registrar-pin" onclick="registrarPINLogin()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg transition shadow text-xs">
+
+          <button type="button"
+            id="btn-registrar-pin"
+            onclick="registrarPINLogin()"
+            class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg transition shadow text-xs">
             Registrar Mi PIN
           </button>
+
         </div>
       </div>
     </div>
@@ -78,989 +111,39 @@
   <!-- PANTALLA 2: CONTENIDO PRINCIPAL -->
   <main id="pantalla-app" class="hidden max-w-4xl mx-auto p-4 space-y-6">
 
-    <!-- Indicador de Usuario Activo -->
+    <!-- USUARIO ACTIVO -->
     <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl flex items-center justify-between">
+
       <span class="text-xs font-semibold text-blue-900">
-        👤 Sesión iniciada como: <span id="lbl-usuario-activo" class="font-bold text-blue-700">...</span>
+        👤 Sesión iniciada como:
+        <span id="lbl-usuario-activo" class="font-bold text-blue-700">...</span>
       </span>
-      <button type="button" onclick="cerrarSesion()" class="text-xs text-red-600 hover:underline font-bold">
+
+      <button type="button"
+        onclick="cerrarSesion()"
+        class="text-xs text-red-600 hover:underline font-bold">
         Cerrar Sesión ✖
       </button>
+
     </div>
 
-    <!-- PESTAÑAS (SIEMPRE ACTIVAS) -->
+    <!-- PESTAÑAS -->
     <nav class="bg-slate-200 p-1.5 rounded-xl border border-slate-300 grid grid-cols-2 sm:grid-cols-4 gap-2">
-      <button type="button" id="tab-btn-pronostico" onclick="cambiarPestanaPrincipal('pronostico')" class="py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition bg-blue-600 text-white border-blue-600 shadow">
+
+      <button type="button"
+        id="tab-btn-pronostico"
+        onclick="cambiarPestanaPrincipal('pronostico')"
+        class="py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition bg-blue-600 text-white border-blue-600 shadow">
         📝 Pronóstico Jornada
       </button>
-      <button type="button" id="tab-btn-jornada" onclick="cambiarPestanaPrincipal('jornada')" class="py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition bg-white text-gray-700 border-gray-200 hover:bg-gray-50">
+
+      <button type="button"
+        id="tab-btn-jornada"
+        onclick="cambiarPestanaPrincipal('jornada')"
+        class="py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition bg-white text-gray-700 border-gray-200 hover:bg-gray-50">
         🥇 Clasificación Jornada
       </button>
-      <button type="button" id="tab-btn-acumulada" onclick="cambiarPestanaPrincipal('acumulada')" class="py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition bg-white text-gray-700 border-gray-200 hover:bg-gray-50">
-        🏆 Clasificación General
-      </button>
-      <button type="button" id="tab-btn-grafico" onclick="cambiarPestanaPrincipal('grafico')" class="py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition bg-white text-gray-700 border-gray-200 hover:bg-gray-50">
-        📈 Gráfico Evolución
-      </button>
-    </nav>
 
-    <!-- PESTAÑA 1: PRONÓSTICO -->
-    <div id="seccion-pronostico" class="space-y-6">
-      
-      <section class="bg-white p-4 rounded-xl shadow border border-slate-200 space-y-4">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h2 class="text-base font-bold text-gray-800">Panel de Pronósticos</h2>
-            <p class="text-xs text-gray-500">Introduce o consulta los datos de la jornada seleccionada.</p>
-          </div>
-
-          <div class="w-full sm:w-auto text-left sm:text-right">
-            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Jornada Consultada</label>
-            <select id="select-jornada" onchange="cambiarJornada()" class="p-2 border rounded-lg bg-blue-50 font-bold text-blue-900 w-full sm:w-auto"></select>
-          </div>
-        </div>
-
-        <div class="border-t pt-3 space-y-3">
-          <p class="text-xs font-semibold text-gray-500">Estado de recepción en <span id="lbl-jornada-check" class="font-bold">Jornada 1</span>:</p>
-          <div id="grid-checks" class="grid grid-cols-2 sm:grid-cols-4 gap-2"></div>
-
-          <!-- BOTONES ESPECIALES -->
-          <div class="pt-2 border-t flex flex-col sm:flex-row gap-3">
-            <button id="btn-pronosticos-semana" disabled onclick="abrirModalPronosticos()" class="flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed">
-              📋 Pronósticos de la jornada (0/8)
-            </button>
-            <button id="btn-resultado-jornada" onclick="abrirModalEscrutinio()" class="flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-700 text-white shadow cursor-pointer">
-              ✏️ Introduce el resultado de la jornada (Itziar / Jose)
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <section class="bg-white p-4 rounded-xl shadow border border-slate-200">
-        <h2 class="text-lg font-bold mb-3 border-b pb-2">Rellenar Pronóstico (<span id="lbl-jornada-form">Jornada 1</span>)</h2>
-        
-        <!-- AVISO DE BLOQUEO SECUENCIAL OBLIGATORIO -->
-        <div id="aviso-bloqueo-secuencial" class="hidden bg-red-50 border border-red-300 text-red-800 p-3 rounded-lg text-xs font-semibold mb-3 flex items-center gap-2">
-          <span>⛔ Todavía no se puede pronosticar porque no se ha cerrado la jornada anterior.</span>
-        </div>
-
-        <!-- AVISO DE BLOQUEO CUANDO SE ALCANZAN LOS 8/8 PRONÓSTICOS -->
-        <div id="aviso-bloqueo-pronosticos" class="hidden bg-amber-50 border border-amber-300 text-amber-800 p-3 rounded-lg text-xs font-semibold mb-3 flex items-center gap-2">
-          <span>🔒 Los 8 pronósticos de esta jornada ya han sido completados. Ya no se pueden modificar.</span>
-        </div>
-
-        <form id="form-pronostico" onsubmit="guardarPronostico(event)" class="space-y-3">
-          <div id="lista-partidos" class="space-y-2"></div>
-
-          <div id="container-pleno-15" class="bg-amber-50 p-3 rounded-lg border border-amber-200 mt-4 hidden">
-            <label class="block text-xs font-bold text-amber-800 mb-1">
-              🌟 Pleno al 15 (¡Te toca asignarlo esta jornada!)
-            </label>
-            <input type="text" id="pleno-15" placeholder="Ej: 2-1" class="p-2 border rounded w-full text-sm">
-          </div>
-          <div id="msg-no-pleno-15" class="bg-gray-100 p-3 rounded-lg border border-gray-200 text-xs text-gray-500 italic mt-4">
-            ℹ En esta jornada el Pleno al 15 le corresponde rellenarlo a: <span id="encargado-pleno-nombre" class="font-bold text-blue-900">...</span>
-          </div>
-
-          <button type="submit" id="btn-guardar-pronostico" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition shadow mt-4">
-            Guardar Mi Pronóstico
-          </button>
-        </form>
-      </section>
-    </div>
-
-    <!-- PESTAÑAS 2, 3 Y 4: RESULTADOS Y CLASIFICACIONES -->
-    <div id="seccion-resultados" class="hidden">
-      <section class="bg-white p-4 rounded-xl shadow border border-slate-200">
-        
-        <div id="contenido-revelado" class="space-y-6">
-          <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl flex items-center justify-between gap-3">
-            <span class="text-xs font-semibold text-emerald-800"> Compartir resultados en la peña:</span>
-            <button type="button" onclick="copiarResumenWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition shadow flex items-center gap-1 shrink-0">
-              📋 Copiar para WhatsApp
-            </button>
-          </div>
-
-          <!-- CLASIFICACIÓN ESPECÍFICA DE JORNADA -->
-          <div id="vista-clasif-jornada" class="space-y-4">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3">
-              <h3 class="text-base font-bold text-slate-800">Clasificación Específica de la Jornada</h3>
-              <select id="select-jornada-tabla" onchange="cambiarJornadaTabla()" class="p-2 border rounded-lg bg-slate-50 font-bold text-blue-900 text-xs"></select>
-            </div>
-            
-            <div class="overflow-x-auto rounded-lg border border-slate-200">
-              <table class="w-full text-sm text-left">
-                <thead class="bg-slate-100 text-gray-600 uppercase text-xs">
-                  <tr>
-                    <th class="p-3">Pos</th>
-                    <th class="p-3">Jugador</th>
-                    <th class="p-3 text-center">Puntos de la Jornada</th>
-                    <th class="p-3 text-center">Aciertos</th>
-                    <th class="p-3 text-center">Pleno 15</th>
-                  </tr>
-                </thead>
-                <tbody id="tabla-jornada"></tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- CLASIFICACIÓN GENERAL ACUMULADA -->
-          <div id="vista-clasif-acumulada" class="hidden space-y-4">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3">
-              <h3 class="text-base font-bold text-slate-800">Clasificación General Acumulada</h3>
-              <select id="select-jornada-acum" onchange="cambiarJornadaAcumulada()" class="p-2 border rounded-lg bg-slate-50 font-bold text-blue-900 text-xs"></select>
-            </div>
-
-            <div class="overflow-x-auto rounded-lg border border-slate-200">
-              <table class="w-full text-sm text-left">
-                <thead class="bg-blue-900 text-white uppercase text-xs">
-                  <tr>
-                    <th class="p-3">Pos</th>
-                    <th class="p-3">Jugador</th>
-                    <th class="p-3 text-center">Puntos Totales</th>
-                  </tr>
-                </thead>
-                <tbody id="tabla-acumulada"></tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- GRÁFICO EVOLUCIÓN -->
-          <div id="vista-clasif-grafico" class="hidden space-y-4">
-            <h3 class="text-base font-bold border-b pb-2 text-slate-800">Evolución Acumulada (Hasta <span id="lbl-jornada-graf">J1</span>)</h3>
-            <div class="relative w-full h-72 p-2 bg-white rounded-lg border border-slate-200">
-              <canvas id="chartEvolucion"></canvas>
-            </div>
-          </div>
-
-        </div>
-      </section>
-    </div>
-
-  </main>
-
-  <!-- MODAL: PRONÓSTICOS DE LA SEMANA (BOLETO CONJUNTO) -->
-  <div id="modal-pronosticos" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden">
-      <div class="bg-blue-900 text-white p-4 flex justify-between items-center">
-        <h3 class="font-bold text-base flex items-center gap-2">⚽ Boleto Conjunto - <span id="modal-lbl-jornada">Jornada 1</span></h3>
-        <button type="button" onclick="cerrarModalPronosticos()" class="text-white hover:text-red-300 font-bold text-lg">✖</button>
-      </div>
-      <div class="p-4 overflow-x-auto flex-1">
-        <table class="w-full text-xs text-center border-collapse">
-          <thead>
-            <tr id="tr-th-jugadores" class="bg-slate-100 text-slate-700 font-bold border-b">
-              <th class="p-2 text-left border-r">Partido</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-pronosticos-matriz"></tbody>
-        </table>
-      </div>
-      <div class="p-3 bg-slate-50 border-t text-right">
-        <button type="button" onclick="cerrarModalPronosticos()" class="bg-slate-700 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-slate-800 transition">
-          Cerrar
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: INTRODUCIR RESULTADO REAL (ESCRUTINIO) -->
-  <div id="modal-escrutinio" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-xl w-full max-h-[90vh] flex flex-col overflow-hidden">
-      <div class="p-4 border-b flex justify-between items-center bg-white">
-        <h2 class="text-lg font-bold text-gray-800">Resultado Oficial (<span id="modal-esc-lbl-jornada">Jornada 1</span>)</h2>
-        <button type="button" onclick="cerrarModalEscrutinio()" class="text-gray-400 hover:text-gray-600 font-bold text-xl">✖</button>
-      </div>
-      <div class="p-4 overflow-y-auto space-y-3 flex-1 bg-white">
-        <div id="lista-escrutinio" class="space-y-2"></div>
-      </div>
-      <!-- BOTONERA INFERIOR CON CERRAR JORNADA -->
-      <div class="p-4 border-t bg-white flex flex-col sm:flex-row gap-2">
-        <button type="button" onclick="guardarEscrutinioModal()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg transition shadow text-xs">
-          Guardar Resultado
-        </button>
-        <button type="button" onclick="cerrarJornadaOficial()" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-lg transition shadow text-xs">
-          🔒 CERRAR JORNADA
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDgzNw3E2-YKPNmworM2lKJ_N1LM66Stos",
-      authDomain: "quiniela-f245b.firebaseapp.com",
-      projectId: "quiniela-f245b",
-      storageBucket: "quiniela-f245b.firebasestorage.app",
-      messagingSenderId: "361132198755",
-      appId: "1:361132198755:web:5e1de81f74fb92d1de2156",
-      measurementId: "G-J3F63GNQXG"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    try {
-      db.settings({ experimentalForceLongPolling: true });
-    } catch(e) {}
-
-    const jugadores = ["Borja", "Carlos", "Itziar", "Jose", "Quique", "Currás", "García", "Rodríguez"];
-    const coloresJugadores = {
-      "Borja": "#3b82f6",
-      "Carlos": "#334155",
-      "Itziar": "#ec4899",
-      "Jose": "#ef4444",
-      "Quique": "#f59e0b",
-      "Currás": "#8b5cf6",
-      "García": "#06b6d4",
-      "Rodríguez": "#10b981"
-    };
-
-    let usuarioActual = "";
-    let jornadaActual = "J1";
-    let jornadaTablaActual = "J1";
-    let jornadaAcumActual = "J1";
-    let chartInstancia = null;
-    let datosUltimoRankingJornada = [];
-    let datosUltimoRankingAcumulado = [];
-    let encargadoPlenoActual = "Jose";
-    let ultimosPronosticosCargados = {};
-    let ultimoEscrutinioCargado = {};
-
-    const selectJornada = document.getElementById("select-jornada");
-    const selectJornadaTabla = document.getElementById("select-jornada-tabla");
-    const selectJornadaAcum = document.getElementById("select-jornada-acum");
-
-    for (let i = 1; i <= 50; i++) {
-      const optText = `Jornada ${i}`;
-      const optVal = `J${i}`;
-      selectJornada.innerHTML += `<option value="${optVal}">${optText}</option>`;
-      selectJornadaTabla.innerHTML += `<option value="${optVal}">${optText}</option>`;
-      selectJornadaAcum.innerHTML += `<option value="${optVal}">${optText}</option>`;
-    }
-
-    const partidosCont = document.getElementById("lista-partidos");
-    for (let i = 1; i <= 14; i++) {
-      partidosCont.innerHTML += `
-        <div class="flex items-center justify-between bg-gray-50 p-2 rounded border text-sm">
-          <span class="font-medium">Partido ${i}</span>
-          <div class="flex gap-2">
-            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50">
-              <input type="radio" name="p${i}" value="1"> 1
-            </label>
-            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50">
-              <input type="radio" name="p${i}" value="X"> X
-            </label>
-            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50">
-              <input type="radio" name="p${i}" value="2"> 2
-            </label>
-          </div>
-        </div>
-      `;
-    }
-
-    const escrutinioCont = document.getElementById("lista-escrutinio");
-    for (let i = 1; i <= 14; i++) {
-      escrutinioCont.innerHTML += `
-        <div class="flex items-center justify-between bg-gray-50 p-2 rounded border text-sm">
-          <span class="font-medium">Partido ${i}</span>
-          <div class="flex gap-2">
-            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50">
-              <input type="radio" name="esc_p${i}" value="1"> 1
-            </label>
-            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50">
-              <input type="radio" name="esc_p${i}" value="X"> X
-            </label>
-            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50">
-              <input type="radio" name="esc_p${i}" value="2"> 2
-            </label>
-          </div>
-        </div>
-      `;
-    }
-
-    window.addEventListener("DOMContentLoaded", () => {
-      const usuarioGuardado = localStorage.getItem("quiniela_usuario_activo");
-      if (usuarioGuardado) {
-        usuarioActual = usuarioGuardado;
-        mostrarAplicacion();
-      }
-    });
-
-    function seleccionarJugador() {
-      const selNombre = document.getElementById("login-select-jugador").value;
-      const secPin = document.getElementById("login-sec-pin");
-      document.getElementById("login-input-pin").value = "";
-
-      if (!selNombre) {
-        secPin.classList.add("hidden");
-      } else {
-        secPin.classList.remove("hidden");
-      }
-    }
-
-    async function registrarPINLogin() {
-      const selNombre = document.getElementById("login-select-jugador").value;
-      const pinIngresado = document.getElementById("login-input-pin").value;
-
-      if (!selNombre) {
-        alert("Selecciona tu nombre primero.");
-        return;
-      }
-
-      if (!pinIngresado || pinIngresado.length !== 4 || isNaN(pinIngresado)) {
-        alert("Introduce un PIN compuesto por 4 números.");
-        return;
-      }
-
-      const btnReg = document.getElementById("btn-registrar-pin");
-      btnReg.disabled = true;
-      btnReg.textContent = "Guardando...";
-
-      try {
-        const setDocPromise = db.collection("usuarios").doc(selNombre).set({ pin: pinIngresado });
-        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 3500));
-
-        await Promise.race([setDocPromise, timeoutPromise]);
-        alert("✅ PIN registrado para " + selNombre + ". Haz clic en 'Entrar a la Quiniela'.");
-      } catch (e) {
-        alert("PIN enviado correctamente. Pulsa 'Entrar a la Quiniela' para continuar.");
-      } finally {
-        btnReg.disabled = false;
-        btnReg.textContent = "Registrar Mi PIN";
-      }
-    }
-
-    async function iniciarSesion() {
-      const selNombre = document.getElementById("login-select-jugador").value;
-      const pinIngresado = document.getElementById("login-input-pin").value;
-
-      if (!selNombre) {
-        alert("Selecciona tu nombre.");
-        return;
-      }
-
-      if (!pinIngresado || pinIngresado.length !== 4) {
-        alert("Escribe tu PIN de 4 dígitos.");
-        return;
-      }
-
-      const btnEntrar = document.getElementById("btn-entrar");
-      btnEntrar.disabled = true;
-      btnEntrar.textContent = "Entrando...";
-
-      try {
-        const fetchDocPromise = db.collection("usuarios").doc(selNombre).get();
-        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 3500));
-
-        const userDoc = await Promise.race([fetchDocPromise, timeoutPromise]);
-
-        if (userDoc.exists && userDoc.data().pin) {
-          if (userDoc.data().pin !== pinIngresado) {
-            alert("🔒 PIN incorrecto para " + selNombre + ".");
-            btnEntrar.disabled = false;
-            btnEntrar.textContent = "Entrar a la Quiniela";
-            return;
-          }
-        }
-        
-        usuarioActual = selNombre;
-        localStorage.setItem("quiniela_usuario_activo", usuarioActual);
-        mostrarAplicacion();
-
-      } catch (e) {
-        usuarioActual = selNombre;
-        localStorage.setItem("quiniela_usuario_activo", usuarioActual);
-        mostrarAplicacion();
-      } finally {
-        btnEntrar.disabled = false;
-        btnEntrar.textContent = "Entrar a la Quiniela";
-      }
-    }
-
-    function mostrarAplicacion() {
-      document.getElementById("pantalla-login").classList.add("hidden");
-      document.getElementById("pantalla-app").classList.remove("hidden");
-      document.getElementById("lbl-usuario-activo").textContent = usuarioActual;
-
-      determinarEncargadoPleno15().then(() => {
-        actualizarVisibilidadPleno15();
-        escucharJornada();
-      });
-    }
-
-    function cerrarSesion() {
-      localStorage.removeItem("quiniela_usuario_activo");
-      usuarioActual = "";
-      document.getElementById("pantalla-app").classList.add("hidden");
-      document.getElementById("pantalla-login").classList.remove("hidden");
-      document.getElementById("login-select-jugador").value = "";
-      document.getElementById("login-sec-pin").classList.add("hidden");
-    }
-
-    function cambiarPestanaPrincipal(pestana) {
-      const secPronostico = document.getElementById("seccion-pronostico");
-      const secResultados = document.getElementById("seccion-resultados");
-
-      const vJornada = document.getElementById("vista-clasif-jornada");
-      const vAcumulada = document.getElementById("vista-clasif-acumulada");
-      const vGrafico = document.getElementById("vista-clasif-grafico");
-
-      const btnPronostico = document.getElementById("tab-btn-pronostico");
-      const btnJornada = document.getElementById("tab-btn-jornada");
-      const btnAcumulada = document.getElementById("tab-btn-acumulada");
-      const btnGrafico = document.getElementById("tab-btn-grafico");
-
-      const activeClass = "bg-blue-600 text-white border-blue-600 shadow";
-      const inactiveClass = "bg-white text-gray-700 border-gray-200 hover:bg-gray-50";
-
-      btnPronostico.className = `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
-      btnJornada.className = `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
-      btnAcumulada.className = `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
-      btnGrafico.className = `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${inactiveClass}`;
-
-      if (pestana === 'pronostico') {
-        secPronostico.classList.remove("hidden");
-        secResultados.classList.add("hidden");
-        btnPronostico.className = `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
-      } else {
-        secPronostico.classList.add("hidden");
-        secResultados.classList.remove("hidden");
-
-        vJornada.classList.add("hidden");
-        vAcumulada.classList.add("hidden");
-        vGrafico.classList.add("hidden");
-
-        if (pestana === 'jornada') {
-          vJornada.classList.remove("hidden");
-          btnJornada.className = `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
-        } else if (pestana === 'acumulada') {
-          vAcumulada.classList.remove("hidden");
-          btnAcumulada.className = `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
-        } else if (pestana === 'grafico') {
-          vGrafico.classList.remove("hidden");
-          btnGrafico.className = `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
-        }
-      }
-    }
-
-    async function cambiarJornada() {
-      jornadaActual = document.getElementById("select-jornada").value;
-      jornadaTablaActual = jornadaActual;
-      jornadaAcumActual = jornadaActual;
-      
-      document.getElementById("select-jornada-tabla").value = jornadaActual;
-      document.getElementById("select-jornada-acum").value = jornadaActual;
-
-      document.getElementById("lbl-jornada-check").textContent = jornadaActual;
-      document.getElementById("lbl-jornada-form").textContent = jornadaActual;
-      document.getElementById("lbl-jornada-tabla").textContent = jornadaActual;
-      document.getElementById("lbl-jornada-acum").textContent = jornadaActual;
-      document.getElementById("lbl-jornada-graf").textContent = jornadaActual;
-      document.getElementById("modal-lbl-jornada").textContent = jornadaActual;
-      document.getElementById("modal-esc-lbl-jornada").textContent = jornadaActual;
-
-      // Limpiar inmediatamente los inputs visuales al cambiar de jornada
-      for (let i = 1; i <= 14; i++) {
-        document.querySelectorAll(`input[name="p${i}"]`).forEach(r => r.checked = false);
-      }
-      document.getElementById("pleno-15").value = "";
-
-      await determinarEncargadoPleno15();
-      actualizarVisibilidadPleno15();
-      escucharJornada();
-    }
-
-    function cambiarJornadaTabla() {
-      jornadaTablaActual = document.getElementById("select-jornada-tabla").value;
-      cargarClasificacionJornadaEspecifica(jornadaTablaActual);
-    }
-
-    function cambiarJornadaAcumulada() {
-      jornadaAcumActual = document.getElementById("select-jornada-acum").value;
-      cargarClasificacionAcumuladaHasta(jornadaAcumActual);
-    }
-
-    async function determinarEncargadoPleno15() {
-      const numJornada = parseInt(jornadaActual.replace("J", ""));
-      
-      if (numJornada === 1) {
-        encargadoPlenoActual = "Jose";
-        return;
-      }
-
-      try {
-        const jAnteriorKey = "J" + (numJornada - 1);
-        const jAntDoc = await db.collection("jornadas").doc(jAnteriorKey).get();
-
-        if (jAntDoc.exists) {
-          const data = jAntDoc.data();
-          const pronosticos = data.pronosticos || {};
-          const escrutinio = data.escrutinio || {};
-
-          let maxAciertos = -1;
-          let ganador = "Jose";
-
-          jugadores.forEach(j => {
-            let aciertos = 0;
-            const resp = pronosticos[j]?.respuestas || {};
-            for (let i = 1; i <= 14; i++) {
-              if (escrutinio[`p${i}`] && resp[`p${i}`] === escrutinio[`p${i}`]) {
-                aciertos++;
-              }
-            }
-            if (aciertos > maxAciertos) {
-              maxAciertos = aciertos;
-              ganador = j;
-            }
-          });
-          encargadoPlenoActual = ganador;
-        } else {
-          encargadoPlenoActual = "Jose";
-        }
-      } catch (e) {
-        encargadoPlenoActual = "Jose";
-      }
-    }
-
-    function actualizarVisibilidadPleno15() {
-      const boxPleno = document.getElementById("container-pleno-15");
-      const msgNoPleno = document.getElementById("msg-no-pleno-15");
-      const lblEncargado = document.getElementById("encargado-pleno-nombre");
-
-      lblEncargado.textContent = encargadoPlenoActual;
-
-      if (usuarioActual && usuarioActual === encargadoPlenoActual) {
-        boxPleno.classList.remove("hidden");
-        msgNoPleno.classList.add("hidden");
-      } else {
-        boxPleno.classList.add("hidden");
-        msgNoPleno.classList.remove("hidden");
-      }
-    }
-
-    let unsubscribeJornada = null;
-    function escucharJornada() {
-      if (unsubscribeJornada) unsubscribeJornada();
-
-      const numJornadaActual = parseInt(jornadaActual.replace("J", ""));
-      const jornadaAnteriorKey = numJornadaActual > 1 ? `J${numJornadaActual - 1}` : null;
-
-      // Limpiar de inmediato los inputs visuales al cambiar de jornada
-      for (let i = 1; i <= 14; i++) {
-        document.querySelectorAll(`input[name="p${i}"]`).forEach(r => r.checked = false);
-      }
-      document.getElementById("pleno-15").value = "";
-
-      const verificarSecuencia = jornadaAnteriorKey ? db.collection("jornadas").doc(jornadaAnteriorKey).get() : Promise.resolve({ exists: true, data: () => ({ cerrada: true }) });
-
-      verificarSecuencia.then(antDoc => {
-        let jornadaAnteriorCerrada = true;
-        if (numJornadaActual > 1) {
-          const antData = antDoc.exists ? antDoc.data() : {};
-          if (!antData.cerrada) {
-            jornadaAnteriorCerrada = false;
-          }
-        }
-
-        unsubscribeJornada = db.collection("jornadas").doc(jornadaActual).onSnapshot(doc => {
-          const data = doc.exists ? doc.data() : {};
-          const pronosticos = data.pronosticos || {};
-          const escrutinio = data.escrutinio || {};
-
-          ultimosPronosticosCargados = pronosticos;
-          ultimoEscrutinioCargado = escrutinio;
-
-          const grid = document.getElementById("grid-checks");
-          grid.innerHTML = "";
-          let totalEnviados = 0;
-
-          jugadores.forEach(j => {
-            const enviado = !!pronosticos[j];
-            if (enviado) totalEnviados++;
-
-            grid.innerHTML += `
-              <div class="flex items-center justify-between p-1.5 px-2 rounded text-[11px] font-semibold ${enviado ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-500'}">
-                <span class="truncate max-w-[70px]">${j}</span>
-                <span class="shrink-0">${enviado ? '✓ Listo' : '⏳ Pend.'}</span>
-              </div>
-            `;
-          });
-
-          // Limpieza de inputs antes de cargar los datos de la jornada actual
-          for (let i = 1; i <= 14; i++) {
-            document.querySelectorAll(`input[name="p${i}"]`).forEach(r => r.checked = false);
-          }
-          document.getElementById("pleno-15").value = "";
-
-          const avisoBloqueoSecuencial = document.getElementById("aviso-bloqueo-secuencial");
-          const avisoBloqueo = document.getElementById("aviso-bloqueo-pronosticos");
-          const btnGuardar = document.getElementById("btn-guardar-pronostico");
-          const inputsPronostico = document.querySelectorAll('#form-pronostico input');
-
-          // BLOQUEO ESTRICTO POR SECUENCIA DE JORNADA ANTERIOR
-          if (!jornadaAnteriorCerrada) {
-            avisoBloqueoSecuencial.classList.remove("hidden");
-            avisoBloqueo.classList.add("hidden");
-            btnGuardar.disabled = true;
-            btnGuardar.classList.add("bg-gray-400", "cursor-not-allowed");
-            btnGuardar.classList.remove("bg-blue-600", "hover:bg-blue-700");
-            inputsPronostico.forEach(input => input.disabled = true);
-            return; // Detenemos aquí para que aparezca limpio y con el mensaje exacto
-          } else {
-            avisoBloqueoSecuencial.classList.add("hidden");
-
-            // Si la jornada anterior SÍ está cerrada, cargamos las respuestas guardadas del usuario si existen
-            if (usuarioActual && pronosticos[usuarioActual] && pronosticos[usuarioActual].respuestas) {
-              const misRespuestas = pronosticos[usuarioActual].respuestas;
-              for (let i = 1; i <= 14; i++) {
-                if (misRespuestas[`p${i}`]) {
-                  const radio = document.querySelector(`input[name="p${i}"][value="${misRespuestas[`p${i}`]}"]`);
-                  if (radio) radio.checked = true;
-                }
-              }
-              if (usuarioActual === encargadoPlenoActual && pronosticos[usuarioActual].pleno) {
-                document.getElementById("pleno-15").value = pronosticos[usuarioActual].pleno;
-              }
-            }
-
-            if (totalEnviados === 8) {
-              avisoBloqueo.classList.remove("hidden");
-              btnGuardar.disabled = true;
-              btnGuardar.classList.add("bg-gray-400", "cursor-not-allowed");
-              btnGuardar.classList.remove("bg-blue-600", "hover:bg-blue-700");
-              inputsPronostico.forEach(input => input.disabled = true);
-            } else {
-              avisoBloqueo.classList.add("hidden");
-              btnGuardar.disabled = false;
-              btnGuardar.classList.remove("bg-gray-400", "cursor-not-allowed");
-              btnGuardar.classList.add("bg-blue-600", "hover:bg-blue-700");
-              inputsPronostico.forEach(input => input.disabled = false);
-            }
-          }
-
-          const btnPronosticos = document.getElementById("btn-pronosticos-semana");
-          btnPronosticos.innerHTML = `📋 Pronósticos de la jornada (${totalEnviados}/8)`;
-
-          if (totalEnviados === 8) {
-            btnPronosticos.disabled = false;
-            btnPronosticos.className = "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white shadow cursor-pointer";
-          } else {
-            btnPronosticos.disabled = true;
-            btnPronosticos.className = "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed";
-          }
-
-          cargarClasificacionJornadaEspecifica(jornadaTablaActual);
-          cargarClasificacionAcumuladaHasta(jornadaAcumActual);
-          renderizarGraficoEvolucion();
-        }, err => console.log(err));
-      });
-    }
-
-    async function guardarPronostico(e) {
-      e.preventDefault();
-      if (!usuarioActual) {
-        alert("Identificación no válida.");
-        return;
-      }
-
-      const opciones = {};
-      for (let i = 1; i <= 14; i++) {
-        const marcado = document.querySelector(`input[name="p${i}"]:checked`);
-        if (!marcado) {
-          alert(`Te falta marcar la opción del Partido ${i}.`);
-          return;
-        }
-        opciones[`p${i}`] = marcado.value;
-      }
-
-      let pleno = "-";
-      if (usuarioActual === encargadoPlenoActual) {
-        pleno = document.getElementById("pleno-15").value;
-        if (!pleno) {
-          alert("Te toca rellenar el Pleno al 15 esta jornada. Por favor, especifícalo.");
-          return;
-        }
-      }
-
-      await db.collection("jornadas").doc(jornadaActual).set({
-        pronosticos: {
-          [usuarioActual]: { respuestas: opciones, pleno: pleno, fecha: new Date() }
-        }
-      }, { merge: true });
-
-      alert("¡Pronóstico guardado para " + usuarioActual + " en " + jornadaActual + "!");
-    }
-
-    function abrirModalPronosticos() {
-      const modal = document.getElementById("modal-pronosticos");
-      const trTh = document.getElementById("tr-th-jugadores");
-      const tbody = document.getElementById("tbody-pronosticos-matriz");
-
-      let thHTML = `<th class="p-2 text-left border-r">Partido</th><th class="p-2 border-r bg-slate-200">Resultado Real</th>`;
-      jugadores.forEach(j => {
-        thHTML += `<th class="p-2 border-r ${j === usuarioActual ? 'bg-blue-100 text-blue-900' : ''}">${j}</th>`;
-      });
-      trTh.innerHTML = thHTML;
-
-      let tbodyHTML = "";
-      for (let i = 1; i <= 14; i++) {
-        const valReal = ultimoEscrutinioCargado[`p${i}`] || "-";
-        tbodyHTML += `<tr class="border-b ${i % 2 === 0 ? 'bg-slate-50' : 'bg-white'}">`;
-        tbodyHTML += `<td class="p-2 font-bold text-left border-r text-slate-700">P${i}</td>`;
-        tbodyHTML += `<td class="p-2 border-r font-bold text-amber-600 bg-amber-50">${valReal}</td>`;
-
-        jugadores.forEach(j => {
-          const resp = ultimosPronosticosCargados[j]?.respuestas?.[`p${i}`] || "-";
-          const esAcierto = valReal !== "-" && resp === valReal;
-          tbodyHTML += `
-            <td class="p-2 border-r font-semibold ${esAcierto ? 'bg-emerald-100 text-emerald-800 font-bold' : ''}">
-              ${resp}
-            </td>
-          `;
-        });
-        tbodyHTML += `</tr>`;
-      }
-
-      tbodyHTML += `<tr class="bg-amber-100 font-bold border-t-2 border-amber-300">`;
-      tbodyHTML += `<td class="p-2 text-left border-r text-amber-900">P15</td>`;
-      tbodyHTML += `<td class="p-2 border-r">-</td>`;
-      jugadores.forEach(j => {
-        const plenoVal = ultimosPronosticosCargados[j]?.pleno || "-";
-        tbodyHTML += `<td class="p-2 border-r text-amber-900">${plenoVal}</td>`;
-      });
-      tbodyHTML += `</tr>`;
-
-      tbody.innerHTML = tbodyHTML;
-      modal.classList.remove("hidden");
-    }
-
-    function cerrarModalPronosticos() {
-      document.getElementById("modal-pronosticos").classList.add("hidden");
-    }
-
-    function abrirModalEscrutinio() {
-      if (usuarioActual !== "Itziar" && usuarioActual !== "Jose") {
-        const confirmar = confirm("Este botón está pensado para Itziar o Jose. ¿Deseas guardar los resultados igualmente?");
-        if (!confirmar) return;
-      }
-
-      for (let i = 1; i <= 14; i++) {
-        const valGuardado = ultimoEscrutinioCargado[`p${i}`];
-        if (valGuardado) {
-          const elem = document.querySelector(`input[name="esc_p${i}"][value="${valGuardado}"]`);
-          if (elem) elem.checked = true;
-        } else {
-          document.querySelectorAll(`input[name="esc_p${i}"]`).forEach(r => r.checked = false);
-        }
-      }
-      document.getElementById("modal-escrutinio").classList.remove("hidden");
-    }
-
-    function cerrarModalEscrutinio() {
-      document.getElementById("modal-escrutinio").classList.add("hidden");
-    }
-
-    async function guardarEscrutinioModal() {
-      const esc = {};
-      for (let i = 1; i <= 14; i++) {
-        const marcado = document.querySelector(`input[name="esc_p${i}"]:checked`);
-        if (marcado) {
-          esc[`p${i}`] = marcado.value;
-        }
-      }
-
-      await db.collection("jornadas").doc(jornadaActual).set({ escrutinio: esc }, { merge: true });
-      alert("✅ Resultado oficial de " + jornadaActual + " guardado correctamente.");
-      cerrarModalEscrutinio();
-    }
-
-    async function cerrarJornadaOficial() {
-      const confirmar = confirm(`¿Estás seguro de que quieres cerrar ${jornadaActual}? Una vez cerrada, se considerará finalizada oficialmente y se desbloqueará la siguiente jornada.`);
-      if (!confirmar) return;
-
-      const esc = {};
-      for (let i = 1; i <= 14; i++) {
-        const marcado = document.querySelector(`input[name="esc_p${i}"]:checked`);
-        if (marcado) {
-          esc[`p${i}`] = marcado.value;
-        }
-      }
-
-      await db.collection("jornadas").doc(jornadaActual).set({ 
-        escrutinio: esc,
-        cerrada: true 
-      }, { merge: true });
-
-      alert(`🔒 La ${jornadaActual} ha sido cerrada oficialmente.`);
-      cerrarModalEscrutinio();
-      escucharJornada();
-    }
-
-    async function cargarClasificacionJornadaEspecifica(jKey) {
-      const tbodyJornada = document.getElementById("tabla-jornada");
-      tbodyJornada.innerHTML = "";
-
-      const jDoc = await db.collection("jornadas").doc(jKey).get();
-      const data = jDoc.exists ? jDoc.data() : {};
-      const pronosticos = data.pronosticos || {};
-      const escrutinio = data.escrutinio || {};
-
-      datosUltimoRankingJornada = jugadores.map(j => {
-        let aciertos = 0;
-        const resp = pronosticos[j]?.respuestas || {};
-        for (let i = 1; i <= 14; i++) {
-          if (escrutinio[`p${i}`] && resp[`p${i}`] === escrutinio[`p${i}`]) {
-            aciertos++;
-          }
-        }
-        return { jugador: j, puntos: aciertos, aciertos: aciertos, pleno: pronosticos[j]?.pleno || "-" };
-      }).sort((a, b) => b.puntos - a.puntos || b.aciertos - a.aciertos);
-
-      datosUltimoRankingJornada.forEach((r, idx) => {
-        tbodyJornada.innerHTML += `
-          <tr class="border-b ${idx === 0 ? 'bg-amber-50 font-bold' : ''}">
-            <td class="p-3">${idx + 1}º</td>
-            <td class="p-3">${r.jugador}</td>
-            <td class="p-3 text-center font-semibold">${r.puntos}</td>
-            <td class="p-3 text-center text-gray-500">${r.aciertos}</td>
-            <td class="p-3 text-center">${r.pleno}</td>
-          </tr>
-        `;
-      });
-    }
-
-    async function cargarClasificacionAcumuladaHasta(jKey) {
-      const tbodyAcumulada = document.getElementById("tabla-acumulada");
-      tbodyAcumulada.innerHTML = "";
-
-      const todasJornadasSnap = await db.collection("jornadas").get();
-      const puntosAcumulados = {};
-      jugadores.forEach(j => puntosAcumulados[j] = 0);
-
-      const numMax = parseInt(jKey.replace("J", ""));
-      for (let i = 1; i <= numMax; i++) {
-        const currentKey = `J${i}`;
-        const jDoc = todasJornadasSnap.docs.find(d => d.id === currentKey);
-        if (jDoc) {
-          const jData = jDoc.data();
-          const jPron = jData.pronosticos || {};
-          const jEsc = jData.escrutinio || {};
-
-          jugadores.forEach(j => {
-            let pts = 0;
-            const resp = jPron[j]?.respuestas || {};
-            for (let p = 1; p <= 14; p++) {
-              if (jEsc[`p${p}`] && resp[`p${p}`] === jEsc[`p${p}`]) {
-                pts++;
-              }
-            }
-            puntosAcumulados[j] += pts;
-          });
-        }
-      }
-
-      datosUltimoRankingAcumulado = jugadores.map(j => ({ jugador: j, total: puntosAcumulados[j] }))
-        .sort((a, b) => b.total - a.total);
-
-      datosUltimoRankingAcumulado.forEach((r, idx) => {
-        tbodyAcumulada.innerHTML += `
-          <tr class="border-b ${idx === 0 ? 'bg-green-50 font-bold' : ''}">
-            <td class="p-3">${idx + 1}º</td>
-            <td class="p-3">${r.jugador}</td>
-            <td class="p-3 text-center font-bold text-blue-900">${r.total}</td>
-          </tr>
-        `;
-      });
-    }
-
-    async function renderizarGraficoEvolucion() {
-      const todasJornadasSnap = await db.collection("jornadas").get();
-      const puntosAcumulados = {};
-      const historicoGrafico = {};
-
-      jugadores.forEach(j => {
-        puntosAcumulados[j] = 0;
-        historicoGrafico[j] = [];
-      });
-
-      const jornadasTotales = [];
-      for (let i = 1; i <= 50; i++) jornadasTotales.push(`J${i}`);
-
-      const numJornadaSeleccionada = parseInt(jornadaActual.replace("J", ""));
-      const jornadasHastaActual = jornadasTotales.slice(0, numJornadaSeleccionada);
-
-      jornadasHastaActual.forEach(jKey => {
-        const jDoc = todasJornadasSnap.docs.find(d => d.id === jKey);
-        if (jDoc) {
-          const jData = jDoc.data();
-          const jPron = jData.pronosticos || {};
-          const jEsc = jData.escrutinio || {};
-
-          jugadores.forEach(j => {
-            let pts = 0;
-            const resp = jPron[j]?.respuestas || {};
-            for (let i = 1; i <= 14; i++) {
-              if (jEsc[`p${i}`] && resp[`p${i}`] === jEsc[`p${i}`]) {
-                pts++;
-              }
-            }
-            puntosAcumulados[j] += pts;
-            historicoGrafico[j].push(puntosAcumulados[j]);
-          });
-        } else {
-          jugadores.forEach(j => {
-            historicoGrafico[j].push(puntosAcumulados[j]);
-          });
-        }
-      });
-
-      const ctx = document.getElementById("chartEvolucion").getContext("2d");
-      if (chartInstancia) chartInstancia.destroy();
-
-      const datasets = jugadores.map(j => ({
-        label: j,
-        data: historicoGrafico[j],
-        borderColor: coloresJugadores[j] || "#000",
-        backgroundColor: coloresJugadores[j] || "#000",
-        fill: false,
-        tension: 0.2
-      }));
-
-      chartInstancia = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: jornadasHastaActual,
-          datasets: datasets
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { position: 'bottom' }
-          }
-        }
-      });
-    }
-
-    function copiarResumenWhatsApp() {
-      let texto = `⚽ *QUINIELA - ${jornadaActual}*\n\n`;
-      texto += `📊 *Puntos ${jornadaActual}:*\n`;
-      datosUltimoRankingJornada.forEach((r, idx) => {
-        texto += `${idx + 1}º ${r.jugador}: ${r.puntos} pts (${r.aciertos} aciertos, P15: ${r.pleno})\n`;
-      });
-
-      texto += `\n🏆 *General Acumulada (${jornadaActual}):*\n`;
-      datosUltimoRankingAcumulado.forEach((r, idx) => {
-        texto += `${idx + 1}º ${r.jugador}: ${r.total} pts\n`;
-      });
-
-      navigator.clipboard.writeText(texto).then(() => {
-        alert("📋 ¡Resumen copiado! Ya puedes pegarlo directamente en el grupo de WhatsApp de la peña.");
-      }).catch(() => {
-        alert("Error al copiar. Inténtalo de nuevo.");
-      });
-    }
-  </script>
-</body>
-</html>
+      <button type="button"
+        id="tab-btn-acumulada"
+        onclick
