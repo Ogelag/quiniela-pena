@@ -264,7 +264,7 @@
     </div>
   </div>
 
-  <!-- MODAL: INTRODUCIR RESULTADO REAL -->
+  <!-- MODAL: INTRODUCIR RESULTADO REAL (ESCRUTINIO) -->
   <div id="modal-escrutinio" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-xl shadow-xl border border-slate-200 max-w-xl w-full max-h-[90vh] flex flex-col overflow-hidden">
       <div class="p-4 border-b flex justify-between items-center bg-white">
@@ -274,12 +274,13 @@
       <div class="p-4 overflow-y-auto space-y-3 flex-1 bg-white">
         <div id="lista-escrutinio" class="space-y-2"></div>
       </div>
-      <div class="p-4 border-t bg-white flex gap-3">
-        <button type="button" onclick="cerrarModalEscrutinio()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-lg transition text-sm">
-          Cancelar
-        </button>
-        <button type="button" onclick="guardarEscrutinioModal()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition shadow text-sm">
+      <!-- BOTONERA INFERIOR CON CERRAR JORNADA -->
+      <div class="p-4 border-t bg-white flex flex-col sm:flex-row gap-2">
+        <button type="button" onclick="guardarEscrutinioModal()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg transition shadow text-xs">
           Guardar Resultado
+        </button>
+        <button type="button" onclick="cerrarJornadaOficial()" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-lg transition shadow text-xs">
+          🔒 CERRAR JORNADA
         </button>
       </div>
     </div>
@@ -559,12 +560,6 @@
       document.getElementById("modal-lbl-jornada").textContent = jornadaActual;
       document.getElementById("modal-esc-lbl-jornada").textContent = jornadaActual;
 
-      // Limpiar inmediatamente las selecciones visuales al cambiar de jornada
-      for (let i = 1; i <= 14; i++) {
-        document.querySelectorAll(`input[name="p${i}"]`).forEach(r => r.checked = false);
-      }
-      document.getElementById("pleno-15").value = "";
-
       await determinarEncargadoPleno15();
       actualizarVisibilidadPleno15();
       escucharJornada();
@@ -645,25 +640,15 @@
       const numJornadaActual = parseInt(jornadaActual.replace("J", ""));
       const jornadaAnteriorKey = numJornadaActual > 1 ? `J${numJornadaActual - 1}` : null;
 
-      // Limpiar de inmediato los inputs visuales al cambiar de jornada antes de cargar
-      for (let i = 1; i <= 14; i++) {
-        document.querySelectorAll(`input[name="p${i}"]`).forEach(r => r.checked = false);
-      }
-      document.getElementById("pleno-15").value = "";
-
-      const verificarSecuencia = jornadaAnteriorKey ? db.collection("jornadas").doc(jornadaAnteriorKey).get() : Promise.resolve({ exists: true, data: () => ({ pronosticos: { ...Array(8).fill(true) }, escrutinio: { ...Array(14).fill(true) } }) });
+      // Verificamos si la jornada anterior tiene la marca explícita de cerrada: true
+      const verificarSecuencia = jornadaAnteriorKey ? db.collection("jornadas").doc(jornadaAnteriorKey).get() : Promise.resolve({ exists: true, data: () => ({ cerrada: true }) });
 
       verificarSecuencia.then(antDoc => {
         let jornadaAnteriorCerrada = true;
         if (numJornadaActual > 1) {
           const antData = antDoc.exists ? antDoc.data() : {};
-          const antPron = antData.pronosticos || {};
-          const antEsc = antData.escrutinio || {};
-          const totalAntPron = Object.keys(antPron).length;
-          const totalAntEsc = Object.keys(antEsc).length;
-
-          // Se exige estrictamente que la anterior tenga los 8 pronósticos y los 14 resultados del escrutinio
-          if (totalAntPron < 8 || totalAntEsc < 14) {
+          // La jornada anterior solo se considera cerrada si se pulsó el botón de cerrar jornada (cerrada: true)
+          if (!antData.cerrada) {
             jornadaAnteriorCerrada = false;
           }
         }
@@ -692,25 +677,23 @@
             `;
           });
 
-          // Limpiar inputs antes de cargar datos de la jornada actual
+          // Limpiar inputs antes de cargar los datos de esta jornada
           for (let i = 1; i <= 14; i++) {
             document.querySelectorAll(`input[name="p${i}"]`).forEach(r => r.checked = false);
           }
           document.getElementById("pleno-15").value = "";
 
-          // Si la jornada anterior está cerrada, cargamos las respuestas guardadas (si existen)
-          if (jornadaAnteriorCerrada) {
-            if (usuarioActual && pronosticos[usuarioActual] && pronosticos[usuarioActual].respuestas) {
-              const misRespuestas = pronosticos[usuarioActual].respuestas;
-              for (let i = 1; i <= 14; i++) {
-                if (misRespuestas[`p${i}`]) {
-                  const radio = document.querySelector(`input[name="p${i}"][value="${misRespuestas[`p${i}`]}"]`);
-                  if (radio) radio.checked = true;
-                }
+          // Cargar las respuestas guardadas del usuario si existen
+          if (usuarioActual && pronosticos[usuarioActual] && pronosticos[usuarioActual].respuestas) {
+            const misRespuestas = pronosticos[usuarioActual].respuestas;
+            for (let i = 1; i <= 14; i++) {
+              if (misRespuestas[`p${i}`]) {
+                const radio = document.querySelector(`input[name="p${i}"][value="${misRespuestas[`p${i}`]}"]`);
+                if (radio) radio.checked = true;
               }
-              if (usuarioActual === encargadoPlenoActual && pronosticos[usuarioActual].pleno) {
-                document.getElementById("pleno-15").value = pronosticos[usuarioActual].pleno;
-              }
+            }
+            if (usuarioActual === encargadoPlenoActual && pronosticos[usuarioActual].pleno) {
+              document.getElementById("pleno-15").value = pronosticos[usuarioActual].pleno;
             }
           }
 
@@ -719,7 +702,6 @@
           const btnGuardar = document.getElementById("btn-guardar-pronostico");
           const inputsPronostico = document.querySelectorAll('#form-pronostico input');
 
-          // PRIORIDAD ABSOLUTA: Si la jornada anterior NO está cerrada, se bloquea y muestra estrictamente el mensaje de la jornada anterior.
           if (!jornadaAnteriorCerrada) {
             avisoBloqueoSecuencial.classList.remove("hidden");
             avisoBloqueo.classList.add("hidden");
@@ -886,6 +868,30 @@
       await db.collection("jornadas").doc(jornadaActual).set({ escrutinio: esc }, { merge: true });
       alert("✅ Resultado oficial de " + jornadaActual + " guardado correctamente.");
       cerrarModalEscrutinio();
+    }
+
+    // NUEVA FUNCIÓN: CERRAR JORNADA CON PASO DE SEGURIDAD
+    async function cerrarJornadaOficial() {
+      const confirmar = confirm(`¿Estás seguro de que quieres cerrar ${jornadaActual}? Una vez cerrada, se considerará finalizada oficialmente y se desbloqueará la siguiente jornada.`);
+      if (!confirmar) return;
+
+      // Guardamos también los resultados actuales antes de cerrar por seguridad
+      const esc = {};
+      for (let i = 1; i <= 14; i++) {
+        const marcado = document.querySelector(`input[name="esc_p${i}"]:checked`);
+        if (marcado) {
+          esc[`p${i}`] = marcado.value;
+        }
+      }
+
+      await db.collection("jornadas").doc(jornadaActual).set({ 
+        escrutinio: esc,
+        cerrada: true 
+      }, { merge: true });
+
+      alert(`🔒 La ${jornadaActual} ha sido cerrada oficialmente.`);
+      cerrarModalEscrutinio();
+      escucharJornada();
     }
 
     async function cargarClasificacionJornadaEspecifica(jKey) {
