@@ -658,6 +658,18 @@
                       Puntos Totales
                     </th>
 
+                    <th class="p-3 text-center">
+                      Total Aciertos
+                    </th>
+
+                    <th class="p-3 text-center">
+                      Total UNOS
+                    </th>
+
+                    <th class="p-3 text-center">
+                      Total X+2
+                    </th>
+
                   </tr>
 
                 </thead>
@@ -1020,6 +1032,195 @@
 
     let versionEscuchaJornada =
       0;
+
+
+    /* =========================================================
+       FUNCIONES AUXILIARES DE PUNTUACIÓN
+       ========================================================= */
+
+    /*
+     * PUNTUACIÓN:
+     *
+     * 1 correcto = 1 punto
+     * X correcto = 2 puntos
+     * 2 correcto = 2 puntos
+     *
+     * ACIERTOS:
+     * Cada resultado acertado cuenta como 1 acierto,
+     * independientemente de si otorga 1 o 2 puntos.
+     */
+
+    function calcularPuntosYaciertos(
+      respuestas,
+      escrutinio
+    ) {
+
+      let puntos =
+        0;
+
+      let aciertos =
+        0;
+
+
+      for (
+        let i = 1;
+        i <= 14;
+        i++
+      ) {
+
+        const clave =
+          `p${i}`;
+
+
+        const pronostico =
+          respuestas?.[clave];
+
+
+        const resultado =
+          escrutinio?.[clave];
+
+
+        if (
+          pronostico &&
+          resultado &&
+          pronostico ===
+            resultado
+        ) {
+
+          aciertos++;
+
+
+          if (
+            resultado ===
+            "1"
+          ) {
+
+            puntos +=
+              1;
+
+          }
+
+          else if (
+            resultado ===
+              "X" ||
+            resultado ===
+              "2"
+          ) {
+
+            puntos +=
+              2;
+
+          }
+
+        }
+
+      }
+
+
+      return {
+
+        puntos:
+          puntos,
+
+        aciertos:
+          aciertos
+
+      };
+
+    }
+
+
+    /*
+     * CUENTA LOS PRONÓSTICOS REALIZADOS:
+     *
+     * Total UNOS = número de "1"
+     *
+     * Total X+2 = número de "X" + número de "2"
+     *
+     * Estos valores NO dependen del escrutinio.
+     */
+
+    function contarPronosticos(
+      respuestas
+    ) {
+
+      let totalUnos =
+        0;
+
+      let totalX2 =
+        0;
+
+
+      for (
+        let i = 1;
+        i <= 14;
+        i++
+      ) {
+
+        const valor =
+          respuestas?.[
+            `p${i}`
+          ];
+
+
+        if (
+          valor ===
+          "1"
+        ) {
+
+          totalUnos++;
+
+        }
+
+
+        if (
+          valor ===
+            "X" ||
+          valor ===
+            "2"
+        ) {
+
+          totalX2++;
+
+        }
+
+      }
+
+
+      return {
+
+        totalUnos:
+          totalUnos,
+
+        totalX2:
+          totalX2
+
+      };
+
+    }
+
+
+    /*
+     * Comprueba que los 8 jugadores tienen
+     * realmente un objeto de respuestas.
+     */
+
+    function todosHanPronosticado(
+      pronosticos
+    ) {
+
+      return jugadores.every(
+        jugador =>
+          !!(
+            pronosticos &&
+            pronosticos[jugador] &&
+            pronosticos[jugador].respuestas &&
+            typeof pronosticos[jugador].respuestas ===
+              "object"
+          )
+      );
+
+    }
 
 
     /* =========================================================
@@ -2301,39 +2502,15 @@
         jugadores.forEach(
           j => {
 
-            let aciertos =
-              0;
+            const resultado =
+              calcularPuntosYaciertos(
+                pronosticos[j]?.respuestas || {},
+                escrutinio
+              );
 
 
-            const resp =
-              pronosticos[j]
-                ?.respuestas ||
-              {};
-
-
-            for (
-              let i = 1;
-              i <= 14;
-              i++
-            ) {
-
-              if (
-                escrutinio[
-                  `p${i}`
-                ] &&
-                resp[
-                  `p${i}`
-                ] ===
-                  escrutinio[
-                    `p${i}`
-                  ]
-              ) {
-
-                aciertos++;
-
-              }
-
-            }
+            const aciertos =
+              resultado.aciertos;
 
 
             if (
@@ -2505,6 +2682,13 @@
         "flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-gray-200 text-gray-400 cursor-not-allowed";
 
 
+      ultimosPronosticosCargados =
+        {};
+
+      ultimoEscrutinioCargado =
+        {};
+
+
       const verificarSecuencia =
         jornadaAnteriorKey
           ? db
@@ -2609,7 +2793,6 @@
             ultimosPronosticosCargados =
               {};
 
-
             ultimoEscrutinioCargado =
               {};
 
@@ -2708,8 +2891,9 @@
                       const enviado =
                         !!(
                           pronosticos[j] &&
-                          pronosticos[j]
-                            .respuestas
+                          pronosticos[j].respuestas &&
+                          typeof pronosticos[j].respuestas ===
+                            "object"
                         );
 
 
@@ -2847,7 +3031,7 @@
 
                   if (
                     totalEnviados ===
-                    8
+                    jugadores.length
                   ) {
 
                     avisoBloqueo
@@ -2876,12 +3060,12 @@
 
 
                   btnPronosticos.innerHTML =
-                    `📋 Pronósticos de la jornada (${totalEnviados}/8)`;
+                    `📋 Pronósticos de la jornada (${totalEnviados}/${jugadores.length})`;
 
 
                   if (
                     totalEnviados ===
-                    8
+                    jugadores.length
                   ) {
 
                     btnPronosticos.disabled =
@@ -2902,14 +3086,6 @@
 
                   }
 
-
-                  /*
-                   * La clasificación se actualiza en cuanto
-                   * llegan nuevos pronósticos.
-                   *
-                   * La propia función de clasificación decide
-                   * si puede mostrar Total UNOS y Total X+2.
-                   */
 
                   cargarClasificacionJornadaEspecifica(
                     jornadaTablaActual
@@ -3091,14 +3267,18 @@
 
 
           const jugadoresConPronostico =
-            Object.keys(
-              pronosticos
+            jugadores.filter(
+              jugador =>
+                !!(
+                  pronosticos[jugador] &&
+                  pronosticos[jugador].respuestas
+                )
             );
 
 
           if (
             jugadoresConPronostico.length >=
-              8 &&
+              jugadores.length &&
             !pronosticos[
               usuarioActual
             ]
@@ -3800,158 +3980,76 @@
 
 
         /*
-         * CONTAMOS CUÁNTOS JUGADORES HAN
-         * ENTREGADO SU PRONÓSTICO.
-         *
-         * Es importante que sean exactamente
-         * los 8 jugadores de la lista.
+         * LOS 8 JUGADORES DEBEN TENER
+         * UN PRONÓSTICO REAL PARA QUE
+         * APAREZCAN LOS TOTALES DE
+         * UNOS Y X+2.
          */
 
-        let totalPronosticos =
-          0;
-
-
-        jugadores.forEach(
-          jugador => {
-
-            if (
-              pronosticos[jugador] &&
-              pronosticos[jugador].respuestas
-            ) {
-
-              totalPronosticos++;
-
-            }
-
-          }
-        );
-
-
-        /*
-         * SOLO CUANDO ESTÁN LOS 8 PRONÓSTICOS
-         * SE PUEDEN MOSTRAR LOS TOTALES.
-         */
-
-        const todosHanPronosticado =
-          totalPronosticos ===
-          jugadores.length;
+        const todosPronosticaron =
+          todosHanPronosticado(
+            pronosticos
+          );
 
 
         datosUltimoRankingJornada =
           jugadores
             .map(
-              j => {
+              jugador => {
 
-                let aciertos =
-                  0;
-
-
-                let totalUnos =
-                  0;
-
-
-                let totalX2 =
-                  0;
-
-
-                const resp =
-                  pronosticos[j]
+                const respuestas =
+                  pronosticos[jugador]
                     ?.respuestas ||
                   {};
 
 
                 /*
-                 * ACIERTOS:
-                 * Se siguen calculando solamente
-                 * si existe escrutinio.
+                 * PUNTOS Y ACIERTOS SEPARADOS.
+                 *
+                 * Puntos:
+                 * 1 = 1 punto
+                 * X = 2 puntos
+                 * 2 = 2 puntos
+                 *
+                 * Aciertos:
+                 * cada resultado acertado = 1 acierto.
                  */
 
-                for (
-                  let i = 1;
-                  i <= 14;
-                  i++
-                ) {
-
-                  if (
-                    escrutinio[
-                      `p${i}`
-                    ] &&
-                    resp[
-                      `p${i}`
-                    ] ===
-                      escrutinio[
-                        `p${i}`
-                      ]
-                  ) {
-
-                    aciertos++;
-
-                  }
+                const resultado =
+                  calcularPuntosYaciertos(
+                    respuestas,
+                    escrutinio
+                  );
 
 
-                  /*
-                   * TOTAL UNOS Y TOTAL X+2:
-                   *
-                   * Estos valores NO dependen
-                   * del escrutinio.
-                   *
-                   * Pero solamente se calculan
-                   * visualmente cuando los 8
-                   * jugadores han pronosticado.
-                   */
+                /*
+                 * UNOS Y X+2 SE CALCULAN
+                 * DIRECTAMENTE SOBRE EL
+                 * PRONÓSTICO.
+                 */
 
-                  if (
-                    todosHanPronosticado
-                  ) {
-
-                    if (
-                      resp[
-                        `p${i}`
-                      ] ===
-                      "1"
-                    ) {
-
-                      totalUnos++;
-
-                    }
-
-
-                    if (
-                      resp[
-                        `p${i}`
-                      ] ===
-                        "X" ||
-                      resp[
-                        `p${i}`
-                      ] ===
-                        "2"
-                    ) {
-
-                      totalX2++;
-
-                    }
-
-                  }
-
-                }
+                const conteo =
+                  contarPronosticos(
+                    respuestas
+                  );
 
 
                 return {
 
                   jugador:
-                    j,
+                    jugador,
 
                   puntos:
-                    aciertos,
+                    resultado.puntos,
 
                   aciertos:
-                    aciertos,
+                    resultado.aciertos,
 
                   totalUnos:
-                    totalUnos,
+                    conteo.totalUnos,
 
                   totalX2:
-                    totalX2
+                    conteo.totalX2
 
                 };
 
@@ -3966,31 +4064,29 @@
             );
 
 
-        /*
-         * PINTAMOS LA TABLA.
-         *
-         * Antes de 8/8:
-         *
-         * Total UNOS = ""
-         * Total X+2   = ""
-         *
-         * Cuando hay 8/8:
-         *
-         * aparecen los números.
-         */
-
         datosUltimoRankingJornada
           .forEach(
             (r, idx) => {
 
+              /*
+               * ANTES DE 8/8:
+               *
+               * Total UNOS = vacío
+               * Total X+2 = vacío
+               *
+               * CON 8/8:
+               *
+               * aparecen los números.
+               */
+
               const valorTotalUnos =
-                todosHanPronosticado
+                todosPronosticaron
                   ? r.totalUnos
                   : "";
 
 
               const valorTotalX2 =
-                todosHanPronosticado
+                todosPronosticaron
                   ? r.totalX2
                   : "";
 
@@ -4020,7 +4116,7 @@
                   </td>
 
 
-                  <td class="p-3 text-center text-gray-500">
+                  <td class="p-3 text-center">
                     ${r.aciertos}
                   </td>
 
@@ -4087,11 +4183,29 @@
         const puntosAcumulados =
           {};
 
+        const aciertosAcumulados =
+          {};
+
+        const unosAcumulados =
+          {};
+
+        const x2Acumulados =
+          {};
+
 
         jugadores.forEach(
           j => {
 
             puntosAcumulados[j] =
+              0;
+
+            aciertosAcumulados[j] =
+              0;
+
+            unosAcumulados[j] =
+              0;
+
+            x2Acumulados[j] =
               0;
 
           }
@@ -4105,6 +4219,20 @@
               ""
             )
           );
+
+
+        /*
+         * Esta variable controla si podemos
+         * mostrar las tres estadísticas
+         * acumuladas.
+         *
+         * Deben estar completos los 8
+         * pronósticos en TODAS las jornadas
+         * desde J1 hasta la jornada seleccionada.
+         */
+
+        let todasJornadasPronosticadas =
+          true;
 
 
         for (
@@ -4126,68 +4254,92 @@
 
 
           if (
-            jDoc
+            !jDoc
           ) {
 
-            const jData =
-              jDoc.data();
+            todasJornadasPronosticadas =
+              false;
 
-
-            const jPron =
-              jData.pronosticos ||
-              {};
-
-
-            const jEsc =
-              jData.escrutinio ||
-              {};
-
-
-            jugadores.forEach(
-              j => {
-
-                let pts =
-                  0;
-
-
-                const resp =
-                  jPron[j]
-                    ?.respuestas ||
-                  {};
-
-
-                for (
-                  let p = 1;
-                  p <= 14;
-                  p++
-                ) {
-
-                  if (
-                    jEsc[
-                      `p${p}`
-                    ] &&
-                    resp[
-                      `p${p}`
-                    ] ===
-                      jEsc[
-                        `p${p}`
-                      ]
-                  ) {
-
-                    pts++;
-
-                  }
-
-                }
-
-
-                puntosAcumulados[j] +=
-                  pts;
-
-              }
-            );
+            continue;
 
           }
+
+
+          const jData =
+            jDoc.data();
+
+
+          const jPron =
+            jData.pronosticos ||
+            {};
+
+
+          const jEsc =
+            jData.escrutinio ||
+            {};
+
+
+          if (
+            !todosHanPronosticado(
+              jPron
+            )
+          ) {
+
+            todasJornadasPronosticadas =
+              false;
+
+          }
+
+
+          jugadores.forEach(
+            jugador => {
+
+              const respuestas =
+                jPron[jugador]
+                  ?.respuestas ||
+                {};
+
+
+              /*
+               * PUNTOS Y ACIERTOS
+               * ACUMULADOS POR JORNADA.
+               */
+
+              const resultado =
+                calcularPuntosYaciertos(
+                  respuestas,
+                  jEsc
+                );
+
+
+              puntosAcumulados[jugador] +=
+                resultado.puntos;
+
+
+              aciertosAcumulados[jugador] +=
+                resultado.aciertos;
+
+
+              /*
+               * UNOS Y X+2
+               * ACUMULADOS POR JORNADA.
+               */
+
+              const conteo =
+                contarPronosticos(
+                  respuestas
+                );
+
+
+              unosAcumulados[jugador] +=
+                conteo.totalUnos;
+
+
+              x2Acumulados[jugador] +=
+                conteo.totalX2;
+
+            }
+          );
 
         }
 
@@ -4195,26 +4347,66 @@
         datosUltimoRankingAcumulado =
           jugadores
             .map(
-              j => ({
+              jugador => ({
 
                 jugador:
-                  j,
+                  jugador,
 
                 total:
-                  puntosAcumulados[j]
+                  puntosAcumulados[jugador],
+
+                aciertos:
+                  aciertosAcumulados[jugador],
+
+                totalUnos:
+                  unosAcumulados[jugador],
+
+                totalX2:
+                  x2Acumulados[jugador]
 
               })
             )
             .sort(
               (a, b) =>
                 b.total -
-                a.total
+                  a.total ||
+                b.aciertos -
+                  a.aciertos
             );
 
 
         datosUltimoRankingAcumulado
           .forEach(
             (r, idx) => {
+
+              /*
+               * LOS PUNTOS ACUMULADOS
+               * SIEMPRE SE MUESTRAN.
+               *
+               * Las otras tres columnas
+               * solamente aparecen cuando
+               * están completos todos los
+               * pronósticos de J1 hasta
+               * la jornada seleccionada.
+               */
+
+              const valorAciertos =
+                todasJornadasPronosticadas
+                  ? r.aciertos
+                  : "";
+
+
+              const valorUnos =
+                todasJornadasPronosticadas
+                  ? r.totalUnos
+                  : "";
+
+
+              const valorX2 =
+                todasJornadasPronosticadas
+                  ? r.totalX2
+                  : "";
+
 
               tbodyAcumulada.innerHTML += `
 
@@ -4238,6 +4430,21 @@
 
                   <td class="p-3 text-center font-bold text-blue-900">
                     ${r.total}
+                  </td>
+
+
+                  <td class="p-3 text-center font-semibold">
+                    ${valorAciertos}
+                  </td>
+
+
+                  <td class="p-3 text-center font-semibold">
+                    ${valorUnos}
+                  </td>
+
+
+                  <td class="p-3 text-center font-semibold">
+                    ${valorX2}
                   </td>
 
                 </tr>
@@ -4362,50 +4569,38 @@
 
 
               jugadores.forEach(
-                j => {
+                jugador => {
 
-                  let pts =
-                    0;
-
-
-                  const resp =
-                    jPron[j]
+                  const respuestas =
+                    jPron[jugador]
                       ?.respuestas ||
                     {};
 
 
-                  for (
-                    let i = 1;
-                    i <= 14;
-                    i++
-                  ) {
+                  /*
+                   * EL GRÁFICO UTILIZA LOS
+                   * MISMOS PUNTOS QUE LAS
+                   * CLASIFICACIONES:
+                   *
+                   * 1 = 1
+                   * X = 2
+                   * 2 = 2
+                   */
 
-                    if (
-                      jEsc[
-                        `p${i}`
-                      ] &&
-                      resp[
-                        `p${i}`
-                      ] ===
-                        jEsc[
-                          `p${i}`
-                        ]
-                    ) {
-
-                      pts++;
-
-                    }
-
-                  }
+                  const resultado =
+                    calcularPuntosYaciertos(
+                      respuestas,
+                      jEsc
+                    );
 
 
-                  puntosAcumulados[j] +=
-                    pts;
+                  puntosAcumulados[jugador] +=
+                    resultado.puntos;
 
 
-                  historicoGrafico[j]
+                  historicoGrafico[jugador]
                     .push(
-                      puntosAcumulados[j]
+                      puntosAcumulados[jugador]
                     );
 
                 }
@@ -4414,11 +4609,11 @@
             } else {
 
               jugadores.forEach(
-                j => {
+                jugador => {
 
-                  historicoGrafico[j]
+                  historicoGrafico[jugador]
                     .push(
-                      puntosAcumulados[j]
+                      puntosAcumulados[jugador]
                     );
 
                 }
@@ -4430,14 +4625,25 @@
         );
 
 
+        const canvas =
+          document.getElementById(
+            "chartEvolucion"
+          );
+
+
+        if (
+          !canvas
+        ) {
+
+          return;
+
+        }
+
+
         const ctx =
-          document
-            .getElementById(
-              "chartEvolucion"
-            )
-            .getContext(
-              "2d"
-            );
+          canvas.getContext(
+            "2d"
+          );
 
 
         if (
@@ -4451,20 +4657,20 @@
 
         const datasets =
           jugadores.map(
-            j => ({
+            jugador => ({
 
               label:
-                j,
+                jugador,
 
               data:
-                historicoGrafico[j],
+                historicoGrafico[jugador],
 
               borderColor:
-                coloresJugadores[j] ||
+                coloresJugadores[jugador] ||
                 "#000",
 
               backgroundColor:
-                coloresJugadores[j] ||
+                coloresJugadores[jugador] ||
                 "#000",
 
               fill:
