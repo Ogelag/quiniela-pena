@@ -4569,14 +4569,62 @@
                   : "";
 
 
+              /*
+               * COLORES DE POSICIÓN:
+               *
+               * 1º       = verde
+               * 2º y 4º  = azul claro
+               * 3º y 5º  = azul más oscuro
+               * 6º-8º    = rojo
+               */
+
+              let claseFila =
+                "bg-white";
+
+
+              if (
+                idx === 0
+              ) {
+
+                claseFila =
+                  "bg-green-100 font-bold";
+
+              }
+
+              else if (
+                idx === 1 ||
+                idx === 3
+              ) {
+
+                claseFila =
+                  "bg-blue-50";
+
+              }
+
+              else if (
+                idx === 2 ||
+                idx === 4
+              ) {
+
+                claseFila =
+                  "bg-blue-100";
+
+              }
+
+              else if (
+                idx >= 5
+              ) {
+
+                claseFila =
+                  "bg-red-100";
+
+              }
+
+
               tbodyJornada.innerHTML += `
 
                 <tr
-                  class="border-b ${
-                    idx === 0
-                      ? "bg-amber-50 font-bold"
-                      : ""
-                  }"
+                  class="border-b ${claseFila}"
                 >
 
                   <td class="p-3">
@@ -5083,14 +5131,62 @@
                   : "";
 
 
+              /*
+               * COLORES DE POSICIÓN:
+               *
+               * 1º       = verde
+               * 2º y 4º  = azul claro
+               * 3º y 5º  = azul más oscuro
+               * 6º-8º    = rojo
+               */
+
+              let claseFila =
+                "bg-white";
+
+
+              if (
+                idx === 0
+              ) {
+
+                claseFila =
+                  "bg-green-100 font-bold";
+
+              }
+
+              else if (
+                idx === 1 ||
+                idx === 3
+              ) {
+
+                claseFila =
+                  "bg-blue-50";
+
+              }
+
+              else if (
+                idx === 2 ||
+                idx === 4
+              ) {
+
+                claseFila =
+                  "bg-blue-100";
+
+              }
+
+              else if (
+                idx >= 5
+              ) {
+
+                claseFila =
+                  "bg-red-100";
+
+              }
+
+
               tbodyAcumulada.innerHTML += `
 
                 <tr
-                  class="border-b ${
-                    idx === 0
-                      ? "bg-green-50 font-bold"
-                      : ""
-                  }"
+                  class="border-b ${claseFila}"
                 >
 
                   <td class="p-3">
