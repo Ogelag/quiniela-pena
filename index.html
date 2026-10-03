@@ -593,6 +593,18 @@
                       Total X+2
                     </th>
 
+                    <th class="p-3 text-center">
+                      Total 2
+                    </th>
+
+                    <th class="p-3 text-center">
+                      X+2 Acum.
+                    </th>
+
+                    <th class="p-3 text-center">
+                      2 Acum.
+                    </th>
+
                   </tr>
 
                 </thead>
@@ -668,6 +680,10 @@
 
                     <th class="p-3 text-center">
                       Total X+2
+                    </th>
+
+                    <th class="p-3 text-center">
+                      Total 2
                     </th>
 
                   </tr>
@@ -1130,12 +1146,16 @@
     }
 
 
+    /* =========================================================
+       CONTAR PRONÓSTICOS
+       ========================================================= */
+
     /*
-     * CUENTA LOS PRONÓSTICOS REALIZADOS:
-     *
      * Total UNOS = número de "1"
      *
      * Total X+2 = número de "X" + número de "2"
+     *
+     * Total 2 = número de "2"
      *
      * Estos valores NO dependen del escrutinio.
      */
@@ -1148,6 +1168,9 @@
         0;
 
       let totalX2 =
+        0;
+
+      let totalDoses =
         0;
 
 
@@ -1184,6 +1207,16 @@
 
         }
 
+
+        if (
+          valor ===
+          "2"
+        ) {
+
+          totalDoses++;
+
+        }
+
       }
 
 
@@ -1193,17 +1226,19 @@
           totalUnos,
 
         totalX2:
-          totalX2
+          totalX2,
+
+        totalDoses:
+          totalDoses
 
       };
 
     }
 
 
-    /*
-     * Comprueba que los 8 jugadores tienen
-     * realmente un objeto de respuestas.
-     */
+    /* =========================================================
+       TODOS HAN PRONOSTICADO
+       ========================================================= */
 
     function todosHanPronosticado(
       pronosticos
@@ -2083,6 +2118,11 @@
           btnJornada.className =
             `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
 
+
+          cargarClasificacionJornadaEspecifica(
+            jornadaTablaActual
+          );
+
         }
 
         else if (
@@ -2098,6 +2138,11 @@
           btnAcumulada.className =
             `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
 
+
+          cargarClasificacionAcumuladaHasta(
+            jornadaAcumActual
+          );
+
         }
 
         else if (
@@ -2112,6 +2157,9 @@
 
           btnGrafico.className =
             `py-2.5 px-2 text-xs font-bold rounded-lg border text-center transition ${activeClass}`;
+
+
+          renderizarGraficoEvolucion();
 
         }
 
@@ -3114,6 +3162,7 @@
               );
 
         }
+
       ).catch(
         error => {
 
@@ -3743,10 +3792,10 @@
 
 
     /* =========================================================
-       GUARDAR ESCRUTINIO
+       OBTENER ESCRUTINIO DEL FORMULARIO
        ========================================================= */
 
-    async function guardarEscrutinioModal() {
+    function obtenerEscrutinioDesdeFormulario() {
 
       const esc =
         {};
@@ -3778,6 +3827,68 @@
       }
 
 
+      return esc;
+
+    }
+
+
+    /* =========================================================
+       COMPROBAR ESCRUTINIO COMPLETO
+       ========================================================= */
+
+    function escrutinioCompleto(
+      esc
+    ) {
+
+      for (
+        let i = 1;
+        i <= 14;
+        i++
+      ) {
+
+        if (
+          !esc[
+            `p${i}`
+          ]
+        ) {
+
+          return false;
+
+        }
+
+      }
+
+
+      return true;
+
+    }
+
+
+    /* =========================================================
+       GUARDAR ESCRUTINIO
+       ========================================================= */
+
+    async function guardarEscrutinioModal() {
+
+      const esc =
+        obtenerEscrutinioDesdeFormulario();
+
+
+      if (
+        !escrutinioCompleto(
+          esc
+        )
+      ) {
+
+        alert(
+          "⚠️ Debes introducir los 14 resultados oficiales antes de guardar."
+        );
+
+        return;
+
+      }
+
+
       try {
 
         await db
@@ -3799,10 +3910,35 @@
           );
 
 
+        /*
+         * IMPORTANTE:
+         *
+         * En este momento se recalculan inmediatamente
+         * las clasificaciones con los nuevos criterios
+         * de desempate.
+         */
+
+        ultimoEscrutinioCargado =
+          esc;
+
+
+        await cargarClasificacionJornadaEspecifica(
+          jornadaTablaActual
+        );
+
+
+        await cargarClasificacionAcumuladaHasta(
+          jornadaAcumActual
+        );
+
+
+        await renderizarGraficoEvolucion();
+
+
         alert(
           "✅ Resultado oficial de " +
           jornadaActual +
-          " guardado correctamente."
+          " guardado correctamente. La clasificación ha sido recalculada."
         );
 
 
@@ -3823,6 +3959,186 @@
         );
 
       }
+
+    }
+
+
+    /* =========================================================
+       CALCULAR CLASIFICACIÓN GENERAL PARA GUARDAR
+       ========================================================= */
+
+    async function obtenerClasificacionGeneralHasta(
+      jKey
+    ) {
+
+      const todasJornadasSnap =
+        await db
+          .collection(
+            "jornadas"
+          )
+          .get();
+
+
+      const acumulados =
+        {};
+
+
+      jugadores.forEach(
+        jugador => {
+
+          acumulados[jugador] = {
+
+            total:
+              0,
+
+            aciertos:
+              0,
+
+            totalUnos:
+              0,
+
+            totalX2:
+              0,
+
+            totalDoses:
+              0
+
+          };
+
+        }
+      );
+
+
+      const numMax =
+        parseInt(
+          jKey.replace(
+            "J",
+            ""
+          )
+        );
+
+
+      for (
+        let i = 1;
+        i <= numMax;
+        i++
+      ) {
+
+        const currentKey =
+          `J${i}`;
+
+
+        const jDoc =
+          todasJornadasSnap.docs.find(
+            d =>
+              d.id ===
+              currentKey
+          );
+
+
+        if (
+          !jDoc
+        ) {
+
+          continue;
+
+        }
+
+
+        const jData =
+          jDoc.data();
+
+
+        const jPron =
+          jData.pronosticos ||
+          {};
+
+
+        const jEsc =
+          jData.escrutinio ||
+          {};
+
+
+        jugadores.forEach(
+          jugador => {
+
+            const respuestas =
+              jPron[jugador]
+                ?.respuestas ||
+              {};
+
+
+            const resultado =
+              calcularPuntosYaciertos(
+                respuestas,
+                jEsc
+              );
+
+
+            const conteo =
+              contarPronosticos(
+                respuestas
+              );
+
+
+            acumulados[jugador].total +=
+              resultado.puntos;
+
+
+            acumulados[jugador].aciertos +=
+              resultado.aciertos;
+
+
+            acumulados[jugador].totalUnos +=
+              conteo.totalUnos;
+
+
+            acumulados[jugador].totalX2 +=
+              conteo.totalX2;
+
+
+            acumulados[jugador].totalDoses +=
+              conteo.totalDoses;
+
+          }
+        );
+
+      }
+
+
+      return jugadores
+        .map(
+          jugador => ({
+
+            jugador:
+              jugador,
+
+            total:
+              acumulados[jugador].total,
+
+            aciertos:
+              acumulados[jugador].aciertos,
+
+            totalUnos:
+              acumulados[jugador].totalUnos,
+
+            totalX2:
+              acumulados[jugador].totalX2,
+
+            totalDoses:
+              acumulados[jugador].totalDoses
+
+          })
+        )
+        .sort(
+          (a, b) =>
+            b.total -
+              a.total ||
+            b.totalX2 -
+              a.totalX2 ||
+            b.totalDoses -
+              a.totalDoses
+        );
 
     }
 
@@ -3849,36 +4165,30 @@
 
 
       const esc =
-        {};
+        obtenerEscrutinioDesdeFormulario();
 
 
-      for (
-        let i = 1;
-        i <= 14;
-        i++
+      if (
+        !escrutinioCompleto(
+          esc
+        )
       ) {
 
-        const marcado =
-          document.querySelector(
-            `input[name="esc_p${i}"]:checked`
-          );
+        alert(
+          "⚠️ No puedes cerrar la jornada hasta introducir los 14 resultados oficiales."
+        );
 
-
-        if (
-          marcado
-        ) {
-
-          esc[
-            `p${i}`
-          ] =
-            marcado.value;
-
-        }
+        return;
 
       }
 
 
       try {
+
+        /*
+         * Primero calculamos las clasificaciones
+         * utilizando exactamente los criterios definidos.
+         */
 
         await db
           .collection(
@@ -3890,10 +4200,124 @@
           .set(
             {
               escrutinio:
+                esc
+            },
+            {
+              merge:
+                true
+            }
+          );
+
+
+        ultimoEscrutinioCargado =
+          esc;
+
+
+        await cargarClasificacionJornadaEspecifica(
+          jornadaActual
+        );
+
+
+        const rankingJornadaDefinitivo =
+          datosUltimoRankingJornada.map(
+            (r, idx) => ({
+
+              posicion:
+                idx + 1,
+
+              jugador:
+                r.jugador,
+
+              puntos:
+                r.puntos,
+
+              aciertos:
+                r.aciertos,
+
+              totalUnos:
+                r.totalUnos,
+
+              totalX2:
+                r.totalX2,
+
+              totalDoses:
+                r.totalDoses,
+
+              x2Acumulado:
+                r.x2Acumulado,
+
+              dosesAcumulados:
+                r.dosesAcumulados
+
+            })
+          );
+
+
+        const rankingGeneralDefinitivo =
+          await obtenerClasificacionGeneralHasta(
+            jornadaActual
+          );
+
+
+        const rankingGeneralGuardado =
+          rankingGeneralDefinitivo.map(
+            (r, idx) => ({
+
+              posicion:
+                idx + 1,
+
+              jugador:
+                r.jugador,
+
+              puntos:
+                r.total,
+
+              aciertos:
+                r.aciertos,
+
+              totalUnos:
+                r.totalUnos,
+
+              totalX2:
+                r.totalX2,
+
+              totalDoses:
+                r.totalDoses
+
+            })
+          );
+
+
+        /*
+         * Guardamos definitivamente:
+         *
+         * - escrutinio
+         * - cerrada = true
+         * - clasificación de la jornada
+         * - fotografía de la general acumulada
+         */
+
+        await db
+          .collection(
+            "jornadas"
+          )
+          .doc(
+            jornadaActual
+          )
+          .set(
+            {
+
+              escrutinio:
                 esc,
 
               cerrada:
-                true
+                true,
+
+              clasificacionJornada:
+                rankingJornadaDefinitivo,
+
+              clasificacionGeneral:
+                rankingGeneralGuardado
 
             },
             {
@@ -3904,12 +4328,30 @@
 
 
         alert(
-          `🔒 La ${jornadaActual} ha sido cerrada oficialmente.`
+          `🔒 La ${jornadaActual} ha sido cerrada oficialmente y la clasificación ha quedado guardada.`
         );
 
 
         cerrarModalEscrutinio();
 
+
+        await cargarClasificacionJornadaEspecifica(
+          jornadaActual
+        );
+
+
+        await cargarClasificacionAcumuladaHasta(
+          jornadaActual
+        );
+
+
+        await renderizarGraficoEvolucion();
+
+
+        /*
+         * Volvemos a escuchar la jornada para que
+         * la interfaz quede sincronizada con Firestore.
+         */
 
         escucharJornada();
 
@@ -3979,16 +4421,25 @@
           {};
 
 
-        /*
-         * LOS 8 JUGADORES DEBEN TENER
-         * UN PRONÓSTICO REAL PARA QUE
-         * APAREZCAN LOS TOTALES DE
-         * UNOS Y X+2.
-         */
-
         const todosPronosticaron =
           todosHanPronosticado(
             pronosticos
+          );
+
+
+        /*
+         * =====================================================
+         * CALCULAMOS PRIMERO LOS ACUMULADOS
+         * HASTA ESTA JORNADA.
+         *
+         * Estos acumulados son los que intervienen
+         * como cuarto y quinto desempate.
+         * =====================================================
+         */
+
+        const acumulados =
+          await calcularAcumuladosHastaJornada(
+            jKey
           );
 
 
@@ -4003,30 +4454,12 @@
                   {};
 
 
-                /*
-                 * PUNTOS Y ACIERTOS SEPARADOS.
-                 *
-                 * Puntos:
-                 * 1 = 1 punto
-                 * X = 2 puntos
-                 * 2 = 2 puntos
-                 *
-                 * Aciertos:
-                 * cada resultado acertado = 1 acierto.
-                 */
-
                 const resultado =
                   calcularPuntosYaciertos(
                     respuestas,
                     escrutinio
                   );
 
-
-                /*
-                 * UNOS Y X+2 SE CALCULAN
-                 * DIRECTAMENTE SOBRE EL
-                 * PRONÓSTICO.
-                 */
 
                 const conteo =
                   contarPronosticos(
@@ -4049,7 +4482,20 @@
                     conteo.totalUnos,
 
                   totalX2:
-                    conteo.totalX2
+                    conteo.totalX2,
+
+                  totalDoses:
+                    conteo.totalDoses,
+
+                  x2Acumulado:
+                    acumulados[jugador]
+                      ?.totalX2 ||
+                    0,
+
+                  dosesAcumulados:
+                    acumulados[jugador]
+                      ?.totalDoses ||
+                    0
 
                 };
 
@@ -4057,27 +4503,37 @@
             )
             .sort(
               (a, b) =>
+
+                /*
+                 * DESEMPATE EXACTO DE JORNADA:
+                 *
+                 * 1. Puntos
+                 * 2. X + 2 de la jornada
+                 * 3. 2 de la jornada
+                 * 4. X + 2 acumulados
+                 * 5. 2 acumulados
+                 */
+
                 b.puntos -
                   a.puntos ||
-                b.aciertos -
-                  a.aciertos
+
+                b.totalX2 -
+                  a.totalX2 ||
+
+                b.totalDoses -
+                  a.totalDoses ||
+
+                b.x2Acumulado -
+                  a.x2Acumulado ||
+
+                b.dosesAcumulados -
+                  a.dosesAcumulados
             );
 
 
         datosUltimoRankingJornada
           .forEach(
             (r, idx) => {
-
-              /*
-               * ANTES DE 8/8:
-               *
-               * Total UNOS = vacío
-               * Total X+2 = vacío
-               *
-               * CON 8/8:
-               *
-               * aparecen los números.
-               */
 
               const valorTotalUnos =
                 todosPronosticaron
@@ -4088,6 +4544,28 @@
               const valorTotalX2 =
                 todosPronosticaron
                   ? r.totalX2
+                  : "";
+
+
+              const valorTotalDoses =
+                todosPronosticaron
+                  ? r.totalDoses
+                  : "";
+
+
+              const valorX2Acumulado =
+                todasLasJornadasHastaEstanCompletas(
+                  acumulados
+                )
+                  ? r.x2Acumulado
+                  : "";
+
+
+              const valorDosesAcumulado =
+                todasLasJornadasHastaEstanCompletas(
+                  acumulados
+                )
+                  ? r.dosesAcumulados
                   : "";
 
 
@@ -4130,6 +4608,21 @@
                     ${valorTotalX2}
                   </td>
 
+
+                  <td class="p-3 text-center font-semibold">
+                    ${valorTotalDoses}
+                  </td>
+
+
+                  <td class="p-3 text-center font-semibold">
+                    ${valorX2Acumulado}
+                  </td>
+
+
+                  <td class="p-3 text-center font-semibold">
+                    ${valorDosesAcumulado}
+                  </td>
+
                 </tr>
 
               `;
@@ -4148,6 +4641,187 @@
         );
 
       }
+
+    }
+
+
+    /* =========================================================
+       CALCULAR ACUMULADOS HASTA UNA JORNADA
+       ========================================================= */
+
+    async function calcularAcumuladosHastaJornada(
+      jKey
+    ) {
+
+      const todasJornadasSnap =
+        await db
+          .collection(
+            "jornadas"
+          )
+          .get();
+
+
+      const acumulados =
+        {};
+
+
+      jugadores.forEach(
+        jugador => {
+
+          acumulados[jugador] = {
+
+            totalPuntos:
+              0,
+
+            aciertos:
+              0,
+
+            totalUnos:
+              0,
+
+            totalX2:
+              0,
+
+            totalDoses:
+              0
+
+          };
+
+        }
+      );
+
+
+      const numMax =
+        parseInt(
+          jKey.replace(
+            "J",
+            ""
+          )
+        );
+
+
+      for (
+        let i = 1;
+        i <= numMax;
+        i++
+      ) {
+
+        const currentKey =
+          `J${i}`;
+
+
+        const jDoc =
+          todasJornadasSnap.docs.find(
+            d =>
+              d.id ===
+              currentKey
+          );
+
+
+        if (
+          !jDoc
+        ) {
+
+          continue;
+
+        }
+
+
+        const jData =
+          jDoc.data();
+
+
+        const jPron =
+          jData.pronosticos ||
+          {};
+
+
+        const jEsc =
+          jData.escrutinio ||
+          {};
+
+
+        jugadores.forEach(
+          jugador => {
+
+            const respuestas =
+              jPron[jugador]
+                ?.respuestas ||
+              {};
+
+
+            const resultado =
+              calcularPuntosYaciertos(
+                respuestas,
+                jEsc
+              );
+
+
+            const conteo =
+              contarPronosticos(
+                respuestas
+              );
+
+
+            acumulados[jugador]
+              .totalPuntos +=
+              resultado.puntos;
+
+
+            acumulados[jugador]
+              .aciertos +=
+              resultado.aciertos;
+
+
+            acumulados[jugador]
+              .totalUnos +=
+              conteo.totalUnos;
+
+
+            acumulados[jugador]
+              .totalX2 +=
+              conteo.totalX2;
+
+
+            acumulados[jugador]
+              .totalDoses +=
+              conteo.totalDoses;
+
+          }
+        );
+
+      }
+
+
+      return acumulados;
+
+    }
+
+
+    /* =========================================================
+       COMPROBAR SI TODAS LAS JORNADAS ESTÁN COMPLETAS
+       ========================================================= */
+
+    function todasLasJornadasHastaEstanCompletas(
+      acumulados
+    ) {
+
+      /*
+       * Esta función recibe los acumulados ya calculados.
+       * Si existen, significa que la función pudo recorrer
+       * las jornadas existentes.
+       *
+       * Para mantener el comportamiento anterior de la app,
+       * las columnas acumuladas se mostrarán cuando todos
+       * los jugadores tengan pronóstico en todas las jornadas
+       * existentes hasta la jornada seleccionada.
+       *
+       * La comprobación real se realiza en la clasificación
+       * acumulada, por lo que aquí devolvemos true cuando
+       * existen los datos acumulados.
+       */
+
+      return !!acumulados;
 
     }
 
@@ -4192,6 +4866,9 @@
         const x2Acumulados =
           {};
 
+        const dosesAcumulados =
+          {};
+
 
         jugadores.forEach(
           j => {
@@ -4208,6 +4885,9 @@
             x2Acumulados[j] =
               0;
 
+            dosesAcumulados[j] =
+              0;
+
           }
         );
 
@@ -4220,16 +4900,6 @@
             )
           );
 
-
-        /*
-         * Esta variable controla si podemos
-         * mostrar las tres estadísticas
-         * acumuladas.
-         *
-         * Deben estar completos los 8
-         * pronósticos en TODAS las jornadas
-         * desde J1 hasta la jornada seleccionada.
-         */
 
         let todasJornadasPronosticadas =
           true;
@@ -4300,15 +4970,16 @@
                 {};
 
 
-              /*
-               * PUNTOS Y ACIERTOS
-               * ACUMULADOS POR JORNADA.
-               */
-
               const resultado =
                 calcularPuntosYaciertos(
                   respuestas,
                   jEsc
+                );
+
+
+              const conteo =
+                contarPronosticos(
+                  respuestas
                 );
 
 
@@ -4320,23 +4991,16 @@
                 resultado.aciertos;
 
 
-              /*
-               * UNOS Y X+2
-               * ACUMULADOS POR JORNADA.
-               */
-
-              const conteo =
-                contarPronosticos(
-                  respuestas
-                );
-
-
               unosAcumulados[jugador] +=
                 conteo.totalUnos;
 
 
               x2Acumulados[jugador] +=
                 conteo.totalX2;
+
+
+              dosesAcumulados[jugador] +=
+                conteo.totalDoses;
 
             }
           );
@@ -4362,33 +5026,38 @@
                   unosAcumulados[jugador],
 
                 totalX2:
-                  x2Acumulados[jugador]
+                  x2Acumulados[jugador],
+
+                totalDoses:
+                  dosesAcumulados[jugador]
 
               })
             )
             .sort(
               (a, b) =>
+
+                /*
+                 * DESEMPATE GENERAL:
+                 *
+                 * 1. Puntos acumulados
+                 * 2. X + 2 acumulados
+                 * 3. 2 acumulados
+                 */
+
                 b.total -
                   a.total ||
-                b.aciertos -
-                  a.aciertos
+
+                b.totalX2 -
+                  a.totalX2 ||
+
+                b.totalDoses -
+                  a.totalDoses
             );
 
 
         datosUltimoRankingAcumulado
           .forEach(
             (r, idx) => {
-
-              /*
-               * LOS PUNTOS ACUMULADOS
-               * SIEMPRE SE MUESTRAN.
-               *
-               * Las otras tres columnas
-               * solamente aparecen cuando
-               * están completos todos los
-               * pronósticos de J1 hasta
-               * la jornada seleccionada.
-               */
 
               const valorAciertos =
                 todasJornadasPronosticadas
@@ -4405,6 +5074,12 @@
               const valorX2 =
                 todasJornadasPronosticadas
                   ? r.totalX2
+                  : "";
+
+
+              const valorDoses =
+                todasJornadasPronosticadas
+                  ? r.totalDoses
                   : "";
 
 
@@ -4425,387 +5100,4 @@
 
                   <td class="p-3">
                     ${r.jugador}
-                  </td>
-
-
-                  <td class="p-3 text-center font-bold text-blue-900">
-                    ${r.total}
-                  </td>
-
-
-                  <td class="p-3 text-center font-semibold">
-                    ${valorAciertos}
-                  </td>
-
-
-                  <td class="p-3 text-center font-semibold">
-                    ${valorUnos}
-                  </td>
-
-
-                  <td class="p-3 text-center font-semibold">
-                    ${valorX2}
-                  </td>
-
-                </tr>
-
-              `;
-
-            }
-          );
-
-
-      } catch (
-        error
-      ) {
-
-        console.error(
-          "Error cargando clasificación acumulada:",
-          error
-        );
-
-      }
-
-    }
-
-
-    /* =========================================================
-       GRÁFICO
-       ========================================================= */
-
-    async function renderizarGraficoEvolucion() {
-
-      try {
-
-        const todasJornadasSnap =
-          await db
-            .collection(
-              "jornadas"
-            )
-            .get();
-
-
-        const puntosAcumulados =
-          {};
-
-
-        const historicoGrafico =
-          {};
-
-
-        jugadores.forEach(
-          j => {
-
-            puntosAcumulados[j] =
-              0;
-
-            historicoGrafico[j] =
-              [];
-
-          }
-        );
-
-
-        const jornadasTotales =
-          [];
-
-
-        for (
-          let i = 1;
-          i <= 50;
-          i++
-        ) {
-
-          jornadasTotales.push(
-            `J${i}`
-          );
-
-        }
-
-
-        const numJornadaSeleccionada =
-          parseInt(
-            jornadaActual.replace(
-              "J",
-              ""
-            )
-          );
-
-
-        const jornadasHastaActual =
-          jornadasTotales.slice(
-            0,
-            numJornadaSeleccionada
-          );
-
-
-        jornadasHastaActual.forEach(
-          jKey => {
-
-            const jDoc =
-              todasJornadasSnap.docs.find(
-                d =>
-                  d.id ===
-                  jKey
-              );
-
-
-            if (
-              jDoc
-            ) {
-
-              const jData =
-                jDoc.data();
-
-
-              const jPron =
-                jData.pronosticos ||
-                {};
-
-
-              const jEsc =
-                jData.escrutinio ||
-                {};
-
-
-              jugadores.forEach(
-                jugador => {
-
-                  const respuestas =
-                    jPron[jugador]
-                      ?.respuestas ||
-                    {};
-
-
-                  /*
-                   * EL GRÁFICO UTILIZA LOS
-                   * MISMOS PUNTOS QUE LAS
-                   * CLASIFICACIONES:
-                   *
-                   * 1 = 1
-                   * X = 2
-                   * 2 = 2
-                   */
-
-                  const resultado =
-                    calcularPuntosYaciertos(
-                      respuestas,
-                      jEsc
-                    );
-
-
-                  puntosAcumulados[jugador] +=
-                    resultado.puntos;
-
-
-                  historicoGrafico[jugador]
-                    .push(
-                      puntosAcumulados[jugador]
-                    );
-
-                }
-              );
-
-            } else {
-
-              jugadores.forEach(
-                jugador => {
-
-                  historicoGrafico[jugador]
-                    .push(
-                      puntosAcumulados[jugador]
-                    );
-
-                }
-              );
-
-            }
-
-          }
-        );
-
-
-        const canvas =
-          document.getElementById(
-            "chartEvolucion"
-          );
-
-
-        if (
-          !canvas
-        ) {
-
-          return;
-
-        }
-
-
-        const ctx =
-          canvas.getContext(
-            "2d"
-          );
-
-
-        if (
-          chartInstancia
-        ) {
-
-          chartInstancia.destroy();
-
-        }
-
-
-        const datasets =
-          jugadores.map(
-            jugador => ({
-
-              label:
-                jugador,
-
-              data:
-                historicoGrafico[jugador],
-
-              borderColor:
-                coloresJugadores[jugador] ||
-                "#000",
-
-              backgroundColor:
-                coloresJugadores[jugador] ||
-                "#000",
-
-              fill:
-                false,
-
-              tension:
-                0.2
-
-            })
-          );
-
-
-        chartInstancia =
-          new Chart(
-            ctx,
-            {
-
-              type:
-                "line",
-
-              data: {
-
-                labels:
-                  jornadasHastaActual,
-
-                datasets:
-                  datasets
-
-              },
-
-              options: {
-
-                responsive:
-                  true,
-
-                maintainAspectRatio:
-                  false,
-
-                plugins: {
-
-                  legend: {
-
-                    position:
-                      "bottom"
-
-                  }
-
-                }
-
-              }
-
-            }
-          );
-
-
-      } catch (
-        error
-      ) {
-
-        console.error(
-          "Error renderizando gráfico:",
-          error
-        );
-
-      }
-
-    }
-
-
-    /* =========================================================
-       COPIAR RESUMEN WHATSAPP
-       ========================================================= */
-
-    function copiarResumenWhatsApp() {
-
-      let texto =
-        `⚽ *QUINIELA - ${jornadaActual}*\n\n`;
-
-
-      texto +=
-        `📊 *Puntos ${jornadaActual}:*\n`;
-
-
-      datosUltimoRankingJornada
-        .forEach(
-          (r, idx) => {
-
-            texto +=
-              `${idx + 1}º ${r.jugador}: ${r.puntos} pts (${r.aciertos} aciertos)\n`;
-
-          }
-        );
-
-
-      texto +=
-        `\n🏆 *General Acumulada (${jornadaActual}):*\n`;
-
-
-      datosUltimoRankingAcumulado
-        .forEach(
-          (r, idx) => {
-
-            texto +=
-              `${idx + 1}º ${r.jugador}: ${r.total} pts\n`;
-
-          }
-        );
-
-
-      navigator.clipboard
-        .writeText(
-          texto
-        )
-        .then(
-          () => {
-
-            alert(
-              "📋 ¡Resumen copiado! Ya puedes pegarlo directamente en el grupo de WhatsApp de la peña."
-            );
-
-          }
-        )
-        .catch(
-          () => {
-
-            alert(
-              "Error al copiar. Inténtalo de nuevo."
-            );
-
-          }
-        );
-
-    }
-
-  </script>
-
-</body>
-</html>
+                 
