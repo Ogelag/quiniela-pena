@@ -3933,26 +3933,81 @@
 
     async function guardarEscrutinioModal() {
 
+      /*
+       * GUARDADO PARCIAL: mientras la jornada no esté cerrada,
+       * se puede introducir y guardar cada resultado de uno en uno.
+       * También se eliminan de Firestore los partidos que hayan sido
+       * desmarcados en el formulario. Los 14 resultados SOLO son
+       * obligatorios al cerrar la jornada.
+       */
       const esc =
-        obtenerEscrutinioDesdeFormulario();
+        {};
 
-
-      if (
-        !escrutinioCompleto(
-          esc
-        )
+      for (
+        let i = 1;
+        i <= 14;
+        i++
       ) {
 
-        alert(
-          "⚠️ Debes introducir los 14 resultados oficiales antes de guardar."
-        );
+        const marcado =
+          document.querySelector(
+            `input[name="esc_p${i}"]:checked`
+          );
 
-        return;
+        if (
+          marcado
+        ) {
+
+          esc[
+            `p${i}`
+          ] =
+            marcado.value;
+
+        }
 
       }
 
 
       try {
+
+        /*
+         * Partimos de los resultados guardados y actualizamos
+         * exactamente lo que aparece ahora en el formulario.
+         * Así, si se desmarca un partido, también desaparece
+         * de Firestore.
+         */
+        const escActualizado =
+          {
+            ...(ultimoEscrutinioCargado || {})
+          };
+
+        for (
+          let i = 1;
+          i <= 14;
+          i++
+        ) {
+
+          const clave =
+            `p${i}`;
+
+          if (
+            Object.prototype.hasOwnProperty.call(
+              esc,
+              clave
+            )
+          ) {
+
+            escActualizado[clave] =
+              esc[clave];
+
+          } else {
+
+            delete escActualizado[clave];
+
+          }
+
+        }
+
 
         await db
           .collection(
@@ -3964,7 +4019,7 @@
           .set(
             {
               escrutinio:
-                esc
+                escActualizado
             },
             {
               merge:
@@ -3982,7 +4037,7 @@
          */
 
         ultimoEscrutinioCargado =
-          esc;
+          escActualizado;
 
 
         await cargarClasificacionJornadaEspecifica(
@@ -3999,9 +4054,13 @@
 
 
         alert(
-          "✅ Resultado oficial de " +
-          jornadaActual +
-          " guardado correctamente. La clasificación ha sido recalculada."
+          Object.keys(
+            escActualizado
+          ).length === 14
+            ? "✅ Resultado oficial de " +
+              jornadaActual +
+              " guardado correctamente. La clasificación ha sido recalculada."
+            : "✅ Resultado guardado. Puedes introducir el siguiente partido cuando quieras."
         );
 
 
