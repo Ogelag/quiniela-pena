@@ -5398,7 +5398,7 @@
               0;
 
             historicoGrafico[j] =
-              [];
+              [0];
 
           }
         );
@@ -5435,6 +5435,17 @@
             0,
             numJornadaSeleccionada
           );
+
+
+        /*
+         * El gráfico empieza siempre en cero y después muestra
+         * la evolución acumulada de cada jugador por jornada.
+         */
+        const etiquetasGrafico =
+          [
+            "Inicio",
+            ...jornadasHastaActual
+          ];
 
 
         jornadasHastaActual.forEach(
@@ -5582,7 +5593,7 @@
               data: {
 
                 labels:
-                  jornadasHastaActual,
+                  etiquetasGrafico,
 
                 datasets:
                   datasets
