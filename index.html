@@ -1043,6 +1043,11 @@
     let ultimoEscrutinioCargado =
       {};
 
+    // Indica si la jornada actual ya ha sido cerrada oficialmente.
+    // Mientras sea false, los resultados del escrutinio se pueden desmarcar.
+    let jornadaActualCerrada =
+      false;
+
     let unsubscribeJornada =
       null;
 
@@ -1410,6 +1415,7 @@
                 type="radio"
                 name="esc_p${i}"
                 value="1"
+                onclick="alternarResultadoEscrutinio(this)"
               >
 
               1
@@ -1423,6 +1429,7 @@
                 type="radio"
                 name="esc_p${i}"
                 value="X"
+                onclick="alternarResultadoEscrutinio(this)"
               >
 
               X
@@ -1436,6 +1443,7 @@
                 type="radio"
                 name="esc_p${i}"
                 value="2"
+                onclick="alternarResultadoEscrutinio(this)"
               >
 
               2
@@ -2736,6 +2744,9 @@
       ultimoEscrutinioCargado =
         {};
 
+      jornadaActualCerrada =
+        false;
+
 
       const verificarSecuencia =
         jornadaAnteriorKey
@@ -2899,6 +2910,11 @@
                     doc.exists
                       ? doc.data()
                       : {};
+
+
+                  jornadaActualCerrada =
+                    data.cerrada ===
+                    true;
 
 
                   const pronosticos =
@@ -3687,53 +3703,44 @@
 
 
     /* =========================================================
-       ABRIR ESCRUTINIO
+       DESMARCAR RESULTADO DEL ESCRUTINIO
        ========================================================= */
 
-    async function abrirModalEscrutinio() {
+    function alternarResultadoEscrutinio(
+      radio
+    ) {
 
-      /*
-       * Si la jornada ya está cerrada, los resultados son definitivos
-       * y no se permite volver a modificarlos.
-       */
-      try {
-
-        const jornadaDoc =
-          await db
-            .collection(
-              "jornadas"
-            )
-            .doc(
-              jornadaActual
-            )
-            .get();
-
-
-        if (
-          jornadaDoc.exists &&
-          jornadaDoc.data().cerrada ===
-            true
-        ) {
-
-          alert(
-            `🔒 La ${jornadaActual} ya está cerrada. Los resultados son definitivos y no se pueden modificar.`
-          );
-
-          return;
-
-        }
-
-      } catch (
-        error
+      // Una vez cerrada oficialmente la jornada, los resultados
+      // quedan bloqueados y no se pueden modificar.
+      if (
+        jornadaActualCerrada
       ) {
 
-        console.error(
-          "Error comprobando si la jornada está cerrada:",
-          error
-        );
+        return;
 
       }
 
+      // Si se vuelve a pulsar exactamente el resultado que ya estaba
+      // marcado, anulamos la selección.
+      if (
+        radio.checked
+      ) {
+
+        radio.checked =
+          false;
+
+        return;
+
+      }
+
+    }
+
+
+    /* =========================================================
+       ABRIR ESCRUTINIO
+       ========================================================= */
+
+    function abrirModalEscrutinio() {
 
       if (
         usuarioActual !==
@@ -3764,6 +3771,19 @@
         i <= 14;
         i++
       ) {
+
+        document
+          .querySelectorAll(
+            `input[name="esc_p${i}"]`
+          )
+          .forEach(
+            radio => {
+
+              radio.disabled =
+                jornadaActualCerrada;
+
+            }
+          );
 
         const valGuardado =
           ultimoEscrutinioCargado[
@@ -3917,25 +3937,14 @@
         obtenerEscrutinioDesdeFormulario();
 
 
-      /*
-       * GUARDAR RESULTADO permite guardar resultados parciales.
-       * La obligación de tener los 14 resultados se comprueba
-       * únicamente al cerrar la jornada.
-       */
-
-      const totalResultados =
-        Object.keys(
-          esc
-        ).length;
-
-
       if (
-        totalResultados ===
-        0
+        !escrutinioCompleto(
+          esc
+        )
       ) {
 
         alert(
-          "⚠️ Introduce al menos un resultado oficial antes de guardar."
+          "⚠️ Debes introducir los 14 resultados oficiales antes de guardar."
         );
 
         return;
@@ -3990,11 +3999,9 @@
 
 
         alert(
-          "✅ Se han guardado " +
-          totalResultados +
-          " de 14 resultados oficiales de " +
+          "✅ Resultado oficial de " +
           jornadaActual +
-          ". La clasificación ha sido recalculada."
+          " guardado correctamente. La clasificación ha sido recalculada."
         );
 
 
@@ -4205,14 +4212,24 @@
 
     async function cerrarJornadaOficial() {
 
+      const confirmar =
+        confirm(
+          `¿Estás seguro de que quieres cerrar ${jornadaActual}? Una vez cerrada, se considerará finalizada oficialmente y se desbloqueará la siguiente jornada.`
+        );
+
+
+      if (
+        !confirmar
+      ) {
+
+        return;
+
+      }
+
+
       const esc =
         obtenerEscrutinioDesdeFormulario();
 
-
-      /*
-       * Para cerrar la jornada sí es obligatorio que estén
-       * introducidos los 14 resultados oficiales.
-       */
 
       if (
         !escrutinioCompleto(
@@ -4223,21 +4240,6 @@
         alert(
           "⚠️ No puedes cerrar la jornada hasta introducir los 14 resultados oficiales."
         );
-
-        return;
-
-      }
-
-
-      const confirmar =
-        confirm(
-          `⚠️ ¿Estás seguro de que quieres cerrar ${jornadaActual}?\n\nUna vez cerrada, la jornada quedará definitiva y los resultados y la clasificación YA NO PODRÁN MODIFICARSE.\n\n¿Quieres cerrar la jornada?`
-        );
-
-
-      if (
-        !confirmar
-      ) {
 
         return;
 
