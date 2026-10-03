@@ -5100,4 +5100,382 @@
 
                   <td class="p-3">
                     ${r.jugador}
-                 
+                  </td>
+
+
+                  <td class="p-3 text-center font-bold text-blue-900">
+                    ${r.total}
+                  </td>
+
+
+                  <td class="p-3 text-center font-semibold">
+                    ${valorAciertos}
+                  </td>
+
+
+                  <td class="p-3 text-center font-semibold">
+                    ${valorUnos}
+                  </td>
+
+
+                  <td class="p-3 text-center font-semibold">
+                    ${valorX2}
+                  </td>
+
+
+                  <td class="p-3 text-center font-semibold">
+                    ${valorDoses}
+                  </td>
+
+                </tr>
+
+              `;
+
+            }
+          );
+
+
+      } catch (
+        error
+      ) {
+
+        console.error(
+          "Error cargando clasificación acumulada:",
+          error
+        );
+
+      }
+
+    }
+
+
+    /* =========================================================
+       GRÁFICO
+       ========================================================= */
+
+    async function renderizarGraficoEvolucion() {
+
+      try {
+
+        const todasJornadasSnap =
+          await db
+            .collection(
+              "jornadas"
+            )
+            .get();
+
+
+        const puntosAcumulados =
+          {};
+
+
+        const historicoGrafico =
+          {};
+
+
+        jugadores.forEach(
+          j => {
+
+            puntosAcumulados[j] =
+              0;
+
+            historicoGrafico[j] =
+              [];
+
+          }
+        );
+
+
+        const jornadasTotales =
+          [];
+
+
+        for (
+          let i = 1;
+          i <= 50;
+          i++
+        ) {
+
+          jornadasTotales.push(
+            `J${i}`
+          );
+
+        }
+
+
+        const numJornadaSeleccionada =
+          parseInt(
+            jornadaActual.replace(
+              "J",
+              ""
+            )
+          );
+
+
+        const jornadasHastaActual =
+          jornadasTotales.slice(
+            0,
+            numJornadaSeleccionada
+          );
+
+
+        jornadasHastaActual.forEach(
+          jKey => {
+
+            const jDoc =
+              todasJornadasSnap.docs.find(
+                d =>
+                  d.id ===
+                  jKey
+              );
+
+
+            if (
+              jDoc
+            ) {
+
+              const jData =
+                jDoc.data();
+
+
+              const jPron =
+                jData.pronosticos ||
+                {};
+
+
+              const jEsc =
+                jData.escrutinio ||
+                {};
+
+
+              jugadores.forEach(
+                jugador => {
+
+                  const respuestas =
+                    jPron[jugador]
+                      ?.respuestas ||
+                    {};
+
+
+                  const resultado =
+                    calcularPuntosYaciertos(
+                      respuestas,
+                      jEsc
+                    );
+
+
+                  puntosAcumulados[jugador] +=
+                    resultado.puntos;
+
+
+                  historicoGrafico[jugador]
+                    .push(
+                      puntosAcumulados[jugador]
+                    );
+
+                }
+              );
+
+            } else {
+
+              jugadores.forEach(
+                jugador => {
+
+                  historicoGrafico[jugador]
+                    .push(
+                      puntosAcumulados[jugador]
+                    );
+
+                }
+              );
+
+            }
+
+          }
+        );
+
+
+        const canvas =
+          document.getElementById(
+            "chartEvolucion"
+          );
+
+
+        if (
+          !canvas
+        ) {
+
+          return;
+
+        }
+
+
+        const ctx =
+          canvas.getContext(
+            "2d"
+          );
+
+
+        if (
+          chartInstancia
+        ) {
+
+          chartInstancia.destroy();
+
+        }
+
+
+        const datasets =
+          jugadores.map(
+            jugador => ({
+
+              label:
+                jugador,
+
+              data:
+                historicoGrafico[jugador],
+
+              borderColor:
+                coloresJugadores[jugador] ||
+                "#000",
+
+              backgroundColor:
+                coloresJugadores[jugador] ||
+                "#000",
+
+              fill:
+                false,
+
+              tension:
+                0.2
+
+            })
+          );
+
+
+        chartInstancia =
+          new Chart(
+            ctx,
+            {
+
+              type:
+                "line",
+
+              data: {
+
+                labels:
+                  jornadasHastaActual,
+
+                datasets:
+                  datasets
+
+              },
+
+              options: {
+
+                responsive:
+                  true,
+
+                maintainAspectRatio:
+                  false,
+
+                plugins: {
+
+                  legend: {
+
+                    position:
+                      "bottom"
+
+                  }
+
+                }
+
+              }
+
+            }
+          );
+
+
+      } catch (
+        error
+      ) {
+
+        console.error(
+          "Error renderizando gráfico:",
+          error
+        );
+
+      }
+
+    }
+
+
+    /* =========================================================
+       COPIAR RESUMEN WHATSAPP
+       ========================================================= */
+
+    function copiarResumenWhatsApp() {
+
+      let texto =
+        `⚽ *QUINIELA - ${jornadaActual}*\n\n`;
+
+
+      texto +=
+        `📊 *Puntos ${jornadaActual}:*\n`;
+
+
+      datosUltimoRankingJornada
+        .forEach(
+          (r, idx) => {
+
+            texto +=
+              `${idx + 1}º ${r.jugador}: ${r.puntos} pts (${r.aciertos} aciertos)\n`;
+
+          }
+        );
+
+
+      texto +=
+        `\n🏆 *General Acumulada (${jornadaActual}):*\n`;
+
+
+      datosUltimoRankingAcumulado
+        .forEach(
+          (r, idx) => {
+
+            texto +=
+              `${idx + 1}º ${r.jugador}: ${r.total} pts\n`;
+
+          }
+        );
+
+
+      navigator.clipboard
+        .writeText(
+          texto
+        )
+        .then(
+          () => {
+
+            alert(
+              "📋 ¡Resumen copiado! Ya puedes pegarlo directamente en el grupo de WhatsApp de la peña."
+            );
+
+          }
+        )
+        .catch(
+          () => {
+
+            alert(
+              "Error al copiar. Inténtalo de nuevo."
+            );
+
+          }
+        );
+
+    }
+
+  </script>
+
+</body>
+</html>
