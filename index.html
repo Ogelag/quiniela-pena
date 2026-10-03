@@ -4040,6 +4040,9 @@
           escActualizado;
 
 
+        await renderizarGraficoEvolucion();
+
+
         await cargarClasificacionJornadaEspecifica(
           jornadaTablaActual
         );
@@ -4048,9 +4051,6 @@
         await cargarClasificacionAcumuladaHasta(
           jornadaAcumActual
         );
-
-
-        await renderizarGraficoEvolucion();
 
 
         alert(
@@ -4738,7 +4738,7 @@
               ) {
 
                 claseFila =
-                  "bg-red-100";
+                  "bg-red-600 text-white";
 
               }
 
@@ -5300,7 +5300,7 @@
               ) {
 
                 claseFila =
-                  "bg-red-100";
+                  "bg-red-600 text-white";
 
               }
 
