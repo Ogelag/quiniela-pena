@@ -1409,55 +1409,61 @@
 
           <div class="flex gap-2">
 
-            <label
+            <button
+              type="button"
               class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50"
-              onmousedown="prepararAlternanciaEscrutinio(this)"
-              onclick="alternarResultadoEscrutinio(this.querySelector('input'), event)"
+              onclick="alternarResultadoEscrutinio(this, ${i}, '1')"
             >
 
               <input
-                type="radio"
+                type="checkbox"
                 name="esc_p${i}"
                 value="1"
+                class="hidden"
+                tabindex="-1"
               >
 
               1
 
-            </label>
+            </button>
 
 
-            <label
+            <button
+              type="button"
               class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50"
-              onmousedown="prepararAlternanciaEscrutinio(this)"
-              onclick="alternarResultadoEscrutinio(this.querySelector('input'), event)"
+              onclick="alternarResultadoEscrutinio(this, ${i}, 'X')"
             >
 
               <input
-                type="radio"
+                type="checkbox"
                 name="esc_p${i}"
                 value="X"
+                class="hidden"
+                tabindex="-1"
               >
 
               X
 
-            </label>
+            </button>
 
 
-            <label
+            <button
+              type="button"
               class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50"
-              onmousedown="prepararAlternanciaEscrutinio(this)"
-              onclick="alternarResultadoEscrutinio(this.querySelector('input'), event)"
+              onclick="alternarResultadoEscrutinio(this, ${i}, '2')"
             >
 
               <input
-                type="radio"
+                type="checkbox"
                 name="esc_p${i}"
                 value="2"
+                class="hidden"
+                tabindex="-1"
               >
 
               2
 
-            </label>
+            </button>
 
           </div>
 
@@ -3712,74 +3718,53 @@
 
 
     /* =========================================================
-       DESMARCAR RESULTADO DEL ESCRUTINIO
+       SELECCIONAR / DESMARCAR RESULTADO DEL ESCRUTINIO
        ========================================================= */
 
-    function prepararAlternanciaEscrutinio(
-      label
-    ) {
-
-      const radio =
-        label.querySelector(
-          "input[type=\"radio\"]"
-        );
-
-      if (!radio) {
-        return;
-      }
-
-      label.dataset.
-        estadoAnterior =
-        radio.checked
-          ? "1"
-          : "0";
-
-    }
-
-
     function alternarResultadoEscrutinio(
-      radio,
-      event
+      boton,
+      partido,
+      valor
     ) {
 
-      if (!radio) {
+      if (jornadaActualCerrada) {
         return;
       }
 
-      if (
-        jornadaActualCerrada
-      ) {
-
-        event.preventDefault();
-        return;
-
-      }
-
-      /*
-       * El navegador activa automáticamente el radio al hacer clic.
-       * Aquí anulamos ese comportamiento y aplicamos nosotros el
-       * estado que tenía antes del clic: si estaba marcado, se
-       * desmarca; si no lo estaba, se marca.
-       */
-      event.preventDefault();
-
-      const label =
-        radio.closest(
-          "label"
+      const input =
+        boton.querySelector(
+          'input[type="checkbox"]'
         );
 
-      const estabaMarcado =
-        label &&
-        label.dataset.
-          estadoAnterior ===
-          "1";
+      if (!input) {
+        return;
+      }
 
-      radio.checked =
-        !estabaMarcado;
+      const yaEstabaMarcado =
+        input.checked;
 
-      if (label) {
-        delete label.dataset.
-          estadoAnterior;
+      const opciones =
+        document.querySelectorAll(
+          `input[name="esc_p${partido}"]`
+        );
+
+      opciones.forEach(function(opcion) {
+        opcion.checked = false;
+        const botonOpcion = opcion.closest("button");
+        if (botonOpcion) {
+          botonOpcion.classList.remove(
+            "bg-blue-100",
+            "border-blue-500"
+          );
+        }
+      });
+
+      if (!yaEstabaMarcado) {
+        input.checked = true;
+        boton.classList.add(
+          "bg-blue-100",
+          "border-blue-500"
+        );
       }
 
     }
