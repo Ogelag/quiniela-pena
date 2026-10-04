@@ -1043,6 +1043,11 @@
     let ultimoEscrutinioCargado =
       {};
 
+    // Guarda el último valor confirmado por el usuario en cada radio
+    // para permitir seleccionar, cambiar y volver a desmarcar el mismo resultado.
+    let estadoAnteriorEscrutinio =
+      {};
+
     // Indica si la jornada actual ya ha sido cerrada oficialmente.
     // Mientras sea false, los resultados del escrutinio se pueden desmarcar.
     let jornadaActualCerrada =
@@ -1100,10 +1105,15 @@
         const resultado =
           escrutinio?.[clave];
 
+        const resultadoValido =
+          resultado === "1" ||
+          resultado === "X" ||
+          resultado === "2";
+
 
         if (
           pronostico &&
-          resultado &&
+          resultadoValido &&
           pronostico ===
             resultado
         ) {
@@ -1409,61 +1419,46 @@
 
           <div class="flex gap-2">
 
-            <button
-              type="button"
-              class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50"
-              onclick="alternarResultadoEscrutinio(this, ${i}, '1')"
-            >
+            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50">
 
               <input
-                type="checkbox"
+                type="radio"
                 name="esc_p${i}"
                 value="1"
-                class="hidden"
-                tabindex="-1"
+                onclick="alternarResultadoEscrutinio(this)"
               >
 
               1
 
-            </button>
+            </label>
 
 
-            <button
-              type="button"
-              class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50"
-              onclick="alternarResultadoEscrutinio(this, ${i}, 'X')"
-            >
+            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50">
 
               <input
-                type="checkbox"
+                type="radio"
                 name="esc_p${i}"
                 value="X"
-                class="hidden"
-                tabindex="-1"
+                onclick="alternarResultadoEscrutinio(this)"
               >
 
               X
 
-            </button>
+            </label>
 
 
-            <button
-              type="button"
-              class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50"
-              onclick="alternarResultadoEscrutinio(this, ${i}, '2')"
-            >
+            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50">
 
               <input
-                type="checkbox"
+                type="radio"
                 name="esc_p${i}"
                 value="2"
-                class="hidden"
-                tabindex="-1"
+                onclick="alternarResultadoEscrutinio(this)"
               >
 
               2
 
-            </button>
+            </label>
 
           </div>
 
@@ -2759,6 +2754,9 @@
       ultimoEscrutinioCargado =
         {};
 
+      estadoAnteriorEscrutinio =
+        {};
+
       jornadaActualCerrada =
         false;
 
@@ -2948,6 +2946,9 @@
 
                   ultimoEscrutinioCargado =
                     escrutinio;
+
+                  estadoAnteriorEscrutinio =
+                    {};
 
 
                   const grid =
@@ -3718,53 +3719,59 @@
 
 
     /* =========================================================
-       SELECCIONAR / DESMARCAR RESULTADO DEL ESCRUTINIO
+       DESMARCAR RESULTADO DEL ESCRUTINIO
        ========================================================= */
 
     function alternarResultadoEscrutinio(
-      boton,
-      partido,
-      valor
+      radio
     ) {
 
-      if (jornadaActualCerrada) {
+      // Una vez cerrada oficialmente la jornada, los resultados
+      // quedan bloqueados y no se pueden modificar.
+      if (
+        jornadaActualCerrada
+      ) {
+
         return;
+
       }
 
-      const input =
-        boton.querySelector(
-          'input[type="checkbox"]'
-        );
+      const nombre =
+        radio.name;
 
-      if (!input) {
+      const valorAnterior =
+        estadoAnteriorEscrutinio[nombre];
+
+      /*
+       * El evento click se ejecuta DESPUÉS de que el navegador haya
+       * marcado el radio. Por eso no debemos comprobar simplemente
+       * radio.checked: siempre sería true en ese momento.
+       *
+       * Si el valor pulsado ya era el que estaba seleccionado antes
+       * del click, lo anulamos. Si era otro valor, dejamos que el
+       * comportamiento normal del grupo radio lo seleccione.
+       */
+      if (
+        radio.checked &&
+        valorAnterior === radio.value
+      ) {
+
+        radio.checked =
+          false;
+
+        delete estadoAnteriorEscrutinio[nombre];
+
         return;
+
       }
 
-      const yaEstabaMarcado =
-        input.checked;
+      if (
+        radio.checked
+      ) {
 
-      const opciones =
-        document.querySelectorAll(
-          `input[name="esc_p${partido}"]`
-        );
+        estadoAnteriorEscrutinio[nombre] =
+          radio.value;
 
-      opciones.forEach(function(opcion) {
-        opcion.checked = false;
-        const botonOpcion = opcion.closest("button");
-        if (botonOpcion) {
-          botonOpcion.classList.remove(
-            "bg-blue-100",
-            "border-blue-500"
-          );
-        }
-      });
-
-      if (!yaEstabaMarcado) {
-        input.checked = true;
-        boton.classList.add(
-          "bg-blue-100",
-          "border-blue-500"
-        );
       }
 
     }
@@ -3800,6 +3807,9 @@
       }
 
 
+      estadoAnteriorEscrutinio =
+        {};
+
       for (
         let i = 1;
         i <= 14;
@@ -3816,6 +3826,9 @@
               radio.disabled =
                 jornadaActualCerrada;
 
+              radio.checked =
+                false;
+
             }
           );
 
@@ -3826,7 +3839,9 @@
 
 
         if (
-          valGuardado
+          valGuardado === "1" ||
+          valGuardado === "X" ||
+          valGuardado === "2"
         ) {
 
           const elem =
@@ -3842,22 +3857,12 @@
             elem.checked =
               true;
 
+            estadoAnteriorEscrutinio[
+              `esc_p${i}`
+            ] =
+              valGuardado;
+
           }
-
-        } else {
-
-          document
-            .querySelectorAll(
-              `input[name="esc_p${i}"]`
-            )
-            .forEach(
-              r => {
-
-                r.checked =
-                  false;
-
-              }
-            );
 
         }
 
@@ -3967,92 +3972,36 @@
 
     async function guardarEscrutinioModal() {
 
-      // Una jornada cerrada oficialmente no puede modificarse.
+      /*
+       * GUARDADO PARCIAL: mientras la jornada no esté cerrada se
+       * pueden guardar cero, uno o varios resultados. El estado
+       * visible del formulario es la fuente de verdad: si un partido
+       * está desmarcado, se elimina del mapa escrutinio guardado.
+       * Los 14 resultados SOLO son obligatorios al cerrar la jornada.
+       */
+      const esc =
+        obtenerEscrutinioDesdeFormulario();
+
       if (
         jornadaActualCerrada
       ) {
+
         alert(
-          "🔒 Esta jornada ya está cerrada y no se puede modificar."
+          "🔒 La jornada ya está cerrada y no se pueden modificar los resultados."
         );
+
         return;
-      }
-
-      /*
-       * GUARDADO PARCIAL: mientras la jornada no esté cerrada,
-       * se puede introducir y guardar cada resultado de uno en uno.
-       * También se eliminan de Firestore los partidos que hayan sido
-       * desmarcados en el formulario. Los 14 resultados SOLO son
-       * obligatorios al cerrar la jornada.
-       */
-      const esc =
-        {};
-
-      for (
-        let i = 1;
-        i <= 14;
-        i++
-      ) {
-
-        const marcado =
-          document.querySelector(
-            `input[name="esc_p${i}"]:checked`
-          );
-
-        if (
-          marcado
-        ) {
-
-          esc[
-            `p${i}`
-          ] =
-            marcado.value;
-
-        }
 
       }
-
 
       try {
 
         /*
-         * Partimos de los resultados guardados y actualizamos
-         * exactamente lo que aparece ahora en el formulario.
-         * Así, si se desmarca un partido, también desaparece
-         * de Firestore.
+         * IMPORTANTE: no mezclamos aquí con ultimoEscrutinioCargado.
+         * El formulario ya contiene exactamente el estado que el
+         * usuario quiere conservar. Así, desmarcar P6 y guardar
+         * elimina P6 del objeto escrutinio sin dejar datos antiguos.
          */
-        const escActualizado =
-          {
-            ...(ultimoEscrutinioCargado || {})
-          };
-
-        for (
-          let i = 1;
-          i <= 14;
-          i++
-        ) {
-
-          const clave =
-            `p${i}`;
-
-          if (
-            Object.prototype.hasOwnProperty.call(
-              esc,
-              clave
-            )
-          ) {
-
-            escActualizado[clave] =
-              esc[clave];
-
-          } else {
-
-            delete escActualizado[clave];
-
-          }
-
-        }
-
-
         await db
           .collection(
             "jornadas"
@@ -4063,7 +4012,7 @@
           .set(
             {
               escrutinio:
-                escActualizado
+                esc
             },
             {
               merge:
@@ -4072,41 +4021,47 @@
           );
 
 
-        /*
-         * IMPORTANTE:
-         *
-         * En este momento se recalculan inmediatamente
-         * las clasificaciones con los nuevos criterios
-         * de desempate.
-         */
-
         ultimoEscrutinioCargado =
-          escActualizado;
+          {
+            ...esc
+          };
 
+        estadoAnteriorEscrutinio =
+          {};
 
-        await renderizarGraficoEvolucion();
+        Object.keys(esc).forEach(
+          clave => {
 
+            estadoAnteriorEscrutinio[
+              `esc_${clave}`
+            ] =
+              esc[clave];
 
+          }
+        );
+
+        /* Recalculamos inmediatamente clasificación y gráfico. */
         await cargarClasificacionJornadaEspecifica(
           jornadaTablaActual
         );
-
 
         await cargarClasificacionAcumuladaHasta(
           jornadaAcumActual
         );
 
+        await renderizarGraficoEvolucion();
 
         alert(
-          Object.keys(
-            escActualizado
-          ).length === 14
-            ? "✅ Resultado oficial de " +
+          Object.keys(esc).length === 14
+            ? "✅ Los 14 resultados de " +
               jornadaActual +
-              " guardado correctamente. La clasificación ha sido recalculada."
-            : "✅ Resultado guardado. Puedes introducir el siguiente partido cuando quieras."
+              " están guardados correctamente."
+            : Object.keys(esc).length === 0
+              ? "✅ No hay ningún resultado guardado en " +
+                jornadaActual +
+                "."
+              : "✅ Resultado guardado. Puedes introducir o modificar cualquier otro partido antes de cerrar la jornada."
         );
-
 
         cerrarModalEscrutinio();
 
@@ -4119,7 +4074,6 @@
           error
         );
 
-
         alert(
           "❌ No se ha podido guardar el resultado."
         );
@@ -4127,7 +4081,6 @@
       }
 
     }
-
 
     /* =========================================================
        CALCULAR CLASIFICACIÓN GENERAL PARA GUARDAR
