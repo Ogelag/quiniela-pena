@@ -1409,13 +1409,16 @@
 
           <div class="flex gap-2">
 
-            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50">
+            <label
+              class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50"
+              onmousedown="prepararAlternanciaEscrutinio(this)"
+              onclick="alternarResultadoEscrutinio(this.querySelector('input'), event)"
+            >
 
               <input
                 type="radio"
                 name="esc_p${i}"
                 value="1"
-                onmousedown="alternarResultadoEscrutinio(this, event)"
               >
 
               1
@@ -1423,13 +1426,16 @@
             </label>
 
 
-            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50">
+            <label
+              class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50"
+              onmousedown="prepararAlternanciaEscrutinio(this)"
+              onclick="alternarResultadoEscrutinio(this.querySelector('input'), event)"
+            >
 
               <input
                 type="radio"
                 name="esc_p${i}"
                 value="X"
-                onmousedown="alternarResultadoEscrutinio(this, event)"
               >
 
               X
@@ -1437,13 +1443,16 @@
             </label>
 
 
-            <label class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50">
+            <label
+              class="px-3 py-1 bg-white border rounded cursor-pointer hover:bg-blue-50"
+              onmousedown="prepararAlternanciaEscrutinio(this)"
+              onclick="alternarResultadoEscrutinio(this.querySelector('input'), event)"
+            >
 
               <input
                 type="radio"
                 name="esc_p${i}"
                 value="2"
-                onmousedown="alternarResultadoEscrutinio(this, event)"
               >
 
               2
@@ -3706,13 +3715,37 @@
        DESMARCAR RESULTADO DEL ESCRUTINIO
        ========================================================= */
 
+    function prepararAlternanciaEscrutinio(
+      label
+    ) {
+
+      const radio =
+        label.querySelector(
+          "input[type=\"radio\"]"
+        );
+
+      if (!radio) {
+        return;
+      }
+
+      label.dataset.
+        estadoAnterior =
+        radio.checked
+          ? "1"
+          : "0";
+
+    }
+
+
     function alternarResultadoEscrutinio(
       radio,
       event
     ) {
 
-      // Una vez cerrada oficialmente la jornada, los resultados
-      // quedan bloqueados y no se pueden modificar.
+      if (!radio) {
+        return;
+      }
+
       if (
         jornadaActualCerrada
       ) {
@@ -3722,16 +3755,31 @@
 
       }
 
-      // Si se pulsa de nuevo el resultado que ya estaba marcado,
-      // anulamos la selección antes de que el navegador cambie el radio.
-      if (
-        radio.checked
-      ) {
+      /*
+       * El navegador activa automáticamente el radio al hacer clic.
+       * Aquí anulamos ese comportamiento y aplicamos nosotros el
+       * estado que tenía antes del clic: si estaba marcado, se
+       * desmarca; si no lo estaba, se marca.
+       */
+      event.preventDefault();
 
-        event.preventDefault();
-        radio.checked =
-          false;
+      const label =
+        radio.closest(
+          "label"
+        );
 
+      const estabaMarcado =
+        label &&
+        label.dataset.
+          estadoAnterior ===
+          "1";
+
+      radio.checked =
+        !estabaMarcado;
+
+      if (label) {
+        delete label.dataset.
+          estadoAnterior;
       }
 
     }
