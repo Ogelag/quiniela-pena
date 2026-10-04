@@ -1415,7 +1415,7 @@
                 type="radio"
                 name="esc_p${i}"
                 value="1"
-                onclick="alternarResultadoEscrutinio(this)"
+                onmousedown="alternarResultadoEscrutinio(this, event)"
               >
 
               1
@@ -1429,7 +1429,7 @@
                 type="radio"
                 name="esc_p${i}"
                 value="X"
-                onclick="alternarResultadoEscrutinio(this)"
+                onmousedown="alternarResultadoEscrutinio(this, event)"
               >
 
               X
@@ -1443,7 +1443,7 @@
                 type="radio"
                 name="esc_p${i}"
                 value="2"
-                onclick="alternarResultadoEscrutinio(this)"
+                onmousedown="alternarResultadoEscrutinio(this, event)"
               >
 
               2
@@ -3707,7 +3707,8 @@
        ========================================================= */
 
     function alternarResultadoEscrutinio(
-      radio
+      radio,
+      event
     ) {
 
       // Una vez cerrada oficialmente la jornada, los resultados
@@ -3716,20 +3717,20 @@
         jornadaActualCerrada
       ) {
 
+        event.preventDefault();
         return;
 
       }
 
-      // Si se vuelve a pulsar exactamente el resultado que ya estaba
-      // marcado, anulamos la selección.
+      // Si se pulsa de nuevo el resultado que ya estaba marcado,
+      // anulamos la selección antes de que el navegador cambie el radio.
       if (
         radio.checked
       ) {
 
+        event.preventDefault();
         radio.checked =
           false;
-
-        return;
 
       }
 
@@ -3932,6 +3933,16 @@
        ========================================================= */
 
     async function guardarEscrutinioModal() {
+
+      // Una jornada cerrada oficialmente no puede modificarse.
+      if (
+        jornadaActualCerrada
+      ) {
+        alert(
+          "🔒 Esta jornada ya está cerrada y no se puede modificar."
+        );
+        return;
+      }
 
       /*
        * GUARDADO PARCIAL: mientras la jornada no esté cerrada,
