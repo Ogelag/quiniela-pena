@@ -1214,9 +1214,14 @@
         const resultadoOficial =
           escrutinio?.[clave];
 
+        const resultadoOficialValido =
+          resultadoOficial === "1" ||
+          resultadoOficial === "X" ||
+          resultadoOficial === "2";
+
         if (
           !valor ||
-          !resultadoOficial
+          !resultadoOficialValido
         ) {
           continue;
         }
@@ -4022,6 +4027,11 @@
          * El formulario ya contiene exactamente el estado que el
          * usuario quiere conservar. Así, desmarcar P6 y guardar
          * elimina P6 del objeto escrutinio sin dejar datos antiguos.
+         *
+         * CORRECCIÓN: con { merge: true } Firestore fusiona los mapas,
+         * por lo que un partido desmarcado NO se borraba de la base de
+         * datos y seguía puntuando. Con mergeFields: ["escrutinio"] el
+         * campo escrutinio se REEMPLAZA entero por lo que hay en pantalla.
          */
         await db
           .collection(
@@ -4036,8 +4046,8 @@
                 esc
             },
             {
-              merge:
-                true
+              mergeFields:
+                ["escrutinio"]
             }
           );
 
