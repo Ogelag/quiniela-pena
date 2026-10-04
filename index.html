@@ -376,7 +376,7 @@
               onclick="abrirModalEscrutinio()"
               class="flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-700 text-white shadow cursor-pointer"
             >
-              ✏️ Introduce el resultado de la jornada (Itziar / Jose)
+              ✏️ Introduce el resultado de la jornada (solo Jose)
             </button>
 
           </div>
@@ -1911,6 +1911,8 @@
        ========================================================= */
 
     function mostrarAplicacion() {
+      actualizarBotonResultados();
+
 
       document
         .getElementById(
@@ -3745,6 +3747,25 @@
 
 
     /* =========================================================
+       PERMISO: SOLO JOSE INTRODUCE RESULTADOS
+       ========================================================= */
+
+    function puedeIntroducirResultados() {
+      return usuarioActual === "Jose";
+    }
+
+    function actualizarBotonResultados() {
+      const btn = document.getElementById("btn-resultado-jornada");
+      if (!btn) return;
+      if (puedeIntroducirResultados()) {
+        btn.classList.remove("hidden");
+      } else {
+        btn.classList.add("hidden");
+      }
+    }
+
+
+    /* =========================================================
        DESMARCAR RESULTADO DEL ESCRUTINIO
        ========================================================= */
 
@@ -3809,27 +3830,9 @@
 
     function abrirModalEscrutinio() {
 
-      if (
-        usuarioActual !==
-          "Itziar" &&
-        usuarioActual !==
-          "Jose"
-      ) {
-
-        const confirmar =
-          confirm(
-            "Este botón está pensado para Itziar o Jose. ¿Deseas guardar los resultados igualmente?"
-          );
-
-
-        if (
-          !confirmar
-        ) {
-
-          return;
-
-        }
-
+      if (!puedeIntroducirResultados()) {
+        alert("Solo Jose puede introducir los resultados oficiales.");
+        return;
       }
 
 
@@ -3997,6 +4000,11 @@
        ========================================================= */
 
     async function guardarEscrutinioModal() {
+
+      if (!puedeIntroducirResultados()) {
+        alert("Solo Jose puede introducir los resultados oficiales.");
+        return;
+      }
 
       /*
        * GUARDADO PARCIAL: mientras la jornada no esté cerrada se
@@ -4300,6 +4308,11 @@
        ========================================================= */
 
     async function cerrarJornadaOficial() {
+
+      if (!puedeIntroducirResultados()) {
+        alert("Solo Jose puede cerrar la jornada.");
+        return;
+      }
 
       const confirmar =
         confirm(
