@@ -1172,7 +1172,8 @@
      *
      * Total 2 = número de "2"
      *
-     * Estos valores NO dependen del escrutinio.
+     * Estos valores NO dependen del escrutinio: cuentan todo lo
+     * pronosticado en la jornada.
      */
 
     function contarPronosticos(
@@ -1203,25 +1204,12 @@
           respuestas?.[clave];
 
         /*
-         * IMPORTANTE:
-         * Los desempates de la clasificación solo
-         * cuentan partidos que ya tienen resultado
-         * oficial introducido.
-         *
-         * Un pronóstico de un partido todavía no
-         * disputado NO cuenta como 1, X+2 ni 2.
+         * Se cuentan TODOS los pronósticos de la jornada (los 14
+         * partidos), hayan sido ya disputados o no y acierten o no.
+         * Solo se ignoran los partidos sin pronóstico.
          */
-        const resultadoOficial =
-          escrutinio?.[clave];
-
-        const resultadoOficialValido =
-          resultadoOficial === "1" ||
-          resultadoOficial === "X" ||
-          resultadoOficial === "2";
-
         if (
-          !valor ||
-          !resultadoOficialValido
+          !valor
         ) {
           continue;
         }
