@@ -1270,44 +1270,6 @@
       };
 
     }
-        if (
-          valor ===
-            "X" ||
-          valor ===
-            "2"
-        ) {
-
-          totalX2++;
-
-        }
-
-
-        if (
-          valor ===
-          "2"
-        ) {
-
-          totalDoses++;
-
-        }
-
-      }
-
-
-      return {
-
-        totalUnos:
-          totalUnos,
-
-        totalX2:
-          totalX2,
-
-        totalDoses:
-          totalDoses
-
-      };
-
-    }
 
 
     /* =========================================================
@@ -1572,7 +1534,7 @@
 
 
     /* =========================================================
-       AL CARGAR LA PÁGINA
+       AL CARGAR LA PÁGINA (CORREGIDO PARA PERSISTENCIA DE SESIÓN)
        ========================================================= */
 
     window.addEventListener(
@@ -4141,6 +4103,7 @@
 
     }
 
+
     /* =========================================================
        CALCULAR CLASIFICACIÓN GENERAL PARA GUARDAR
        ========================================================= */
@@ -4256,7 +4219,7 @@
             const conteo =
               contarPronosticos(
                 respuestas,
-                escrutinio
+                jEsc
               );
 
 
@@ -4642,7 +4605,8 @@
 
                 const conteo =
                   contarPronosticos(
-                    respuestas
+                    respuestas,
+                    escrutinio
                   );
 
 
@@ -4987,7 +4951,7 @@
             const conteo =
               contarPronosticos(
                 respuestas,
-                escrutinio
+                jEsc
               );
 
 
@@ -5033,21 +4997,6 @@
     function todasLasJornadasHastaEstanCompletas(
       acumulados
     ) {
-
-      /*
-       * Esta función recibe los acumulados ya calculados.
-       * Si existen, significa que la función pudo recorrer
-       * las jornadas existentes.
-       *
-       * Para mantener el comportamiento anterior de la app,
-       * las columnas acumuladas se mostrarán cuando todos
-       * los jugadores tengan pronóstico en todas las jornadas
-       * existentes hasta la jornada seleccionada.
-       *
-       * La comprobación real se realiza en la clasificación
-       * acumulada, por lo que aquí devolvemos true cuando
-       * existen los datos acumulados.
-       */
 
       return !!acumulados;
 
@@ -5207,7 +5156,8 @@
 
               const conteo =
                 contarPronosticos(
-                  respuestas
+                  respuestas,
+                  jEsc
                 );
 
 
