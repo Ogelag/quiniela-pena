@@ -1176,7 +1176,8 @@
      */
 
     function contarPronosticos(
-      respuestas
+      respuestas,
+      escrutinio = {}
     ) {
 
       let totalUnos =
@@ -1195,10 +1196,30 @@
         i++
       ) {
 
+        const clave =
+          `p${i}`;
+
         const valor =
-          respuestas?.[
-            `p${i}`
-          ];
+          respuestas?.[clave];
+
+        /*
+         * IMPORTANTE:
+         * Los desempates de la clasificación solo
+         * cuentan partidos que ya tienen resultado
+         * oficial introducido.
+         *
+         * Un pronóstico de un partido todavía no
+         * disputado NO cuenta como 1, X+2 ni 2.
+         */
+        const resultadoOficial =
+          escrutinio?.[clave];
+
+        if (
+          !valor ||
+          !resultadoOficial
+        ) {
+          continue;
+        }
 
 
         if (
@@ -1211,6 +1232,44 @@
         }
 
 
+        if (
+          valor ===
+            "X" ||
+          valor ===
+            "2"
+        ) {
+
+          totalX2++;
+
+        }
+
+
+        if (
+          valor ===
+          "2"
+        ) {
+
+          totalDoses++;
+
+        }
+
+      }
+
+
+      return {
+
+        totalUnos:
+          totalUnos,
+
+        totalX2:
+          totalX2,
+
+        totalDoses:
+          totalDoses
+
+      };
+
+    }
         if (
           valor ===
             "X" ||
@@ -4196,7 +4255,8 @@
 
             const conteo =
               contarPronosticos(
-                respuestas
+                respuestas,
+                escrutinio
               );
 
 
@@ -4926,7 +4986,8 @@
 
             const conteo =
               contarPronosticos(
-                respuestas
+                respuestas,
+                escrutinio
               );
 
 
