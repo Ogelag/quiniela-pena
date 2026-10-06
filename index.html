@@ -376,7 +376,7 @@
               onclick="abrirModalEscrutinio()"
               class="flex-1 py-2.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-700 text-white shadow cursor-pointer"
             >
-              ✏️ Introduce el resultado de la jornada (solo Jose)
+              ✏️ Introduce el resultado de la jornada (solo Borja)
             </button>
 
           </div>
@@ -3796,11 +3796,14 @@
 
 
     /* =========================================================
-       PERMISO: SOLO JOSE INTRODUCE RESULTADOS
+       PERMISO: BORJA Y JOSE INTRODUCEN RESULTADOS
        ========================================================= */
 
     function puedeIntroducirResultados() {
-      return usuarioActual === "Jose";
+      return (
+        usuarioActual === "Borja" ||
+        usuarioActual === "Jose"
+      );
     }
 
     function actualizarBotonResultados() {
@@ -3880,7 +3883,7 @@
     function abrirModalEscrutinio() {
 
       if (!puedeIntroducirResultados()) {
-        alert("Solo Jose puede introducir los resultados oficiales.");
+        alert("Solo Borja puede introducir los resultados oficiales.");
         return;
       }
 
@@ -4051,7 +4054,7 @@
     async function guardarEscrutinioModal() {
 
       if (!puedeIntroducirResultados()) {
-        alert("Solo Jose puede introducir los resultados oficiales.");
+        alert("Solo Borja puede introducir los resultados oficiales.");
         return;
       }
 
@@ -4359,7 +4362,7 @@
     async function cerrarJornadaOficial() {
 
       if (!puedeIntroducirResultados()) {
-        alert("Solo Jose puede cerrar la jornada.");
+        alert("Solo Borja puede cerrar la jornada.");
         return;
       }
 
