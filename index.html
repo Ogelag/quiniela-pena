@@ -1879,6 +1879,72 @@
 
 
     /* =========================================================
+       JORNADA EN JUEGO
+       ========================================================= */
+
+    async function obtenerJornadaEnJuego() {
+
+      try {
+
+        const snap =
+          await db
+            .collection(
+              "jornadas"
+            )
+            .get();
+
+        const cerradas =
+          new Set();
+
+        snap.forEach(
+          (doc) => {
+
+            if (
+              doc.data().cerrada ===
+              true
+            ) {
+              cerradas.add(
+                doc.id
+              );
+            }
+
+          }
+        );
+
+        // La jornada en juego es la primera sin cerrar.
+        for (
+          let i = 1;
+          i <= 50;
+          i++
+        ) {
+
+          if (
+            !cerradas.has(
+              `J${i}`
+            )
+          ) {
+            return `J${i}`;
+          }
+
+        }
+
+        return "J50";
+
+      } catch (error) {
+
+        console.error(
+          "No se ha podido determinar la jornada en juego:",
+          error
+        );
+
+        return "J1";
+
+      }
+
+    }
+
+
+    /* =========================================================
        MOSTRAR APLICACIÓN
        ========================================================= */
 
@@ -1914,14 +1980,26 @@
 
       mostrarTodosJugadoresPendientes();
 
-
-      determinarEncargadoPleno15()
+      /*
+       * Al entrar se abre la JORNADA EN JUEGO: la primera jornada
+       * que todavía no está cerrada oficialmente. Si no se puede
+       * consultar, se abre la jornada 1 como hasta ahora.
+       */
+      obtenerJornadaEnJuego()
         .then(
-          () => {
+          (jornadaEnJuego) => {
 
-            actualizarVisibilidadPleno15();
+            const sel =
+              document.getElementById(
+                "select-jornada"
+              );
 
-            escucharJornada();
+            sel.value =
+              jornadaEnJuego;
+
+            // cambiarJornada() sincroniza selectores, etiquetas,
+            // pleno al 15 y escucha de la jornada seleccionada.
+            return cambiarJornada();
 
           }
         );
