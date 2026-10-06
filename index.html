@@ -2557,7 +2557,7 @@
           {};
 
 
-        let maxAciertos =
+        let maxPuntos =
           -1;
 
 
@@ -2575,17 +2575,16 @@
               );
 
 
-            const aciertos =
-              resultado.aciertos;
-
+            const puntos =
+              resultado.puntos;
 
             if (
-              aciertos >
-              maxAciertos
+              puntos >
+              maxPuntos
             ) {
 
-              maxAciertos =
-                aciertos;
+              maxPuntos =
+                puntos;
 
               ganador =
                 j;
@@ -5257,56 +5256,59 @@
 
 
               /*
-               * COLORES DE POSICIÓN:
+               * COLORES DE POSICIÓN (CLASIFICACIÓN GENERAL):
                *
-               * 1º       = verde
-               * 2º y 4º  = azul claro
-               * 3º y 5º  = azul más oscuro
-               * 6º-8º    = rojo
+               * 1º a 3º       = verde
+               * 4º y 5º       = azul (claro / más oscuro)
+               * tres últimos  = rojo con texto blanco
                */
+
+              const totalClasificados =
+                datosUltimoRankingAcumulado.length;
+
+              const esUltimoTres =
+                idx >= 3 &&
+                idx >= totalClasificados - 3;
 
               let claseFila =
                 "bg-white";
 
-
               if (
                 idx === 0
               ) {
-
                 claseFila =
                   "bg-green-100 font-bold";
-
               }
-
               else if (
                 idx === 1 ||
-                idx === 3
+                idx === 2
               ) {
-
                 claseFila =
-                  "bg-blue-50";
-
+                  "bg-green-100";
               }
-
               else if (
-                idx === 2 ||
-                idx === 4
+                esUltimoTres
               ) {
-
-                claseFila =
-                  "bg-blue-100";
-
-              }
-
-              else if (
-                idx >= 5
-              ) {
-
                 claseFila =
                   "bg-red-600 text-white";
-
+              }
+              else if (
+                idx === 3
+              ) {
+                claseFila =
+                  "bg-blue-50";
+              }
+              else if (
+                idx === 4
+              ) {
+                claseFila =
+                  "bg-blue-100";
               }
 
+              const claseTextoPuntos =
+                esUltimoTres
+                  ? "text-white"
+                  : "text-blue-900";
 
               tbodyAcumulada.innerHTML += `
 
@@ -5324,7 +5326,7 @@
                   </td>
 
 
-                  <td class="p-3 text-center font-bold text-blue-900">
+                  <td class="p-3 text-center font-bold ${claseTextoPuntos}">
                     ${r.total}
                   </td>
 
