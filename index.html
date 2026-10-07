@@ -3563,10 +3563,7 @@
             jornadaActual
           )
           .set(
-            {
-              [`pronosticos.${usuarioActual}`]:
-                datosJugador
-            },
+            { pronosticos: { [usuarioActual]: datosJugador } },
             {
               merge:
                 true
